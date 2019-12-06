@@ -1,9 +1,8 @@
 const serverUrl = 'http://10.203.117.137:3001';
 const clientUrl = 'http://10.203.117.137:3000';
-
+const PORT = 3001;
 var express = require('express')
 	, passport = require('passport')
-	, util = require('util')
 	, VkStrategy = require("passport-vkontakte").Strategy
 	, cors = require("cors");;
 
@@ -65,4 +64,4 @@ app.get("/auth/vk/callback",
 		res.redirect(clientUrl);
 	});
 
-app.listen(3001);
+app.listen(PORT);
