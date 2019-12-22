@@ -1,27 +1,51 @@
 import React from 'react';
-import io from 'socket.io-client'
-import { Router, Route } from "react-router-dom";
-import history from "../history";
+import { Router, Route, Switch } from "react-router-dom";
+import { Provider } from "react-redux";
+import jwt_decode from "jwt-decode";
+
 import './App.css';
-import UserProvider from '../contexts/UserProvider';
+
+import history from '../history';
 import MainPage from "./MainPage";
-import OAuth from './OAuth'
-const socket = io('http://localhost:3001/')
+import Sign from './Sign';
+import { store } from "../store";
+import { SET_CURRENT_USER } from "../actions/types"
+import setAuthToken from "../utils/setAuthToken";
+import PrivateRoute from "../components/PrivateRoute";
+
+if (localStorage.jwtToken) {
+    const token = localStorage.jwtToken;
+    setAuthToken(token);
+    const decoded = jwt_decode(token);
+    store.dispatch({
+        type: SET_CURRENT_USER,
+        payload: decoded
+    });
+
+    const currentTime = Date.now() / 1000; // to get in milliseconds
+    if (decoded.exp < currentTime) {
+        localStorage.removeItem("jwtToken");
+        setAuthToken(false);
+        store.dispatch({
+            type: SET_CURRENT_USER,
+            payload: null
+        });
+    }
+    else {
+        history.push("/luciddreams");
+    }
+}
 
 const App = () => {
     return (
-        <div>
-            <OAuth
-                provider={'vk'}
-                key={'vk'}
-                socket={socket}
-            />
-        </div>
-        // <Router history={history}>
-        //     <UserProvider>
-        //         <Route path="/" component={MainPage} />
-        //     </UserProvider>
-        // </Router >
+        <Provider store={store}>
+            <Router history={history}>
+                <Route exact path="/" component={Sign} />
+                <Switch>
+                    <PrivateRoute exact path="/luciddreams" component={MainPage} />
+                </Switch>
+            </Router>
+        </Provider>
     );
 };
 

@@ -1,4 +1,5 @@
 const words = {
+    current: 'Ru',
     buttons: {
         signIn: 'Вход',
         signUp: 'Регистрация',
@@ -9,12 +10,30 @@ const words = {
         adventures: 'Приключения',
         close: 'Назад',
         about: 'О нас',
+        cancel: 'Отмена',
     },
     texts: {
         about: 'О нас О нас О нас О нас О нас О нас О нас О нас О нас О нас О нас О нас',
         or: 'ИЛИ',
+        nickname: 'Отображаемое имя',
         password: 'Пароль',
+        passwordAgain: 'Поторите пароль',
         cancel: 'Отмена',
+        sucessRegistration: 'Вы успешно зарегистрировались',
+        hello: 'Привет, ',
+        changleLanguage: 'Сохранить изменение языка на ',
+    },
+    errors: {
+        emailLenght: 'Введите email',
+        nicknameLenght: 'Введите отображаемое имя',
+        passwordLenght: 'Введите пароль',
+        password2Lenght: 'Введите пароль',
+        passwordsCompare: 'Пароли не совпадают',
+        UserNotExist: 'Неверный email или пароль',
+        EmailIsNotValid: 'Введен некорректный email',
+        IncorrectPassword: 'Неверный email или пароль',
+        EmailIsBusy: 'Email занят',
+        PasswordLenght5Symbols: 'Минимальная длина пароля: 5 символов',
     },
 };
 
