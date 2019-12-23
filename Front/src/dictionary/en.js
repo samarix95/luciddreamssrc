@@ -22,6 +22,7 @@ const words = {
         sucessRegistration: 'You are sign up successful',
         hello: 'Hello, ',
         changleLanguage: 'Save change language to ',
+        success: 'Success',
     },
     errors: {
         emailLenght: 'Email must not be empty',
@@ -34,6 +35,7 @@ const words = {
         IncorrectPassword: 'Invalid email or password',
         EmailIsBusy: 'Email is busy',
         PasswordLenght5Symbols: 'Minimum password length: 5 symbols',
+        NotLogin: 'You not loggin in',
     },
 };
 

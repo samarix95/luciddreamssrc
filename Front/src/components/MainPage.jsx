@@ -1,5 +1,6 @@
 import React, { useEffect } from "react";
-import axios from "axios";
+import { connect } from 'react-redux';
+import clsx from 'clsx';
 
 import SnackbarContent from "@material-ui/core/SnackbarContent";
 import ButtonBase from '@material-ui/core/ButtonBase';
@@ -10,12 +11,15 @@ import Button from '@material-ui/core/Button';
 import Slide from "@material-ui/core/Slide";
 import Grid from '@material-ui/core/Grid';
 
-import { connect } from 'react-redux';
 import { setCloud, setStar, setCurrLang, setThemeMode } from '../actions/Actions';
-import { useStyles, params, randomBetween } from '../styles/Styles';
+import { useStyles, params, randomBetween, variantIcon } from '../styles/Styles';
+import { instance } from './Config';
+import { CheckTimeOut } from '../utils/CheckLoginTimeOut';
 
-import { MuiThemeProvider, createMuiTheme } from '@material-ui/core/styles';
+import { MuiThemeProvider, createMuiTheme, makeStyles } from '@material-ui/core/styles';
 import CssBaseline from '@material-ui/core/CssBaseline';
+
+import { amber, green } from '@material-ui/core/colors';
 
 import CloseIcon from "@material-ui/icons/Close";
 import SaveIcon from "@material-ui/icons/Save";
@@ -27,6 +31,60 @@ function TransitionDown(props) {
     return <Slide {...props} direction="down" />;
 }
 
+const useStyles1 = makeStyles(theme => ({
+    success: {
+        backgroundColor: green[600],
+    },
+    error: {
+        backgroundColor: theme.palette.error.dark,
+    },
+    info: {
+        backgroundColor: theme.palette.primary.main,
+    },
+    warning: {
+        backgroundColor: amber[700],
+    },
+    icon: {
+        fontSize: 20,
+    },
+    iconVariant: {
+        opacity: 0.9,
+        marginRight: theme.spacing(1),
+    },
+    message: {
+        display: 'flex',
+        alignItems: 'center',
+    },
+}));
+
+function SnackbarContentWrapper(props) {
+    const classes = useStyles1();
+    const { className, message, onClose, variant } = props;
+    const Icon = variantIcon[variant];
+
+    return (
+        <SnackbarContent
+            className={clsx(classes[variant], className)}
+            aria-describedby="message-snackbar"
+            message={
+                <span id="message-snackbar" className={classes.message}>
+                    <Icon className={clsx(classes.icon, classes.iconVariant)} />
+                    <Typography className={classes.mainGridContainer}
+                        align='center'
+                        variant='body2'>
+                        {message}
+                    </Typography>
+                </span>
+            }
+            action={[
+                <IconButton key="close" aria-label="close" color="inherit" onClick={onClose}>
+                    <CloseIcon className={classes.icon} />
+                </IconButton>,
+            ]}
+        />
+    );
+}
+
 function MainPage(props) {
     const classes = useStyles();
     const { lang, clouds, stars, themeMode, auth } = props.store;
@@ -34,8 +92,13 @@ function MainPage(props) {
     const { setCurrLangAction, setCloudsAction, setStarsAction, setThemeModeAction } = props;
     const [prevLanguage, setPrevLanguage] = React.useState(undefined);
     const [openLangSnakbar, setOpenLangSnakbar] = React.useState(false);
+    const [openMessageSnackbar, setOpenMessageSnackbar] = React.useState(false);
     const [langSnakbarMessage, setLangSnakbarMessage] = React.useState('');
     const [transition, setTransition] = React.useState(undefined);
+    const [infoSnackbar, setInfoSnackbar] = React.useState({
+        variant: '',
+        message: '',
+    });
 
     const switchMode = () => {
         let newPaletteType = themeMode.palette.type === "light" ? "dark" : "light";
@@ -47,6 +110,7 @@ function MainPage(props) {
             secondary: { main: secondaryColor },
         });
     }
+
     const onAstronautClick = () => {
         alert('Тут должны перейти на страницу космонафта');
     };
@@ -56,7 +120,7 @@ function MainPage(props) {
     };
 
     const changeLanguage = (language) => {
-        if (lang.currLang.current !== language) {
+        if (language !== lang.currLang.current) {
             if (language === 'Ru') {
                 setPrevLanguage(lang.currLang.current);
                 setCurrLangAction(RuDict);
@@ -109,21 +173,41 @@ function MainPage(props) {
             id: userid,
             nickname: usernickname,
         };
-        const instance = axios.create({
-            baseURL: 'http://localhost:3001',
-            timeout: 3000,
-            headers: { "Access-Control-Allow-Origin": "*" }
-        });
-        instance
-            .post('/actions/users/updateuserdata', newUserData)
-            .then(res => {
-                setOpenLangSnakbar(false);
-            })
-            .catch(err => {
-                console.log(err);
-                handleCloseLangSnakbar();
-            });
 
+        //Проверка на таймаут
+        let check = CheckTimeOut();
+
+        if (check) {
+            instance
+                .post('/actions/users/updateuserdata', newUserData)
+                .then(res => {
+                    let newInfoSnackbar = infoSnackbar;
+                    newInfoSnackbar = { ...newInfoSnackbar, variant: "success" };
+                    newInfoSnackbar = { ...newInfoSnackbar, message: lang.currLang.texts.success };
+                    setInfoSnackbar(newInfoSnackbar);
+                    setOpenMessageSnackbar(true);
+                    setOpenLangSnakbar(false);
+                })
+                .catch(err => {
+                    handleCloseLangSnakbar();
+                });
+
+        }
+        else {
+            let newInfoSnackbar = infoSnackbar;
+            newInfoSnackbar = { ...newInfoSnackbar, variant: "error" };
+            newInfoSnackbar = { ...newInfoSnackbar, message: lang.currLang.errors.NotLogin };
+            setInfoSnackbar(newInfoSnackbar);
+            setOpenMessageSnackbar(true);
+            handleCloseLangSnakbar();
+        }
+    };
+
+    const handleCloseMessageSnackbar = (event, reason) => {
+        if (reason === 'clickaway') {
+            return;
+        }
+        setOpenMessageSnackbar(false);
     };
 
     useEffect(() => {
@@ -388,6 +472,18 @@ function MainPage(props) {
                 </div>
 
             </div>
+
+            <Snackbar
+                open={openMessageSnackbar}
+                onClose={handleCloseMessageSnackbar}
+                autoHideDuration={3000}>
+                <SnackbarContentWrapper
+                    className={classes.margin}
+                    onClose={handleCloseMessageSnackbar}
+                    variant={infoSnackbar.variant}
+                    message={infoSnackbar.message}
+                />
+            </Snackbar>
 
         </MuiThemeProvider>
     );
