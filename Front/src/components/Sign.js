@@ -2,12 +2,12 @@ import React from 'react';
 import { connect } from 'react-redux';
 import jwt_decode from "jwt-decode";
 import PropTypes from 'prop-types';
-import axios from "axios";
 import clsx from 'clsx';
 
 import { setCurrLang, setUserState, setCloud, setStar, setThemeMode } from '../actions/Actions';
 import { useStyles, params, randomBetween, variantIcon } from '../styles/Styles';
 import setAuthToken from "../utils/setAuthToken";
+import { instance } from './Config';
 import { GET_ERRORS, SET_CURRENT_USER } from "../actions/types";
 
 import RuDict from '../dictionary/ru';
@@ -15,6 +15,7 @@ import EnDict from '../dictionary/en';
 
 import SnackbarContent from '@material-ui/core/SnackbarContent';
 import InputAdornment from '@material-ui/core/InputAdornment';
+import LinearProgress from '@material-ui/core/LinearProgress';
 import DialogActions from '@material-ui/core/DialogActions';
 import DialogContent from '@material-ui/core/DialogContent';
 import DialogTitle from '@material-ui/core/DialogTitle';
@@ -32,7 +33,7 @@ import VisibilityOff from '@material-ui/icons/VisibilityOff';
 import Visibility from '@material-ui/icons/Visibility';
 import CloseIcon from '@material-ui/icons/Close';
 
-import { MuiThemeProvider, createMuiTheme } from '@material-ui/core/styles';
+import { MuiThemeProvider, createMuiTheme, makeStyles } from '@material-ui/core/styles';
 
 import CssBaseline from '@material-ui/core/CssBaseline';
 
@@ -40,13 +41,10 @@ import { mdiVk } from '@mdi/js';
 import Icon from '@mdi/react';
 
 import { amber, green } from '@material-ui/core/colors';
-import { makeStyles } from '@material-ui/core/styles';
 
 const Transition = React.forwardRef(function Transition(props, ref) {
     return <Slide direction="up" ref={ref} {...props} />;
 });
-
-
 
 const useStyles1 = makeStyles(theme => ({
     success: {
@@ -68,15 +66,11 @@ const useStyles1 = makeStyles(theme => ({
         opacity: 0.9,
         marginRight: theme.spacing(1),
     },
-    message: {
-        display: 'flex',
-        alignItems: 'center',
-    },
 }));
 
 function MySnackbarContentWrapper(props) {
     const classes = useStyles1();
-    const { className, message, onClose, variant, ...other } = props;
+    const { className, message, onClose, variant } = props;
     const Icon = variantIcon[variant];
 
     return (
@@ -84,17 +78,19 @@ function MySnackbarContentWrapper(props) {
             className={clsx(classes[variant], className)}
             aria-describedby="client-snackbar"
             message={
-                <span id="client-snackbar" className={classes.message}>
+                <Typography className={classes.mainGridContainer}
+                    align='center'
+                    id="client-snackbar"
+                    variant='body2'>
                     <Icon className={clsx(classes.icon, classes.iconVariant)} />
                     {message}
-                </span>
+                </Typography>
             }
             action={[
                 <IconButton key="close" aria-label="close" color="inherit" onClick={onClose}>
                     <CloseIcon className={classes.icon} />
                 </IconButton>,
             ]}
-            {...other}
         />
     );
 }
@@ -210,8 +206,8 @@ function Sign(props) {
     }
 
     const singIn = () => {
-        axios
-            .post("http://localhost:3001/actions/users/login", loginData)
+        instance
+            .post("/actions/users/login", loginData)
             .then(res => {
                 const { token } = res.data;
                 localStorage.setItem("jwtToken", token);
@@ -225,11 +221,11 @@ function Sign(props) {
                 history.push("/luciddreams");
             })
             .catch(err => {
-                props.setUserState({
-                    type: GET_ERRORS,
-                    payload: err.response.data
-                });
-
+                // props.setUserState({
+                //     type: GET_ERRORS,
+                //     payload: err.response.data
+                // });
+                console.log(err);
                 if (err.response.data.email === 'UserNotExist') {
                     setSnackbarMessage(lang.currLang.errors.UserNotExist);
                 }
@@ -282,8 +278,8 @@ function Sign(props) {
             setIsLoading(false);
         }
         else {
-            axios
-                .post('http://localhost:3001/actions/users/register', registData)
+            instance
+                .post('/actions/users/register', registData)
                 .then(res => {
                     //TODO нормальный popup
                     alert(lang.currLang.texts.sucessRegistration);
@@ -461,31 +457,44 @@ function Sign(props) {
 
             <div className={classes.root}>
 
-                <div className={classes.mainPage} style={page.mainPage === true ? { transform: 'translateY(0%)' } : { transform: 'translateY(-100%)' }} >
-                    <Grid item xs={7} className={classes.mainGridBodyItem} >
-                        <Grid className={classes.mainGridContainer}
-                            container
-                            direction="column"
-                            justify="center"
-                            alignItems="stretch" >
+                <div className={classes.mainPage}
+                    style={
+                        page.mainPage === true
+                            ? { transform: 'translateY(0%)' }
+                            : { transform: 'translateY(-100%)' }
+                    } >
+
+                    <Grid className={classes.mainGridContainer}
+                        container
+                        direction="column"
+                        justify="center"
+                        alignItems="stretch" >
+
+                        <Grid item xs={11} className={classes.mainGridBodyItem} >
+
                             <Grid className={classes.menuButtonContainer}
                                 container
                                 direction="column"
                                 justify="center"
                                 alignItems="stretch" >
 
-                                <Grid item xs={12} className={classes.menuButtonContainerItem}>
+                                <Grid item xs={3} />
+
+                                <Grid item xs={6} className={classes.menuButtonContainerItem}>
+
                                     <Dialog
                                         open={openLogin}
                                         TransitionComponent={Transition}
                                         keepMounted
                                         aria-labelledby="alert-dialog-slide-title"
                                         aria-describedby="alert-dialog-slide-description" >
+
                                         <DialogTitle id="alert-dialog-slide-title">
                                             {lang.currLang.buttons.signIn}
                                         </DialogTitle>
 
                                         <DialogContent>
+
                                             <Grid item xs={12} className={classes.menuButtonContainerItem}>
 
                                                 <Grid item xs={2} className={classes.menuDivButton} align="center">
@@ -495,6 +504,7 @@ function Sign(props) {
                                                         type="email"
                                                         label="Email"
                                                         onChange={(e) => { changeAuthLogin(e) }} />
+
                                                 </Grid>
 
                                                 <Grid item xs={2} className={classes.menuDivButton} align="center">
@@ -535,19 +545,31 @@ function Sign(props) {
                                                 </Grid>
 
                                             </Grid>
+
+                                            {isLoading
+                                                ? <LinearProgress /> :
+                                                ''}
+
                                         </DialogContent>
-                                        <DialogActions>
-                                            <Button onClick={() => { click('closeLogin') }}
-                                                color="primary"
-                                                disabled={isLoading}>
-                                                {lang.currLang.buttons.cancel}
-                                            </Button>
-                                            <Button onClick={() => { click('signIn') }}
-                                                color="primary"
-                                                disabled={isLoading}>
-                                                {lang.currLang.buttons.signIn}
-                                            </Button>
-                                        </DialogActions>
+
+                                        {!isLoading
+                                            ?
+                                            <DialogActions>
+                                                <Button onClick={() => { click('closeLogin') }}
+                                                    color="secondary"
+                                                    disabled={isLoading}>
+                                                    {lang.currLang.buttons.cancel}
+                                                </Button>
+
+                                                <Button onClick={() => { click('signIn') }}
+                                                    color="primary"
+                                                    disabled={isLoading}>
+                                                    {lang.currLang.buttons.signIn}
+                                                </Button>
+
+                                            </DialogActions>
+                                            : ''}
+
                                     </Dialog>
 
                                     <Dialog
@@ -556,10 +578,13 @@ function Sign(props) {
                                         keepMounted
                                         aria-labelledby="alert-dialog-slide-title"
                                         aria-describedby="alert-dialog-slide-description" >
+
                                         <DialogTitle id="alert-dialog-slide-title">
                                             {lang.currLang.buttons.signUp}
                                         </DialogTitle>
+
                                         <DialogContent>
+
                                             <Grid item xs={12} className={classes.menuButtonContainerItem}>
 
                                                 <Grid item xs={2} className={classes.menuDivButton} align="center">
@@ -571,6 +596,7 @@ function Sign(props) {
                                                         type="email"
                                                         label="Email"
                                                         onChange={(e) => { changeRegistLogin(e) }} />
+
                                                 </Grid>
 
                                                 <Grid item xs={2} className={classes.menuDivButton} align="center">
@@ -635,19 +661,27 @@ function Sign(props) {
                                                 </Grid>
 
                                             </Grid>
+
+                                            {isLoading
+                                                ? <LinearProgress />
+                                                : ''}
+
                                         </DialogContent>
-                                        <DialogActions>
-                                            <Button onClick={() => { click('closeRegist') }}
-                                                color="primary"
-                                                disabled={isLoading}>
-                                                {lang.currLang.buttons.cancel}
-                                            </Button>
-                                            <Button onClick={() => { click('signUp') }}
-                                                color="primary"
-                                                disabled={isLoading}>
-                                                {lang.currLang.buttons.signUp}
-                                            </Button>
-                                        </DialogActions>
+                                        {!isLoading
+                                            ?
+                                            <DialogActions>
+                                                <Button onClick={() => { click('closeRegist') }}
+                                                    color="secondary"
+                                                    disabled={isLoading}>
+                                                    {lang.currLang.buttons.cancel}
+                                                </Button>
+                                                <Button onClick={() => { click('signUp') }}
+                                                    color="primary"
+                                                    disabled={isLoading}>
+                                                    {lang.currLang.buttons.signUp}
+                                                </Button>
+                                            </DialogActions>
+                                            : ''}
                                     </Dialog>
 
                                     <Grid item xs={2} className={classes.menuDivButton} align="center">
@@ -675,10 +709,14 @@ function Sign(props) {
 
                                 </Grid>
 
+                                <Grid item xs={3} />
+
                             </Grid>
+
                         </Grid>
 
                         <Grid item xs={1} className={classes.mainGridFooterItem} >
+
                             <Grid className={classes.menuButtonContainerFooterLanguageButtons}
                                 container
                                 direction="row"
@@ -687,16 +725,19 @@ function Sign(props) {
                                 <Grid item>
                                     <Button onClick={() => { changeLanguage('Ru') }}>
                                         RU
-                        </Button>
+                                    </Button>
                                 </Grid>
                                 <Grid item>
                                     <Button onClick={() => { changeLanguage('En') }}>
                                         EN
-                        </Button>
+                                    </Button>
                                 </Grid>
                             </Grid>
+
                         </Grid>
+
                     </Grid>
+
                 </div >
 
                 <div className={classes.aboutPage} style={page.aboutPage === true ? { transform: 'translateY(-100%)' } : { transform: 'translateY(0%)' }} >

@@ -34,6 +34,7 @@ const words = {
         IncorrectPassword: 'Неверный email или пароль',
         EmailIsBusy: 'Email занят',
         PasswordLenght5Symbols: 'Минимальная длина пароля: 5 символов',
+        NotLogin: 'Вы не авторизированы',
     },
 };
 

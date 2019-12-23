@@ -34,6 +34,7 @@ const words = {
         IncorrectPassword: 'Invalid email or password',
         EmailIsBusy: 'Email is busy',
         PasswordLenght5Symbols: 'Minimum password length: 5 symbols',
+        NotLogin: 'You not loggin in',
     },
 };
 
