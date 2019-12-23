@@ -22,6 +22,7 @@ const words = {
         sucessRegistration: 'Вы успешно зарегистрировались',
         hello: 'Привет, ',
         changleLanguage: 'Сохранить изменение языка на ',
+        success: 'Успешно',
     },
     errors: {
         emailLenght: 'Введите email',

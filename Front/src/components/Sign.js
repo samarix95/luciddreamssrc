@@ -66,6 +66,10 @@ const useStyles1 = makeStyles(theme => ({
         opacity: 0.9,
         marginRight: theme.spacing(1),
     },
+    message: {
+        display: 'flex',
+        alignItems: 'center',
+    },
 }));
 
 function MySnackbarContentWrapper(props) {
@@ -78,13 +82,14 @@ function MySnackbarContentWrapper(props) {
             className={clsx(classes[variant], className)}
             aria-describedby="client-snackbar"
             message={
-                <Typography className={classes.mainGridContainer}
-                    align='center'
-                    id="client-snackbar"
-                    variant='body2'>
+                <span id="client-snackbar" className={classes.message}>
                     <Icon className={clsx(classes.icon, classes.iconVariant)} />
-                    {message}
-                </Typography>
+                    <Typography className={classes.mainGridContainer}
+                        align='center'
+                        variant='body2'>
+                        {message}
+                    </Typography>
+                </span>
             }
             action={[
                 <IconButton key="close" aria-label="close" color="inherit" onClick={onClose}>

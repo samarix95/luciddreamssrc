@@ -22,6 +22,7 @@ const words = {
         sucessRegistration: 'You are sign up successful',
         hello: 'Hello, ',
         changleLanguage: 'Save change language to ',
+        success: 'Success',
     },
     errors: {
         emailLenght: 'Email must not be empty',

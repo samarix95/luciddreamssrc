@@ -31,46 +31,50 @@ function TransitionDown(props) {
     return <Slide {...props} direction="down" />;
 }
 
+const useStyles1 = makeStyles(theme => ({
+    success: {
+        backgroundColor: green[600],
+    },
+    error: {
+        backgroundColor: theme.palette.error.dark,
+    },
+    info: {
+        backgroundColor: theme.palette.primary.main,
+    },
+    warning: {
+        backgroundColor: amber[700],
+    },
+    icon: {
+        fontSize: 20,
+    },
+    iconVariant: {
+        opacity: 0.9,
+        marginRight: theme.spacing(1),
+    },
+    message: {
+        display: 'flex',
+        alignItems: 'center',
+    },
+}));
+
 function SnackbarContentWrapper(props) {
-    const classes = makeStyles(theme => ({
-        success: {
-            backgroundColor: green[600],
-        },
-        error: {
-            backgroundColor: theme.palette.error.dark,
-        },
-        info: {
-            backgroundColor: theme.palette.primary.main,
-        },
-        warning: {
-            backgroundColor: amber[700],
-        },
-        icon: {
-            fontSize: 20,
-        },
-        iconVariant: {
-            opacity: 0.9,
-            marginRight: theme.spacing(1),
-        },
-        mainGridContainer: {
-            height: '100%',
-        },
-    }));
+    const classes = useStyles1();
     const { className, message, onClose, variant } = props;
     const Icon = variantIcon[variant];
 
     return (
         <SnackbarContent
             className={clsx(classes[variant], className)}
-            aria-describedby="client-snackbar"
+            aria-describedby="message-snackbar"
             message={
-                <Typography className={classes.mainGridContainer}
-                    align='center'
-                    id="client-snackbar"
-                    variant='body2'>
+                <span id="message-snackbar" className={classes.message}>
                     <Icon className={clsx(classes.icon, classes.iconVariant)} />
-                    {message}
-                </Typography>
+                    <Typography className={classes.mainGridContainer}
+                        align='center'
+                        variant='body2'>
+                        {message}
+                    </Typography>
+                </span>
             }
             action={[
                 <IconButton key="close" aria-label="close" color="inherit" onClick={onClose}>
@@ -177,6 +181,11 @@ function MainPage(props) {
             instance
                 .post('/actions/users/updateuserdata', newUserData)
                 .then(res => {
+                    let newInfoSnackbar = infoSnackbar;
+                    newInfoSnackbar = { ...newInfoSnackbar, variant: "success" };
+                    newInfoSnackbar = { ...newInfoSnackbar, message: lang.currLang.texts.success };
+                    setInfoSnackbar(newInfoSnackbar);
+                    setOpenMessageSnackbar(true);
                     setOpenLangSnakbar(false);
                 })
                 .catch(err => {
