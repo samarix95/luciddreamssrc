@@ -240,6 +240,10 @@ export const useStyles = makeStyles(theme => ({
         minWidth: '55vw',
         maxWidth: '55vw',
     },
+    actionButton: {
+        minWidth: '40vw',
+        maxWidth: '40vw',
+    },
     mainGridFooterItem: {
         maxWidth: '100% !Important',
     },
@@ -250,11 +254,31 @@ export const useStyles = makeStyles(theme => ({
         height: '100%',
         margin: 0,
     },
+    fullMinWidth: {
+        minWidth: '100% !Important',
+        position: 'relative'
+    },
+    inputDiv: {
+        minWidth: '85% !Important',
+        position: 'absolute',
+        top: '50%',
+        left: '50%',
+        transform: 'translate(-50%, -50%)',
+        opacity: 1,
+    },
     aboutGridItem: {
         width: '100%',
     },
-    aboutPaper: {
-
+    mainPaperGridBodyItem: {
+        maxWidth: '100% !Important',
+    },
+    paper: {
+        height: '90%',
+        margin: theme.spacing(3, 2),
+        opacity: 0.9,
+    },
+    minMargin: {
+        margin: theme.spacing(0.5),
     },
     VKLoginDiv: {
         position: 'absolute',

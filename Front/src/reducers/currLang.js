@@ -1,4 +1,4 @@
-import { SET_LANG } from '../actions/Actions'
+import { SET_LANG } from '../actions/types';
 import EnDict from '../dictionary/en';
 
 const initialState = {

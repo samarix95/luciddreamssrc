@@ -5,13 +5,15 @@ import { Provider } from "react-redux";
 import './App.css';
 
 import history from '../history';
-import MainPage from "./MainPage";
-import Sign from './Sign';
 import { store } from "../store";
 import { CheckTimeOut } from '../utils/CheckLoginTimeOut';
 import setAuthToken from "../utils/setAuthToken";
 import { SET_CURRENT_USER } from "../actions/types"
 import PrivateRoute from "../components/PrivateRoute";
+
+import AddPost from './AddPost';
+import MainPage from "./MainPage";
+import Sign from './Sign';
 
 const App = () => {
     let check = CheckTimeOut();
@@ -33,6 +35,7 @@ const App = () => {
                 <Route exact path="/" component={Sign} />
                 <Switch>
                     <PrivateRoute exact path="/luciddreams" component={MainPage} />
+                    <PrivateRoute exact path="/adddream" component={AddPost} />
                 </Switch>
             </Router>
         </Provider>

@@ -11,6 +11,7 @@ const words = {
         close: 'Back',
         about: 'About us',
         cancel: 'Cancel',
+        add: 'Add',
     },
     texts: {
         about: 'About us About us About us About us About us About us About us About us About us About us ',

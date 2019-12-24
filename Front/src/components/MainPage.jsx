@@ -1,5 +1,6 @@
 import React, { useEffect } from "react";
 import { connect } from 'react-redux';
+import PropTypes from 'prop-types';
 import clsx from 'clsx';
 
 import SnackbarContent from "@material-ui/core/SnackbarContent";
@@ -10,6 +11,8 @@ import Snackbar from "@material-ui/core/Snackbar";
 import Button from '@material-ui/core/Button';
 import Slide from "@material-ui/core/Slide";
 import Grid from '@material-ui/core/Grid';
+
+import { SET_CLOUD, SET_STAR, CLEAR_CLOUD, CLEAR_STAR } from "../actions/types";
 
 import { setCloud, setStar, setCurrLang, setThemeMode } from '../actions/Actions';
 import { useStyles, params, randomBetween, variantIcon } from '../styles/Styles';
@@ -89,7 +92,7 @@ function MainPage(props) {
     const classes = useStyles();
     const { lang, clouds, stars, themeMode, auth } = props.store;
     const muiTheme = createMuiTheme(themeMode);
-    const { setCurrLangAction, setCloudsAction, setStarsAction, setThemeModeAction } = props;
+    const { setCurrLangAction, setCloud, setStar, setThemeModeAction, history } = props;
     const [prevLanguage, setPrevLanguage] = React.useState(undefined);
     const [openLangSnakbar, setOpenLangSnakbar] = React.useState(false);
     const [openMessageSnackbar, setOpenMessageSnackbar] = React.useState(false);
@@ -211,11 +214,21 @@ function MainPage(props) {
     };
 
     useEffect(() => {
+        setStar({
+            type: CLEAR_STAR,
+            starState: '',
+        });
+        setCloud({
+            type: CLEAR_CLOUD,
+            cloudState: '',
+        });
+
         for (let i = 0; i < params.amountStars; i++) {
             let size = Math.round(Math.random() * 10) === 0 ? params.size.giant : randomBetween(params.size.min, params.size.max);
-            setStarsAction(
-                <div className={classes.AppStar}
-                    key={i + 'star'}
+            setStar({
+                type: SET_STAR,
+                starState: <div className={classes.AppStar}
+                    key={i}
                     style={{
                         left: randomBetween(0, 100) + "%",
                         top: randomBetween(0, 100) + "%",
@@ -225,7 +238,7 @@ function MainPage(props) {
                         animationDuration: randomBetween(params.duration.min, params.duration.max) + "s",
                     }}
                 />
-            );
+            });
         }
         for (let i = 0; i < params.amountClouds; i++) {
             let left = Math.round(Math.random() * 50 + 90);
@@ -233,9 +246,10 @@ function MainPage(props) {
             let scale = Math.random() * 1.5 - 0.5;
             let opacity = Math.random() * 90 / 100;
             let speed = Math.random() * 30 + 15;
-            setCloudsAction(
-                <div className={classes.AppCloud}
-                    key={i + 'cloud'}
+            setCloud({
+                type: SET_CLOUD,
+                cloudState: <div className={classes.AppCloud}
+                    key={i}
                     style={{
                         left: left + '%',
                         top: top + '%',
@@ -245,7 +259,7 @@ function MainPage(props) {
                         opacity: opacity,
                         animationDuration: speed + 's',
                     }} />
-            );
+            });
         }
 
         auth.user.language === 0 ? setCurrLangAction(EnDict) : setCurrLangAction(RuDict);
@@ -265,7 +279,7 @@ function MainPage(props) {
             });
         }
 
-    }, [classes, setCloudsAction, setStarsAction, setThemeModeAction, setCurrLangAction, auth.user.language, auth.user.times_mode]);
+    }, [classes, setCloud, setStar, setThemeModeAction, setCurrLangAction, auth.user.language, auth.user.times_mode]);
 
     return (
         <MuiThemeProvider theme={muiTheme}>
@@ -415,7 +429,16 @@ function MainPage(props) {
                                         </Grid>
 
                                         <Grid item xs={2} className={classes.menuDivButton} align="center">
-                                            <Button variant="contained" color="primary" className={classes.menuButton}>
+                                            <Button
+                                                variant="contained"
+                                                color="primary"
+                                                className={classes.menuButton}
+                                                onClick={() => {
+                                                    let check = CheckTimeOut();
+                                                    if(check) history.push("/adddream");
+                                                    else history.push("/");
+                                                }}
+                                            >
                                                 {lang.currLang.buttons.addDream}
                                             </Button>
                                         </Grid>
@@ -489,6 +512,13 @@ function MainPage(props) {
     );
 };
 
+
+
+MainPage.propTypes = {
+    setCloud: PropTypes.func.isRequired,
+    setStar: PropTypes.func.isRequired,
+}
+
 const mapStateToProps = store => {
     return {
         store,
@@ -498,8 +528,8 @@ const mapStateToProps = store => {
 const mapDispatchToProps = (dispatch) => {
     return {
         setCurrLangAction: currLangState => dispatch(setCurrLang(currLangState)),
-        setCloudsAction: cloudState => dispatch(setCloud(cloudState)),
-        setStarsAction: starState => dispatch(setStar(starState)),
+        setCloud: cloudState => dispatch(setCloud(cloudState)),
+        setStar: starState => dispatch(setStar(starState)),
         setThemeModeAction: paletteState => dispatch(setThemeMode(paletteState)),
     }
 }

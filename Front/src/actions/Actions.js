@@ -1,18 +1,15 @@
-export const SET_CLOUD = 'SET_CLOUD'
-export const SET_STAR = 'SET_STAR'
-export const SET_LANG = 'SET_LANG'
-export const SET_THEME_MODE = 'SET_THEME_MODE'
+import { SET_LANG, SET_THEME_MODE } from '../actions/types';
 
 export function setCloud(state) {
 	return {
-		type: SET_CLOUD,
-		cloudState: state,
+		type: state.type,
+		cloudState: state.cloudState,
 	}
 }
 export function setStar(state) {
 	return {
-		type: SET_STAR,
-		starState: state,
+		type: state.type,
+		starState: state.starState,
 	}
 }
 export function setCurrLang(state) {

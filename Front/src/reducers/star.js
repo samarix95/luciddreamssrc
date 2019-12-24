@@ -1,4 +1,4 @@
-import { SET_STAR } from '../actions/Actions'
+import { SET_STAR, CLEAR_STAR } from '../actions/types';
 
 const initialState = {
 	stars: [],
@@ -10,7 +10,10 @@ export function starsReducer(state = initialState, action) {
 			return {
 				...state, stars: [...state.stars, action.starState]
 			}
-
+		case CLEAR_STAR:
+			return {
+				...state, stars: []
+			}
 		default:
 			return state
 	}

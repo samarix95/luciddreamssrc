@@ -8,7 +8,7 @@ import { setCurrLang, setUserState, setCloud, setStar, setThemeMode } from '../a
 import { useStyles, params, randomBetween, variantIcon } from '../styles/Styles';
 import setAuthToken from "../utils/setAuthToken";
 import { instance } from './Config';
-import { GET_ERRORS, SET_CURRENT_USER } from "../actions/types";
+import { GET_ERRORS, SET_CURRENT_USER, SET_CLOUD, SET_STAR, CLEAR_CLOUD, CLEAR_STAR } from "../actions/types";
 
 import RuDict from '../dictionary/ru';
 import EnDict from '../dictionary/en';
@@ -388,10 +388,19 @@ function Sign(props) {
     }
 
     React.useEffect(() => {
+        setStar({
+            type: CLEAR_STAR,
+            starState: '',
+        });
+        setCloud({
+            type: CLEAR_CLOUD,
+            cloudState: '',
+        });
         for (let i = 0; i < params.amountStars; i++) {
             let size = Math.round(Math.random() * 10) === 0 ? params.size.giant : randomBetween(params.size.min, params.size.max);
-            setStar(
-                <div className={classes.AppStar}
+            setStar({
+                type: SET_STAR,
+                cloudState: <div className={classes.AppStar}
                     key={i}
                     style={{
                         left: randomBetween(0, 100) + "%",
@@ -402,7 +411,7 @@ function Sign(props) {
                         animationDuration: randomBetween(params.duration.min, params.duration.max) + "s",
                     }}
                 />
-            );
+            });
         }
         for (let i = 0; i < params.amountClouds; i++) {
             let left = Math.round(Math.random() * 50 + 90);
@@ -410,8 +419,9 @@ function Sign(props) {
             let scale = Math.random() * 1.5 - 0.5;
             let opacity = Math.random() * 90 / 100;
             let speed = Math.random() * 30 + 15;
-            setCloud(
-                <div className={classes.AppCloud}
+            setCloud({
+                type: SET_CLOUD,
+                cloudState: <div className={classes.AppCloud}
                     key={i}
                     style={{
                         left: left + '%',
@@ -422,7 +432,7 @@ function Sign(props) {
                         opacity: opacity,
                         animationDuration: speed + 's',
                     }} />
-            );
+            });
         }
 
         if (new Date().getHours() > 15) {

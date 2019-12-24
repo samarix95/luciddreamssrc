@@ -1,4 +1,4 @@
-import { SET_THEME_MODE } from '../actions/Actions'
+import { SET_THEME_MODE } from '../actions/types';
 
 const initialState = {
     palette: {
