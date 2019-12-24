@@ -258,8 +258,13 @@ export const useStyles = makeStyles(theme => ({
         minWidth: '100% !Important',
         position: 'relative'
     },
+    formControl: {
+        minWidth: '100%',
+        maxWidth: '100%',
+      },
     inputDiv: {
         minWidth: '85% !Important',
+        maxWidth: '85% !Important',
         position: 'absolute',
         top: '50%',
         left: '50%',

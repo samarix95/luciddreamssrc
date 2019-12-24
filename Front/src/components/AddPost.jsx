@@ -50,7 +50,6 @@ function AddPost(props) {
     const theme = useTheme();
     const { lang, themeMode, history, clouds, stars } = props;
     const muiTheme = createMuiTheme(themeMode);
-
     const [realisticsValue, setRealisticsValue] = React.useState(1);
 
     const [locations, setLocations] = React.useState({});
@@ -61,7 +60,7 @@ function AddPost(props) {
 
     const [personName, setPersonName] = React.useState([]);
 
-    const handleChange = event => {
+    const handleChange = (event, index, values) => {
         setPersonName(event.target.value);
     };
 
@@ -118,7 +117,7 @@ function AddPost(props) {
                                         variant="outlined"
                                     />
                                 </Grid>
-                                <Grid item xs={5} className={classes.fullMinWidth} >
+                                <Grid item xs={4} className={classes.fullMinWidth} >
                                     <TextField className={classes.inputDiv}
                                         required
                                         id="outlined-required"
@@ -127,52 +126,59 @@ function AddPost(props) {
                                     />
                                 </Grid>
 
-                                <Grid item xs={3} className={classes.fullMinWidth} >
-
+                                <Grid item xs={4} className={classes.fullMinWidth} >
                                     <FormControl className={classes.formControl}>
-                                        <InputLabel id="location-chip-label">Chip</InputLabel>
+                                        <InputLabel id="location-chip-label">
+                                            Locations
+                                            </InputLabel>
                                         <Select
                                             labelId="location-chip-label"
                                             id="location-chip"
                                             multiple
                                             value={personName}
                                             onChange={handleChange}
-                                            input={<Input id="select-location-chip" />}
-                                            renderValue={selected => (
-                                                <div className={classes.chips}>
-                                                    {selected.map(value => (
-                                                        <Chip
-                                                            avatar={
-                                                                <Avatar alt="Natacha" src="https://www.freeiconspng.com/minicovers/pepe-clipart-png-collection-14.png" />
-                                                            }
-                                                            key={value}
-                                                            label={value}
-                                                            className={classes.chip}
-                                                        />
-                                                    ))}
-                                                </div>
-                                            )}
-                                            MenuProps={MenuProps}
-                                        >
-                                            {
-                                                Object.keys(locations).map(item => 
-                                                // {
-                                                //     console.log(locations[item].id);
-                                                //     console.log(locations[item].name_rus);
-                                                //     console.log(locations[item].name_eng);
-                                                //     console.log(locations[item].img_url);
-                                                    <MenuItem
-                                                        key={locations[item].id}
-                                                        value={locations[item].name_rus}
-                                                        style={getStyles(locations[item].name_rus, personName, theme)}>
-                                                        {locations[item].name_rus}
-                                                    </MenuItem>
-                                                // }
+                                            input={
+                                                <Input id="select-location-chip" />
+                                            }
+                                            renderValue={(selected) =>
+                                                (
+                                                    <div className={classes.chips}>
+                                                        {selected.map(value => (
+                                                            <Chip
+                                                                avatar={
+                                                                    <Avatar
+                                                                        alt={locations.find(locations => locations.name_rus === value).name_eng}
+                                                                        src={locations.find(locations => locations.name_rus === value).img_url}
+                                                                    />
+                                                                }
+                                                                key={value}
+                                                                label={value}
+                                                                className={classes.chip}
+                                                            />
+                                                        ))}
+                                                    </div>
                                                 )
                                             }
+                                            MenuProps={MenuProps}
+                                        >
+                                            {Object.keys(locations)
+                                                .map(item =>
+                                                    <MenuItem
+                                                        key={locations[item].id + ' chip'}
+                                                        value={
+                                                            lang.currLang.current === "Ru"
+                                                                ? locations[item].name_rus
+                                                                : locations[item].name_eng
+                                                        }
+                                                        style={getStyles(locations[item].name_eng, personName, theme)}
+                                                    >
+                                                        {lang.currLang.current === "Ru"
+                                                            ? locations[item].name_rus
+                                                            : locations[item].name_eng}
+                                                    </MenuItem>
+                                                )}
                                         </Select>
                                     </FormControl>
-
                                 </Grid>
 
                                 <Grid item xs={2} className={classes.fullMinWidth} >
