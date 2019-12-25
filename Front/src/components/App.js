@@ -35,7 +35,7 @@ const App = () => {
                 <Route exact path="/" component={Sign} />
                 <Switch>
                     <PrivateRoute exact path="/luciddreams" component={MainPage} />
-                    <PrivateRoute exact path="/adddream" component={AddPost} />
+                    <PrivateRoute exact path="/addcdream" component={AddPost} />
                 </Switch>
             </Router>
         </Provider>

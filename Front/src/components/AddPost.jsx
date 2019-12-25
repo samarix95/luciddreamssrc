@@ -156,6 +156,7 @@ function AddPost(props) {
     const [selectedLocations, setselectedLocations] = React.useState([]);
     const [realisticsValue, setRealisticsValue] = React.useState(1);
     const [locations, setLocations] = React.useState({});
+    const [technics, setTechnics] = React.useState({});
 
     const handleChangeRealistics = (event, newValue) => {
         setRealisticsValue(newValue);
@@ -227,6 +228,13 @@ function AddPost(props) {
         instance.get("/gettags")
             .then(res => {
                 setLocations(res.data);
+            })
+            .catch(err => {
+                console.log(err)
+            });
+        instance.get("/gettechnics")
+            .then(res => {
+                setTechnics(res.data);
             })
             .catch(err => {
                 console.log(err)
