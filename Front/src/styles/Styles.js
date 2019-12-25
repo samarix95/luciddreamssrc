@@ -258,10 +258,6 @@ export const useStyles = makeStyles(theme => ({
         minWidth: '100% !Important',
         position: 'relative'
     },
-    formControl: {
-        minWidth: '100%',
-        maxWidth: '100%',
-      },
     inputDiv: {
         minWidth: '85% !Important',
         maxWidth: '85% !Important',
@@ -270,6 +266,24 @@ export const useStyles = makeStyles(theme => ({
         left: '50%',
         transform: 'translate(-50%, -50%)',
         opacity: 1,
+    },
+    inputScrollableDiv: {
+        minWidth: '85% !Important',
+        maxWidth: '85% !Important',
+        height: '100%',
+        position: 'absolute',
+        top: '50%',
+        left: '50%',
+        transform: 'translate(-50%, -50%)',
+        opacity: 1,
+        //overflowY: 'auto',
+    },
+    chips: {
+        display: "flex",
+        flexWrap: "wrap"
+    },
+    chip: {
+        margin: 1
     },
     aboutGridItem: {
         width: '100%',

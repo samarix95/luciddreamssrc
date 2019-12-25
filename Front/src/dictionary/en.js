@@ -24,6 +24,10 @@ const words = {
         hello: 'Hello, ',
         changleLanguage: 'Save change language to ',
         success: 'Success',
+        title: 'Title',
+        content: "What's a dream",
+        tags: 'Locations',
+        rating: 'Realistics',
     },
     errors: {
         emailLenght: 'Email must not be empty',
@@ -37,6 +41,8 @@ const words = {
         EmailIsBusy: 'Email is busy',
         PasswordLenght5Symbols: 'Minimum password length: 5 symbols',
         NotLogin: 'You not loggin in',
+        EmptyTitle: 'Title must not be empty',
+        EmptyDream: 'Dream must not be empty',
     },
 };
 

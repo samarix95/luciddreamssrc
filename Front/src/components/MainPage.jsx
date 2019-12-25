@@ -240,6 +240,7 @@ function MainPage(props) {
                 />
             });
         }
+
         for (let i = 0; i < params.amountClouds; i++) {
             let left = Math.round(Math.random() * 50 + 90);
             let top = Math.round(Math.random() * 100 / 100 * 90);
@@ -262,7 +263,20 @@ function MainPage(props) {
             });
         }
 
-        auth.user.language === 0 ? setCurrLangAction(EnDict) : setCurrLangAction(RuDict);
+        let id = {
+            id: auth.user.id,
+        };
+
+        instance
+            .post('/actions/users/getuserdata', id)
+            .then(res => {
+                res.data.language === 0 ? setCurrLangAction(EnDict) : setCurrLangAction(RuDict);
+            })
+            .catch(err => {
+                auth.user.language === 0 ? setCurrLangAction(EnDict) : setCurrLangAction(RuDict);
+            });
+
+
 
         if (auth.user.times_mode === 0) {
             setThemeModeAction({
@@ -279,7 +293,7 @@ function MainPage(props) {
             });
         }
 
-    }, [classes, setCloud, setStar, setThemeModeAction, setCurrLangAction, auth.user.language, auth.user.times_mode]);
+    }, [classes, setCloud, setStar, setThemeModeAction, setCurrLangAction, auth.user.language, auth.user.times_mode, auth.user.id]);
 
     return (
         <MuiThemeProvider theme={muiTheme}>
@@ -435,7 +449,7 @@ function MainPage(props) {
                                                 className={classes.menuButton}
                                                 onClick={() => {
                                                     let check = CheckTimeOut();
-                                                    if(check) history.push("/adddream");
+                                                    if (check) history.push("/adddream");
                                                     else history.push("/");
                                                 }}
                                             >

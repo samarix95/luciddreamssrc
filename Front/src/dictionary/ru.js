@@ -24,6 +24,10 @@ const words = {
         hello: 'Привет, ',
         changleLanguage: 'Сохранить изменение языка на ',
         success: 'Успешно',
+        title: 'Заголовок',
+        content: 'Что снилось',
+        tags: 'Места',
+        rating: 'Реалистичность',
     },
     errors: {
         emailLenght: 'Введите email',
@@ -37,6 +41,8 @@ const words = {
         EmailIsBusy: 'Email занят',
         PasswordLenght5Symbols: 'Минимальная длина пароля: 5 символов',
         NotLogin: 'Вы не авторизированы',
+        EmptyTitle: 'Пустой заголовок',
+        EmptyDream: 'Пустое поле сна',
     },
 };
 
