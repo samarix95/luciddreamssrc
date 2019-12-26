@@ -400,7 +400,7 @@ function Sign(props) {
             let size = Math.round(Math.random() * 10) === 0 ? params.size.giant : randomBetween(params.size.min, params.size.max);
             setStar({
                 type: SET_STAR,
-                cloudState: <div className={classes.AppStar}
+                starState: <div className={classes.AppStar}
                     key={i}
                     style={{
                         left: randomBetween(0, 100) + "%",
