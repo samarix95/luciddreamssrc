@@ -29,6 +29,7 @@ import Rating from "@material-ui/lab/Rating";
 
 import { MuiThemeProvider, createMuiTheme, useTheme, makeStyles } from '@material-ui/core/styles';
 
+import FormatColorFillIcon from '@material-ui/icons/FormatColorFill';
 import ErrorIcon from '@material-ui/icons/Error';
 import CloseIcon from '@material-ui/icons/Close';
 
@@ -51,7 +52,7 @@ function getStyles(name, selectedLocations, theme) {
     return {
         fontWeight:
             selectedLocations.indexOf(name) === -1
-                ? theme.typography.fontWeightRegular
+                ? theme.typography.fontWeightSmall
                 : theme.typography.fontWeightMedium
     };
 }
@@ -118,11 +119,13 @@ function AddPost(props) {
                 },
                 container: {
                     height: '100%',
+                    margin: '0 !Important',
                     //Без шапки
                 },
                 toolbar: {
                     textAlign: 'center',
                     height: '20%',
+                    minHeight: '48px',
                     margin: '0 !Important',
                     borderBottom: "1px solid gray",
                     borderRadius: '4px',
@@ -130,7 +133,7 @@ function AddPost(props) {
                 placeHolder: {
                 },
                 editor: {
-                    height: '75%',
+                    height: '69%',
                     width: '100%',
                     position: 'relative',
                     overflow: 'hidden',
@@ -154,6 +157,7 @@ function AddPost(props) {
     const [titleText, setTitleText] = React.useState();
     const [contentText, setContentText] = React.useState();
     const [selectedLocations, setselectedLocations] = React.useState([]);
+    const [selectedTechnics, setselectedTechnics] = React.useState([]);
     const [realisticsValue, setRealisticsValue] = React.useState(1);
     const [locations, setLocations] = React.useState({});
     const [technics, setTechnics] = React.useState({});
@@ -164,15 +168,15 @@ function AddPost(props) {
     const handleChangeLocations = (event) => {
         setselectedLocations(event.target.value);
     };
+    const handleChangeTechnics = (event) => {
+        setselectedTechnics(event.target.value);
+    };
     const changeTitle = (event) => {
         setTitleText(event.target.value);
     };
     const changeContent = (state) => {
         const raw = convertToRaw(state.getCurrentContent())
         setContentText(raw);
-        // convert = convert.replace('\"', '\\"');
-        // convert = convert.replace("\'", "\\'");
-        // setContentText(convert);
     };
 
     const savepost = () => {
@@ -207,13 +211,28 @@ function AddPost(props) {
         }
         else {
 
-            console.log(titleText);
-            console.log(JSON.stringify(contentText));
-            console.log(selectedLocations);
-            console.log(realisticsValue);
-            console.log(auth.user.id);
-            console.log(auth.user.nickname);
-            setIsLoading(false);
+            let convert = JSON.stringify(contentText);
+
+            let postData = {
+                title: titleText,
+                content: convert,
+                create_user: auth.user.id,
+                rating: realisticsValue,
+                post_type: 1,
+                nickname: auth.user.nickname,
+                tags: selectedLocations,
+                technics: selectedTechnics
+            }
+            
+            instance
+                .post('/actions/users/createpost', postData)
+                .then(res => {
+                    setIsLoading(false);
+                    history.push("/luciddreams")
+                })
+                .catch(err => {
+                    setIsLoading(false);
+                });
         }
     };
 
@@ -239,7 +258,15 @@ function AddPost(props) {
             .catch(err => {
                 console.log(err)
             });
-    }, []);
+        // instance.post("/actions/users/getuserposts", {id: auth.user.id})
+        //     .then(res => {
+        //         console.log(res.data);
+        //         console.log(JSON.parse(res.data[0].post_content));
+        //     })
+        //     .catch(err => {
+        //         console.log(err);
+        //     });
+    }, [auth.user.id]);
 
     return (
         <MuiThemeProvider theme={muiTheme}>
@@ -288,7 +315,7 @@ function AddPost(props) {
                                     />
                                 </Grid>
 
-                                <Grid item xs={5} className={classes.fullMinWidth} >
+                                <Grid item xs={4} className={classes.fullMinWidth} >
 
                                     <div className={classes.inputScrollableDiv}>
 
@@ -298,18 +325,81 @@ function AddPost(props) {
                                                 "italic",
                                                 "underline",
                                                 "strikethrough",
-                                                "media",
+                                                //"highlight",
+                                                "colorfill",
+                                                //"media",
                                             ]}
                                             onChange={changeContent}
                                             label={lang.currLang.texts.content}
                                             inlineToolbar={false}
+                                            customControls={[
+                                                {
+                                                    name: "colorfill",
+                                                    icon: <FormatColorFillIcon />,
+                                                    type: "inline",
+                                                    inlineStyle: {
+                                                        backgroundColor: "yellow",
+                                                        color: "black"
+                                                    }
+                                                }
+                                            ]}
                                         />
 
                                     </div>
 
                                 </Grid>
 
-                                <Grid item xs={3} className={classes.fullMinWidth} >
+                                <Grid item xs={2} className={classes.fullMinWidth} >
+                                    <FormControl className={classes.inputDiv}>
+                                        <InputLabel id="technics-chip-label">
+                                            {lang.currLang.texts.technics}
+                                        </InputLabel>
+                                        <Select
+                                            labelId="technics-chip-label"
+                                            id="technics-chip"
+                                            multiple
+                                            value={selectedTechnics}
+                                            onChange={handleChangeTechnics}
+                                            input={
+                                                <Input id="select-technics-chip" />
+                                            }
+                                            renderValue={selected =>
+                                                (
+                                                    <div className={classes.chips}>
+                                                        {selected.map(value => (
+                                                            <Chip
+                                                                size="small"
+                                                                key={value}
+                                                                label={value}
+                                                                className={classes.chip}
+                                                            />
+                                                        ))}
+                                                    </div>
+                                                )
+                                            }
+                                            MenuProps={MenuProps}
+                                        >
+                                            {Object.keys(technics)
+                                                .map(item =>
+                                                    <MenuItem
+                                                        key={technics[item].id + ' chip'}
+                                                        value={
+                                                            lang.currLang.current === "Ru"
+                                                                ? technics[item].name_rus
+                                                                : technics[item].name_eng
+                                                        }
+                                                        style={getStyles(technics[item].name_eng, selectedTechnics, theme)}
+                                                    >
+                                                        {lang.currLang.current === "Ru"
+                                                            ? technics[item].name_rus
+                                                            : technics[item].name_eng}
+                                                    </MenuItem>
+                                                )}
+                                        </Select>
+                                    </FormControl>
+                                </Grid>
+
+                                <Grid item xs={2} className={classes.fullMinWidth} >
                                     <FormControl className={classes.inputDiv}>
                                         <InputLabel id="location-chip-label">
                                             {lang.currLang.texts.tags}

@@ -27,6 +27,7 @@ const words = {
         title: 'Заголовок',
         content: 'Что снилось',
         tags: 'Места',
+        technics: 'Техники',
         rating: 'Реалистичность',
     },
     errors: {

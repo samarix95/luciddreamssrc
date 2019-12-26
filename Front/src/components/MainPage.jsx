@@ -459,7 +459,7 @@ function MainPage(props) {
                                                 className={classes.menuButton}
                                                 onClick={() => {
                                                     let check = CheckTimeOut();
-                                                    if (check) history.push("/adddcream");
+                                                    if (check) history.push("/addcdream");
                                                     else history.push("/");
                                                 }}
                                             >

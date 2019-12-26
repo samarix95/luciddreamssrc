@@ -27,6 +27,7 @@ const words = {
         title: 'Title',
         content: "What's a dream",
         tags: 'Locations',
+        technics: 'Technics',
         rating: 'Realistics',
     },
     errors: {
