@@ -54,33 +54,32 @@ export default function DreamCard(props) {
                             : lang.currLang.texts.Cdream
                         } />
 
-                    <div className={classes.horizontalScrollable}>
-                        <div className={classes.avatarRoot}>
-                            {tags.map((tag, key) =>
-                                tag[0]
-                                    ? <Tooltip key={key}
-                                        disableFocusListener
-                                        disableTouchListener
-                                        title={
-                                            lang.currLang.current === "Ru"
-                                                ? tag[1]
-                                                : tag[2]
-                                        }
-                                    >
-                                        <Avatar className={classes.smallAvatar}
-                                            alt="Remy Sharp"
-                                            src={tag[3]}
-                                        />
-                                    </Tooltip>
-                                    : ''
-                            )}
-                        </div>
+                    <div className={classes.avatarRoot}>
+                        {tags.map((tag, key) =>
+                            tag[0]
+                                ? <Tooltip key={key}
+                                    disableFocusListener
+                                    disableTouchListener
+                                    title={
+                                        lang.currLang.current === "Ru"
+                                            ? tag[1]
+                                            : tag[2]
+                                    }
+                                >
+                                    <Avatar className={classes.smallAvatar}
+                                        alt="Remy Sharp"
+                                        src={tag[3]}
+                                    />
+                                </Tooltip>
+                                : ''
+                        )}
                     </div>
 
                     <div className={classes.avatarRoot}>
                         {technics.map((technic, key) =>
                             technic[0]
-                                ? <Chip key={key}
+                                ? <Chip className={classes.smallChip}
+                                    key={key}
                                     label={lang.currLang.current === "Ru"
                                         ? technic[1]
                                         : technic[2]}

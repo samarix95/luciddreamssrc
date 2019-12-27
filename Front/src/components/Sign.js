@@ -470,7 +470,7 @@ function Sign(props) {
                 }
             </div>
 
-            <div className={classes.root}>
+            <div className={classes.root} id='rootDiv'>
 
                 <div className={classes.mainPage}
                     style={

@@ -37,20 +37,18 @@ export function randomBetween(a, b) {
 }
 
 export const useStyles = makeStyles(theme => ({
-    horizontalScrollable: {
-        marginTop: '10px',
-        overflow: 'hidden',
-    },
     avatarRoot: {
-        display: 'flex',
-        '& > *': {
-            margin: theme.spacing(1),
-        },
+        display: "flex",
+        flexWrap: "wrap",
         overflow: 'auto',
     },
     smallAvatar: {
+        margin: theme.spacing(0.5),
         width: theme.spacing(5),
         height: theme.spacing(5),
+    },
+    smallChip: {
+        margin: theme.spacing(0.5),
     },
     mainGridDreamsBodyItemContainer: {
         position: 'absolute',
@@ -95,7 +93,7 @@ export const useStyles = makeStyles(theme => ({
     },
     root: {
         flexGrow: 1,
-        position: 'fixed',
+        position: 'relative',
         width: '100%',
         height: '100%',
     },

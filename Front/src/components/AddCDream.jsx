@@ -280,7 +280,7 @@ function AddCDream(props) {
                 }
             </div>
 
-            <div className={classes.root}>
+            <div className={classes.root} id='rootDiv'>
 
                 <Grid className={classes.mainGridContainer}
                     container

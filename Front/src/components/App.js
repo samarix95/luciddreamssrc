@@ -27,6 +27,7 @@ const App = () => {
             type: SET_CURRENT_USER,
             payload: null
         });
+        history.push("/");
     }
     else {
         history.push("/luciddreams");
