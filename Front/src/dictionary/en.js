@@ -29,6 +29,8 @@ const words = {
         tags: 'Locations',
         technics: 'Technics',
         rating: 'Realistics',
+        Dream: 'Regular dream',
+        Cdream: 'C-dream',
     },
     errors: {
         emailLenght: 'Email must not be empty',

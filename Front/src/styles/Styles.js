@@ -37,6 +37,56 @@ export function randomBetween(a, b) {
 }
 
 export const useStyles = makeStyles(theme => ({
+    horizontalScrollable: {
+        marginTop: '10px',
+        overflow: 'hidden',
+    },
+    avatarRoot: {
+        display: 'flex',
+        '& > *': {
+            margin: theme.spacing(1),
+        },
+        overflow: 'auto',
+    },
+    smallAvatar: {
+        width: theme.spacing(5),
+        height: theme.spacing(5),
+    },
+    mainGridDreamsBodyItemContainer: {
+        position: 'absolute',
+        boxSizing: 'border-box',
+        maxHeight: '90%',
+        overflow: 'auto',
+        borderRadius: '4px',
+    },
+    mainGridDreamsBodyItemContainerPaper: {
+        height: '100%',
+        opacity: 0.9,
+    },
+    mainGridDreamsBodyItem: {
+        overflow: 'hidden',
+    },
+    mainGridDreamsContainer: {
+        height: '100%',
+        position: 'relative',
+        width: '90%',
+        left: '50%',
+        transform: 'translateX(-50%)',
+    },
+    card: {
+        maxWidth: '100%',
+        height: '100%',
+    },
+    expand: {
+        transform: "rotate(0deg)",
+        marginLeft: "auto",
+        transition: theme.transitions.create("transform", {
+            duration: theme.transitions.duration.shortest
+        })
+    },
+    expandOpen: {
+        transform: "rotate(180deg)"
+    },
     textField: {
         width: '100%',
     },
@@ -121,7 +171,7 @@ export const useStyles = makeStyles(theme => ({
         left: '50%',
         top: '25%',
         transform: 'translate(-50%, -25%)',
-        width: '35vw !important', // Overrides inline-style
+        width: '35vw !important',
         height: '35vw',
         borderRadius: '50%',
     },
@@ -161,7 +211,7 @@ export const useStyles = makeStyles(theme => ({
         left: '50%',
         top: '50%',
         transform: 'translate(-50%, -50%)',
-        width: '25vw !important', // Overrides inline-style
+        width: '25vw !important',
         height: '25vw',
         borderRadius: '50%',
     },
@@ -191,7 +241,7 @@ export const useStyles = makeStyles(theme => ({
         left: '50%',
         top: '50%',
         transform: 'translate(-50%, -50%)',
-        width: '25vw !important', // Overrides inline-style
+        width: '25vw !important',
         height: '25vw',
         borderRadius: '10%',
     },

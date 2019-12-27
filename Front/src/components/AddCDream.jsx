@@ -102,7 +102,7 @@ function MySnackbarContentWrapper(props) {
     );
 }
 
-function AddPost(props) {
+function AddCDream(props) {
     const classes = useStyles();
     const theme = useTheme();
     const { lang, themeMode, history, clouds, stars, auth } = props;
@@ -123,7 +123,10 @@ function AddPost(props) {
                     //Без шапки
                 },
                 toolbar: {
-                    textAlign: 'center',
+                    //textAlign: 'center',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
                     height: '20%',
                     minHeight: '48px',
                     margin: '0 !Important',
@@ -223,7 +226,7 @@ function AddPost(props) {
                 tags: selectedLocations,
                 technics: selectedTechnics
             }
-            
+
             instance
                 .post('/actions/users/createpost', postData)
                 .then(res => {
@@ -258,14 +261,6 @@ function AddPost(props) {
             .catch(err => {
                 console.log(err)
             });
-        // instance.post("/actions/users/getuserposts", {id: auth.user.id})
-        //     .then(res => {
-        //         console.log(res.data);
-        //         console.log(JSON.parse(res.data[0].post_content));
-        //     })
-        //     .catch(err => {
-        //         console.log(err);
-        //     });
     }, [auth.user.id]);
 
     return (
@@ -536,7 +531,7 @@ function AddPost(props) {
     );
 };
 
-AddPost.propTypes = {
+AddCDream.propTypes = {
     themeMode: PropTypes.object.isRequired,
     lang: PropTypes.object.isRequired,
     clouds: PropTypes.object.isRequired,
@@ -566,4 +561,4 @@ const mapDispatchToProps = (dispatch) => {
 export default connect(
     mapStateToProps,
     mapDispatchToProps
-)(AddPost);
+)(AddCDream);

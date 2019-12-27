@@ -437,7 +437,16 @@ function MainPage(props) {
                                     <Grid item xs={12} className={classes.menuButtonContainerItem} >
 
                                         <Grid item xs={2} className={classes.menuDivButton} align="center">
-                                            <Button variant="contained" color="primary" className={classes.menuButton}>
+                                            <Button
+                                                variant="contained"
+                                                color="primary"
+                                                className={classes.menuButton}
+                                                onClick={() => {
+                                                    let check = CheckTimeOut();
+                                                    if (check) history.push("/dreams");
+                                                    else history.push("/");
+                                                }}
+                                            >
                                                 {lang.currLang.buttons.dreamJoirnal}
                                             </Button>
                                         </Grid>
@@ -447,6 +456,11 @@ function MainPage(props) {
                                                 variant="contained"
                                                 color="primary"
                                                 className={classes.menuButton}
+                                                onClick={() => {
+                                                    let check = CheckTimeOut();
+                                                    if (check) history.push("/adddream");
+                                                    else history.push("/");
+                                                }}
                                             >
                                                 {lang.currLang.buttons.addDream}
                                             </Button>

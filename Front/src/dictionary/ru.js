@@ -29,6 +29,8 @@ const words = {
         tags: 'Места',
         technics: 'Техники',
         rating: 'Реалистичность',
+        Dream: 'Обычный сон',
+        Cdream: 'Осознанный сон',
     },
     errors: {
         emailLenght: 'Введите email',

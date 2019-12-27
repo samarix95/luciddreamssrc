@@ -11,7 +11,10 @@ import setAuthToken from "../utils/setAuthToken";
 import { SET_CURRENT_USER } from "../actions/types"
 import PrivateRoute from "../components/PrivateRoute";
 
-import AddPost from './AddPost';
+
+import AddDream from './AddDream';
+import ViewDreams from './ViewDreams';
+import AddCDream from './AddCDream';
 import MainPage from "./MainPage";
 import Sign from './Sign';
 
@@ -35,7 +38,9 @@ const App = () => {
                 <Route exact path="/" component={Sign} />
                 <Switch>
                     <PrivateRoute exact path="/luciddreams" component={MainPage} />
-                    <PrivateRoute exact path="/addcdream" component={AddPost} />
+                    <PrivateRoute exact path="/addcdream" component={AddCDream} />
+                    <PrivateRoute exact path="/adddream" component={AddDream} />
+                    <PrivateRoute exact path="/dreams" component={ViewDreams} />
                 </Switch>
             </Router>
         </Provider>
