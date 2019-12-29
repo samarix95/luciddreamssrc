@@ -4,6 +4,7 @@ import PropTypes from 'prop-types';
 
 import CircularProgress from '@material-ui/core/CircularProgress';
 import CssBaseline from '@material-ui/core/CssBaseline';
+import Typography from '@material-ui/core/Typography';
 import Container from "@material-ui/core/Container";
 import Button from '@material-ui/core/Button';
 import Paper from '@material-ui/core/Paper';
@@ -16,12 +17,12 @@ import { useStyles } from '../styles/Styles';
 import { instance } from './Config';
 
 function ViewDreams(props) {
-    const { lang, themeMode, history, clouds, stars, auth } = props;
+    const { lang, themeMode, history, auth } = props;
     const muiTheme = createMuiTheme(themeMode);
     const classes = useStyles();
     const [isLoading, setIsLoading] = React.useState(true);
     const [dreams, setDreams] = React.useState([]);
-
+    
     React.useEffect(() => {
         setIsLoading(true);
         instance.post("/actions/users/getuserposts", { id: auth.user.id })
@@ -37,19 +38,7 @@ function ViewDreams(props) {
     return (
         <MuiThemeProvider theme={muiTheme}>
             <CssBaseline />
-            <div className={classes.AppDivDark}>
-                <div className={classes.AppDivLight} style={themeMode.palette.type === "light" ? { opacity: 1, } : { opacity: 0, }} />
-                {themeMode.palette.type === "light"
-                    ?
-                    <div className={classes.AppCloudsDiv} style={themeMode.palette.type === "light" ? { opacity: 1, } : { opacity: 0, }} >
-                        {clouds.clouds}
-                    </div>
-                    :
-                    <div className={classes.AppStarsDiv} style={themeMode.palette.type === "light" ? { opacity: 0, } : { opacity: 1, }} >
-                        {stars.stars}
-                    </div>
-                }
-            </div>
+            
             <div className={classes.root}>
                 <Grid className={classes.mainGridContainer}
                     container
@@ -61,20 +50,60 @@ function ViewDreams(props) {
                             ? <CircularProgress />
                             : <Container className={classes.mainGridDreamsBodyItemContainer}>
                                 <Paper className={classes.mainGridDreamsBodyItemContainerPaper}>
-                                    <Grid className={classes.mainGridDreamsContainer}
-                                        container
-                                        direction="column"
-                                        justify="center"
-                                        alignItems="stretch"
-                                    >
-                                        {dreams.map((item, key) => (
-                                            <DreamCard
-                                                item={item}
-                                                key={key}
-                                                lang={lang}
-                                            />
-                                        ))}
-                                    </Grid>
+                                    {dreams.length !== 0
+                                        ? <Grid className={classes.mainGridDreamsContainer}
+                                            container
+                                            direction="column"
+                                            justify="center"
+                                            alignItems="stretch"
+                                        >
+                                            {dreams.map((item, key) => (
+                                                <DreamCard
+                                                    item={item}
+                                                    key={key}
+                                                    lang={lang}
+                                                    palette={themeMode.palette}
+                                                />
+                                            ))}
+                                        </Grid>
+                                        :
+                                        <div>
+                                            <div
+                                                style={{
+                                                    position: "relative",
+                                                    left: "50%",
+                                                    transform: "translateX(-50%)",
+                                                    width: 200,
+                                                    height: 100,
+                                                }}
+                                            >
+                                            </div>
+                                            <div
+                                                style={{
+                                                    position: "relative",
+                                                    left: "50%",
+                                                    transform: "translateX(-50%)",
+                                                    width: 200,
+                                                    height: 200,
+                                                    background: "url('https://static.thenounproject.com/png/603669-200.png') no-repeat center",
+                                                }}>
+                                            </div>
+                                            <div
+                                                style={{
+                                                    position: "relative",
+                                                    left: "50%",
+                                                    transform: "translateX(-50%)",
+                                                    width: 200,
+                                                    height: 100,
+                                                    textAlign: "center",
+                                                }}
+                                            >
+                                                <Typography>
+                                                    {lang.currLang.texts.NoDreams}
+                                                </Typography>
+                                            </div>
+                                        </div>
+                                    }
                                 </Paper>
                             </Container>
                         }
@@ -110,8 +139,6 @@ function ViewDreams(props) {
 ViewDreams.propTypes = {
     themeMode: PropTypes.object.isRequired,
     lang: PropTypes.object.isRequired,
-    clouds: PropTypes.object.isRequired,
-    stars: PropTypes.object.isRequired,
     auth: PropTypes.object.isRequired,
 };
 
@@ -119,18 +146,12 @@ const mapStateToProps = store => {
     return {
         themeMode: store.themeMode,
         lang: store.lang,
-        clouds: store.clouds,
-        stars: store.stars,
         auth: store.auth,
     }
 };
 
 const mapDispatchToProps = (dispatch) => {
     return {
-        // setCurrLangAction: currLangState => dispatch(setCurrLang(currLangState)),
-        // setCloudsAction: cloudState => dispatch(setCloud(cloudState)),
-        // setStarsAction: starState => dispatch(setStar(starState)),
-        // setThemeModeAction: paletteState => dispatch(setThemeMode(paletteState)),
     }
 }
 

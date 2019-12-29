@@ -12,10 +12,10 @@ import Button from '@material-ui/core/Button';
 import Slide from "@material-ui/core/Slide";
 import Grid from '@material-ui/core/Grid';
 
-import { SET_CLOUD, SET_STAR, CLEAR_CLOUD, CLEAR_STAR } from "../actions/types";
+import { SET_THEME_MODE } from "../actions/types";
 
-import { setCloud, setStar, setCurrLang, setThemeMode } from '../actions/Actions';
-import { useStyles, params, randomBetween, variantIcon } from '../styles/Styles';
+import { setCurrLang, setTheme } from '../actions/Actions';
+import { useStyles, variantIcon } from '../styles/Styles';
 import { instance } from './Config';
 import { CheckTimeOut } from '../utils/CheckLoginTimeOut';
 
@@ -90,9 +90,9 @@ function SnackbarContentWrapper(props) {
 
 function MainPage(props) {
     const classes = useStyles();
-    const { lang, clouds, stars, themeMode, auth } = props.store;
+    const { lang, themeMode, auth } = props.store;
     const muiTheme = createMuiTheme(themeMode);
-    const { setCurrLangAction, setCloud, setStar, setThemeModeAction, history } = props;
+    const { setCurrLangAction, setTheme, history } = props;
     const [prevLanguage, setPrevLanguage] = React.useState(undefined);
     const [openLangSnakbar, setOpenLangSnakbar] = React.useState(false);
     const [openMessageSnackbar, setOpenMessageSnackbar] = React.useState(false);
@@ -107,21 +107,21 @@ function MainPage(props) {
         let newPaletteType = themeMode.palette.type === "light" ? "dark" : "light";
         let primaryColor = themeMode.palette.type === "light" ? "#f9a825" : "#3f51b5";
         let secondaryColor = themeMode.palette.type === "light" ? "#f50057" : "#f50057";
-        setThemeModeAction({
-            type: newPaletteType,
-            primary: { main: primaryColor },
-            secondary: { main: secondaryColor },
+        setTheme({
+            type: SET_THEME_MODE,
+            palette: {
+                type: newPaletteType,
+                primary: { main: primaryColor },
+                secondary: { main: secondaryColor },
+            }
         });
     }
-
     const onAstronautClick = () => {
         alert('Тут должны перейти на страницу космонафта');
     };
-
     const onMapClick = () => {
         alert('Тут должны перейти на страницу карты');
     };
-
     const changeLanguage = (language) => {
         if (language !== lang.currLang.current) {
             if (language === 'Ru') {
@@ -140,7 +140,6 @@ function MainPage(props) {
             }
         }
     }
-
     const handleCloseLangSnakbar = () => {
         switch (prevLanguage) {
             case 'En':
@@ -155,7 +154,6 @@ function MainPage(props) {
         }
         setOpenLangSnakbar(false);
     };
-
     const handleSaveLangSnakbar = () => {
         let newLang;
         switch (lang.currLang.current) {
@@ -205,63 +203,13 @@ function MainPage(props) {
             handleCloseLangSnakbar();
         }
     };
-
     const handleCloseMessageSnackbar = (event, reason) => {
         if (reason === 'clickaway') {
             return;
         }
         setOpenMessageSnackbar(false);
     };
-
     useEffect(() => {
-        setStar({
-            type: CLEAR_STAR,
-            starState: '',
-        });
-        setCloud({
-            type: CLEAR_CLOUD,
-            cloudState: '',
-        });
-
-        for (let i = 0; i < params.amountStars; i++) {
-            let size = Math.round(Math.random() * 10) === 0 ? params.size.giant : randomBetween(params.size.min, params.size.max);
-            setStar({
-                type: SET_STAR,
-                starState: <div className={classes.AppStar}
-                    key={i}
-                    style={{
-                        left: randomBetween(0, 100) + "%",
-                        top: randomBetween(0, 100) + "%",
-                        width: size + "px",
-                        height: size + "px",
-                        boxShadow: "0 0 " + size + "px " + size / 2 + "px #043668",
-                        animationDuration: randomBetween(params.duration.min, params.duration.max) + "s",
-                    }}
-                />
-            });
-        }
-
-        for (let i = 0; i < params.amountClouds; i++) {
-            let left = Math.round(Math.random() * 50 + 90);
-            let top = Math.round(Math.random() * 100 / 100 * 90);
-            let scale = Math.random() * 1.5 - 0.5;
-            let opacity = Math.random() * 90 / 100;
-            let speed = Math.random() * 30 + 15;
-            setCloud({
-                type: SET_CLOUD,
-                cloudState: <div className={classes.AppCloud}
-                    key={i}
-                    style={{
-                        left: left + '%',
-                        top: top + '%',
-                        width: '400px',
-                        height: '100px',
-                        transform: 'scale(' + scale + ')',
-                        opacity: opacity,
-                        animationDuration: speed + 's',
-                    }} />
-            });
-        }
 
         let id = {
             id: auth.user.id,
@@ -276,24 +224,28 @@ function MainPage(props) {
                 auth.user.language === 0 ? setCurrLangAction(EnDict) : setCurrLangAction(RuDict);
             });
 
-
-
         if (auth.user.times_mode === 0) {
-            setThemeModeAction({
-                type: "dark",
-                primary: { main: "#f9a825" },
-                secondary: { main: "#f50057" },
+            setTheme({
+                type: SET_THEME_MODE,
+                palette: {
+                    type: "dark",
+                    primary: { main: "#f9a825" },
+                    secondary: { main: "#f50057" },
+                }
             });
         }
         else {
-            setThemeModeAction({
-                type: "light",
-                primary: { main: "#3f51b5" },
-                secondary: { main: "#f50057" },
+            setTheme({
+                type: SET_THEME_MODE,
+                palette: {
+                    type: "light",
+                    primary: { main: "#3f51b5" },
+                    secondary: { main: "#f50057" },
+                }
             });
         }
 
-    }, [classes, setCloud, setStar, setThemeModeAction, setCurrLangAction, auth.user.language, auth.user.times_mode, auth.user.id]);
+    }, [classes, setTheme, setCurrLangAction, auth.user.language, auth.user.times_mode, auth.user.id]);
 
     return (
         <MuiThemeProvider theme={muiTheme}>
@@ -337,20 +289,6 @@ function MainPage(props) {
                     ]}
                 />
             </Snackbar>
-
-            <div className={classes.AppDivDark}>
-                <div className={classes.AppDivLight} style={themeMode.palette.type === "light" ? { opacity: 1, } : { opacity: 0, }} />
-                {themeMode.palette.type === "light"
-                    ?
-                    <div className={classes.AppCloudsDiv} style={themeMode.palette.type === "light" ? { opacity: 1, } : { opacity: 0, }} >
-                        {clouds.clouds}
-                    </div>
-                    :
-                    <div className={classes.AppStarsDiv} style={themeMode.palette.type === "light" ? { opacity: 0, } : { opacity: 1, }} >
-                        {stars.stars}
-                    </div>
-                }
-            </div>
 
             <div className={classes.root} id='rootDiv'>
 
@@ -547,8 +485,8 @@ function MainPage(props) {
 
 
 MainPage.propTypes = {
-    setCloud: PropTypes.func.isRequired,
-    setStar: PropTypes.func.isRequired,
+    setTheme: PropTypes.func.isRequired,
+    setCurrLangAction: PropTypes.func.isRequired,
 }
 
 const mapStateToProps = store => {
@@ -560,9 +498,7 @@ const mapStateToProps = store => {
 const mapDispatchToProps = (dispatch) => {
     return {
         setCurrLangAction: currLangState => dispatch(setCurrLang(currLangState)),
-        setCloud: cloudState => dispatch(setCloud(cloudState)),
-        setStar: starState => dispatch(setStar(starState)),
-        setThemeModeAction: paletteState => dispatch(setThemeMode(paletteState)),
+        setTheme: palette => dispatch(setTheme(palette)),
     }
 }
 

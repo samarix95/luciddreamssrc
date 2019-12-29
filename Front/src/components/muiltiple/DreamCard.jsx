@@ -4,6 +4,7 @@ import MUIRichTextEditor from 'mui-rte';
 
 import CardContent from "@material-ui/core/CardContent";
 import CardActions from "@material-ui/core/CardActions";
+import Typography from '@material-ui/core/Typography';
 import IconButton from "@material-ui/core/IconButton";
 import CardHeader from "@material-ui/core/CardHeader";
 import Collapse from "@material-ui/core/Collapse";
@@ -13,6 +14,8 @@ import Card from "@material-ui/core/Card";
 import Grid from '@material-ui/core/Grid';
 import Chip from '@material-ui/core/Chip';
 
+import Rating from "@material-ui/lab/Rating";
+
 import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
 import MoreVertIcon from "@material-ui/icons/MoreVert";
 
@@ -20,8 +23,8 @@ import { useStyles } from '../../styles/Styles';
 
 export default function DreamCard(props) {
     const classes = useStyles();
-    const { post_title, create_date, post_content, post_type, tags, technics } = props.item;
-    const { lang } = props;
+    const { post_title, create_date, post_content, post_type, tags, technics, rating, dream_date } = props.item;
+    const { lang, palette } = props;
     const [expanded, setExpanded] = React.useState(false);
 
     const handleExpandClick = () => {
@@ -69,6 +72,13 @@ export default function DreamCard(props) {
                                     <Avatar className={classes.smallAvatar}
                                         alt="Remy Sharp"
                                         src={tag[3]}
+                                        style={palette.type === 'dark'
+                                            ? {
+                                                filter: 'invert(1)',
+                                            }
+                                            : {
+
+                                            }}
                                     />
                                 </Tooltip>
                                 : ''
@@ -115,6 +125,23 @@ export default function DreamCard(props) {
                                 toolbar={false}
                             />
                         </div>
+                        <Grid className={classes.ratingGridContainer}
+                            container
+                            direction="row"
+                            justify="center"
+                            alignItems="stretch" >
+                            <Grid item xs={6}>
+                                <Typography component="legend">
+                                    {lang.currLang.texts.rating} :
+                                            </Typography>
+                            </Grid>
+                            <Grid item xs={6}>
+                                <Rating name="simple-controlled"
+                                    value={rating}
+                                    readOnly
+                                />
+                            </Grid>
+                        </Grid>
                     </CardContent>
                     <CardActions disableSpacing>
                         <IconButton

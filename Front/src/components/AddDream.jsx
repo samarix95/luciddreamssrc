@@ -2,6 +2,9 @@ import React from 'react';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import clsx from 'clsx';
+import DateFnsUtils from '@date-io/date-fns';
+import ruLocale from "date-fns/locale/ru";
+import enLocale from "date-fns/locale/ru";
 
 import SnackbarContent from '@material-ui/core/SnackbarContent';
 import LinearProgress from '@material-ui/core/LinearProgress';
@@ -25,6 +28,8 @@ import MUIRichTextEditor from 'mui-rte';
 import { convertToRaw } from 'draft-js';
 
 import { MuiThemeProvider, createMuiTheme, useTheme, makeStyles } from '@material-ui/core/styles';
+
+import { MuiPickersUtilsProvider, KeyboardTimePicker, KeyboardDatePicker } from '@material-ui/pickers';
 
 import FormatColorFillIcon from '@material-ui/icons/FormatColorFill';
 import ErrorIcon from '@material-ui/icons/Error';
@@ -102,7 +107,7 @@ function MySnackbarContentWrapper(props) {
 function AddDream(props) {
     const classes = useStyles();
     const theme = useTheme();
-    const { lang, themeMode, history, clouds, stars, auth } = props;
+    const { lang, themeMode, history, auth } = props;
     const muiTheme = createMuiTheme(themeMode);
 
     Object.assign(muiTheme, {
@@ -155,6 +160,7 @@ function AddDream(props) {
     const [snackbarMessage, setSnackbarMessage] = React.useState('');
     const [isLoading, setIsLoading] = React.useState(false);
     const [titleText, setTitleText] = React.useState();
+    const [selectedDate, setSelectedDate] = React.useState(new Date());
     const [contentText, setContentText] = React.useState();
     const [selectedLocations, setselectedLocations] = React.useState([]);
     const [locations, setLocations] = React.useState({});
@@ -162,9 +168,15 @@ function AddDream(props) {
     const handleChangeLocations = (event) => {
         setselectedLocations(event.target.value);
     };
+
     const changeTitle = (event) => {
         setTitleText(event.target.value);
     };
+
+    const handleDateChange = date => {
+        setSelectedDate(date);
+    };
+
     const changeContent = (state) => {
         const raw = convertToRaw(state.getCurrentContent())
         setContentText(raw);
@@ -206,6 +218,7 @@ function AddDream(props) {
 
             let postData = {
                 title: titleText,
+                dreamDate: selectedDate.toLocaleString("ru-RU", {timeZone: 'Europe/London'}),
                 content: convert,
                 create_user: auth.user.id,
                 post_type: 0,
@@ -245,21 +258,8 @@ function AddDream(props) {
     return (
         <MuiThemeProvider theme={muiTheme}>
             <CssBaseline />
-            <div className={classes.AppDivDark}>
-                <div className={classes.AppDivLight} style={themeMode.palette.type === "light" ? { opacity: 1, } : { opacity: 0, }} />
-                {themeMode.palette.type === "light"
-                    ?
-                    <div className={classes.AppCloudsDiv} style={themeMode.palette.type === "light" ? { opacity: 1, } : { opacity: 0, }} >
-                        {clouds.clouds}
-                    </div>
-                    :
-                    <div className={classes.AppStarsDiv} style={themeMode.palette.type === "light" ? { opacity: 0, } : { opacity: 1, }} >
-                        {stars.stars}
-                    </div>
-                }
-            </div>
 
-            <div className={classes.root} id='rootDiv'>
+            <div className={classes.root} >
 
                 <Grid className={classes.mainGridContainer}
                     container
@@ -271,15 +271,14 @@ function AddDream(props) {
 
                         <Paper className={classes.paper}>
 
-                            <Grid className={classes.mainGridContainer}
-                                container
+                            <Grid container
+                                className={classes.mainGridContainer}
                                 direction="column"
                                 justify="center"
                                 alignItems="center"
-                                spacing={2}
                             >
 
-                                <Grid item xs={2} className={classes.fullMinWidth}>
+                                <Grid item xs={2} className={classes.fullMinWidth} >
                                     <TextField className={classes.inputDiv}
                                         required
                                         id="outlined-required"
@@ -289,7 +288,46 @@ function AddDream(props) {
                                     />
                                 </Grid>
 
-                                <Grid item xs={6} className={classes.fullMinWidth} >
+                                <Grid item xs={2} className={classes.fullMinWidth} >
+                                    <MuiPickersUtilsProvider utils={DateFnsUtils}
+                                        locale={lang.currLang.current === "Ru"
+                                            ? ruLocale
+                                            : enLocale}
+                                    >
+                                        <Grid className={classes.pickerGridContainer}
+                                            container
+                                            direction="row"
+                                            justify="center"
+                                            alignItems="stretch" >
+                                            <Grid item xs={7} >
+                                                <KeyboardDatePicker className={classes.pickers}
+                                                    id="date-picker-dialog"
+                                                    label={lang.currLang.texts.pickDate}
+                                                    format="dd.MM.yyyy"
+                                                    value={selectedDate}
+                                                    onChange={handleDateChange}
+                                                    KeyboardButtonProps={{
+                                                        'aria-label': 'change date',
+                                                    }}
+                                                />
+                                            </Grid>
+                                            <Grid item xs={5} >
+                                                <KeyboardTimePicker className={classes.pickers}
+                                                    id="time-picker"
+                                                    label={lang.currLang.texts.pickTime}
+                                                    value={selectedDate}
+                                                    onChange={handleDateChange}
+                                                    ampm={false}
+                                                    KeyboardButtonProps={{
+                                                        'aria-label': 'change time',
+                                                    }}
+                                                />
+                                            </Grid>
+                                        </Grid>
+                                    </MuiPickersUtilsProvider>
+                                </Grid>
+
+                                <Grid item xs={5} className={classes.fullMinWidth} >
 
                                     <div className={classes.inputScrollableDiv}>
 
@@ -320,7 +358,7 @@ function AddDream(props) {
 
                                 </Grid>
 
-                                <Grid item xs={4} className={classes.fullMinWidth} >
+                                <Grid item xs={3} className={classes.fullMinWidth} >
                                     <FormControl className={classes.inputDiv}>
                                         <InputLabel id="location-chip-label">
                                             {lang.currLang.texts.tags}
@@ -379,6 +417,7 @@ function AddDream(props) {
                                         </Select>
                                     </FormControl>
                                 </Grid>
+
                             </Grid>
 
                         </Paper>
@@ -394,7 +433,6 @@ function AddDream(props) {
                                 direction="row"
                                 justify="space-evenly"
                                 alignItems="center"
-                                spacing={1}
                             >
 
                                 <Grid item>
@@ -443,8 +481,6 @@ function AddDream(props) {
 AddDream.propTypes = {
     themeMode: PropTypes.object.isRequired,
     lang: PropTypes.object.isRequired,
-    clouds: PropTypes.object.isRequired,
-    stars: PropTypes.object.isRequired,
     auth: PropTypes.object.isRequired,
 };
 
@@ -452,18 +488,12 @@ const mapStateToProps = store => {
     return {
         themeMode: store.themeMode,
         lang: store.lang,
-        clouds: store.clouds,
-        stars: store.stars,
         auth: store.auth,
     }
 };
 
 const mapDispatchToProps = (dispatch) => {
     return {
-        // setCurrLangAction: currLangState => dispatch(setCurrLang(currLangState)),
-        // setCloudsAction: cloudState => dispatch(setCloud(cloudState)),
-        // setStarsAction: starState => dispatch(setStar(starState)),
-        // setThemeModeAction: paletteState => dispatch(setThemeMode(paletteState)),
     }
 }
 

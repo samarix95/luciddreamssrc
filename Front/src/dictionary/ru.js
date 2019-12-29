@@ -31,6 +31,9 @@ const words = {
         rating: 'Реалистичность',
         Dream: 'Обычный сон',
         Cdream: 'Осознанный сон',
+        NoDreams: "У вас нет снов",
+        pickDate: "Дата",
+        pickTime: "Время",
     },
     errors: {
         emailLenght: 'Введите email',

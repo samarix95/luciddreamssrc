@@ -4,11 +4,11 @@ import jwt_decode from "jwt-decode";
 import PropTypes from 'prop-types';
 import clsx from 'clsx';
 
-import { setCurrLang, setUserState, setCloud, setStar, setThemeMode } from '../actions/Actions';
-import { useStyles, params, randomBetween, variantIcon } from '../styles/Styles';
+import { setCurrLang, setUserState } from '../actions/Actions';
+import { useStyles, variantIcon } from '../styles/Styles';
 import setAuthToken from "../utils/setAuthToken";
 import { instance } from './Config';
-import { GET_ERRORS, SET_CURRENT_USER, SET_CLOUD, SET_STAR, CLEAR_CLOUD, CLEAR_STAR } from "../actions/types";
+import { GET_ERRORS, SET_CURRENT_USER } from "../actions/types";
 
 import RuDict from '../dictionary/ru';
 import EnDict from '../dictionary/en';
@@ -102,26 +102,21 @@ function MySnackbarContentWrapper(props) {
 
 function Sign(props) {
     const classes = useStyles();
-    const { setCloud, setStar, setThemeMode, history } = props;
-    const { themeMode, lang, clouds, stars } = props.store;
+    const { history } = props;
+    const { themeMode, lang } = props.store;
     const muiTheme = createMuiTheme(themeMode);
-
     const [openSnackbar, setOpenSnackbar] = React.useState(false);
-
     const [snackbarMessage, setSnackbarMessage] = React.useState('');
-
     const [loginData, setLoginData] = React.useState({
         email: '',
         password: '',
     });
-
     const [registData, setRegistData] = React.useState({
         email: '',
         nickname: '',
         password: '',
         password2: '',
     });
-
     const [regFieldErrors, setRegFieldErrors] = React.useState({
         emailErr: false,
         emailErrText: '',
@@ -132,15 +127,10 @@ function Sign(props) {
         password2Err: false,
         password2ErrText: '',
     });
-
     const [isLoading, setIsLoading] = React.useState(false);
-
     const [showPassword, setShowPassword] = React.useState(false);
-
     const [openLogin, setOpenLogin] = React.useState(false);
-
     const [openRegist, setOpenRegist] = React.useState(false);
-
     const [page, setPage] = React.useState({
         mainPage: true,
         aboutPage: false,
@@ -149,19 +139,16 @@ function Sign(props) {
     const handleMouseDownPassword = event => {
         event.preventDefault();
     };
-
     const changeAuthLogin = (e) => {
         let newLoginData = loginData;
         newLoginData = { ...newLoginData, email: e.target.value };
         setLoginData(newLoginData);
-    }
-
+    };
     const changeAuthPassword = (e) => {
         let newLoginData = loginData;
         newLoginData = { ...newLoginData, password: e.target.value };
         setLoginData(newLoginData);
-    }
-
+    };
     const changeRegistLogin = (e) => {
         let newRegFieldErrors = regFieldErrors;
         newRegFieldErrors = { ...newRegFieldErrors, emailErr: false };
@@ -171,8 +158,7 @@ function Sign(props) {
         let newRegistData = registData;
         newRegistData = { ...newRegistData, email: e.target.value };
         setRegistData(newRegistData);
-    }
-
+    };
     const changeRegistNickname = (e) => {
         let newRegFieldErrors = regFieldErrors;
         newRegFieldErrors = { ...newRegFieldErrors, nicknameErr: false };
@@ -182,8 +168,7 @@ function Sign(props) {
         let newRegistData = registData;
         newRegistData = { ...newRegistData, nickname: e.target.value };
         setRegistData(newRegistData);
-    }
-
+    };
     const changeRegistPassword = (e) => {
         let newRegFieldErrors = regFieldErrors;
         newRegFieldErrors = { ...newRegFieldErrors, passwordErr: false };
@@ -195,8 +180,7 @@ function Sign(props) {
         let newRegistData = registData;
         newRegistData = { ...newRegistData, password: e.target.value };
         setRegistData(newRegistData);
-    }
-
+    };
     const changeRegistPassword2 = (e) => {
         let newRegFieldErrors = regFieldErrors;
         newRegFieldErrors = { ...newRegFieldErrors, passwordErr: false };
@@ -204,12 +188,10 @@ function Sign(props) {
         newRegFieldErrors = { ...newRegFieldErrors, password2Err: false };
         newRegFieldErrors = { ...newRegFieldErrors, password2ErrText: '' };
         setRegFieldErrors(newRegFieldErrors);
-
         let newRegistData = registData;
         newRegistData = { ...newRegistData, password2: e.target.value };
         setRegistData(newRegistData);
-    }
-
+    };
     const singIn = () => {
         instance
             .post("/actions/users/login", loginData)
@@ -226,10 +208,6 @@ function Sign(props) {
                 history.push("/luciddreams");
             })
             .catch(err => {
-                // props.setUserState({
-                //     type: GET_ERRORS,
-                //     payload: err.response.data
-                // });
                 console.log(err);
                 if (err.response.data.email === 'UserNotExist') {
                     setSnackbarMessage(lang.currLang.errors.UserNotExist);
@@ -240,16 +218,13 @@ function Sign(props) {
                 if (err.response.data.passwordincorrect === 'IncorrectPassword') {
                     setSnackbarMessage(lang.currLang.errors.IncorrectPassword);
                 }
-
                 setOpenSnackbar(true);
                 setIsLoading(false);
             });
     };
-
     const singUp = () => {
         let isErr = false;
         let newRegFieldErrors = regFieldErrors;
-
         if (registData.email.length === 0) {
             newRegFieldErrors = { ...newRegFieldErrors, emailErr: true };
             newRegFieldErrors = { ...newRegFieldErrors, emailErrText: lang.currLang.errors.emailLenght };
@@ -277,7 +252,6 @@ function Sign(props) {
             newRegFieldErrors = { ...newRegFieldErrors, password2ErrText: lang.currLang.errors.passwordsCompare };
             isErr = true;
         }
-
         if (isErr) {
             setRegFieldErrors(newRegFieldErrors);
             setIsLoading(false);
@@ -288,14 +262,12 @@ function Sign(props) {
                 .then(res => {
                     //TODO нормальный popup
                     alert(lang.currLang.texts.sucessRegistration);
-
                     let newRegistData = registData;
                     newRegistData = { ...newRegistData, email: '' };
                     newRegistData = { ...newRegistData, nickname: '' };
                     newRegistData = { ...newRegistData, password: '' };
                     newRegistData = { ...newRegistData, password2: '' };
                     setRegistData(newRegistData);
-
                     click('closeRegist');
                     click('openLogin');
                     setIsLoading(false);
@@ -305,20 +277,17 @@ function Sign(props) {
                         type: GET_ERRORS,
                         payload: err.response.data
                     });
-
                     if (err.response.data.email === 'EmailIsBusy') {
                         setSnackbarMessage(lang.currLang.errors.EmailIsBusy);
                     }
                     if (err.response.data.password === 'PasswordLenght5Symbols') {
                         setSnackbarMessage(lang.currLang.errors.PasswordLenght5Symbols);
                     }
-
                     setOpenSnackbar(true);
                     setIsLoading(false);
                 });
         }
     };
-
     const click = (action) => {
         let newPages = page;
         switch (action) {
@@ -370,14 +339,12 @@ function Sign(props) {
                 break;
         }
     };
-
     const handleCloseSnackbar = (event, reason) => {
         if (reason === 'clickaway') {
             return;
         }
         setOpenSnackbar(false);
     };
-
     const changeLanguage = (language) => {
         if (language === 'Ru') {
             props.setCurrLang(RuDict);
@@ -387,88 +354,9 @@ function Sign(props) {
         }
     }
 
-    React.useEffect(() => {
-        setStar({
-            type: CLEAR_STAR,
-            starState: '',
-        });
-        setCloud({
-            type: CLEAR_CLOUD,
-            cloudState: '',
-        });
-        for (let i = 0; i < params.amountStars; i++) {
-            let size = Math.round(Math.random() * 10) === 0 ? params.size.giant : randomBetween(params.size.min, params.size.max);
-            setStar({
-                type: SET_STAR,
-                starState: <div className={classes.AppStar}
-                    key={i}
-                    style={{
-                        left: randomBetween(0, 100) + "%",
-                        top: randomBetween(0, 100) + "%",
-                        width: size + "px",
-                        height: size + "px",
-                        boxShadow: "0 0 " + size + "px " + size / 2 + "px #043668",
-                        animationDuration: randomBetween(params.duration.min, params.duration.max) + "s",
-                    }}
-                />
-            });
-        }
-        for (let i = 0; i < params.amountClouds; i++) {
-            let left = Math.round(Math.random() * 50 + 90);
-            let top = Math.round(Math.random() * 100 / 100 * 90);
-            let scale = Math.random() * 1.5 - 0.5;
-            let opacity = Math.random() * 90 / 100;
-            let speed = Math.random() * 30 + 15;
-            setCloud({
-                type: SET_CLOUD,
-                cloudState: <div className={classes.AppCloud}
-                    key={i}
-                    style={{
-                        left: left + '%',
-                        top: top + '%',
-                        width: '400px',
-                        height: '100px',
-                        transform: 'scale(' + scale + ')',
-                        opacity: opacity,
-                        animationDuration: speed + 's',
-                    }} />
-            });
-        }
-
-        if (new Date().getHours() > 15) {
-            setThemeMode({
-                type: "dark",
-                primary: { main: "#f9a825" },
-                secondary: { main: "#f50057" },
-                error: { main: "#cc0000" },
-            });
-        }
-        else {
-            setThemeMode({
-                type: "light",
-                primary: { main: "#3f51b5" },
-                secondary: { main: "#f50057" },
-                error: { main: "#cc0000" },
-            });
-        }
-    }, [classes, setCloud, setStar, setThemeMode]);
-
     return (
         <MuiThemeProvider theme={muiTheme}>
             <CssBaseline />
-
-            <div className={classes.AppDivDark}>
-                <div className={classes.AppDivLight} style={themeMode.palette.type === "light" ? { opacity: 1, } : { opacity: 0, }} />
-                {themeMode.palette.type === "light" ?
-                    <div className={classes.AppCloudsDiv} style={themeMode.palette.type === "light" ? { opacity: 1, } : { opacity: 0, }} >
-                        {clouds.clouds}
-                    </div>
-                    :
-                    <div className={classes.AppStarsDiv} style={themeMode.palette.type === "light" ? { opacity: 0, } : { opacity: 1, }} >
-                        {stars.stars}
-                    </div>
-                }
-            </div>
 
             <div className={classes.root} id='rootDiv'>
 
@@ -478,57 +366,47 @@ function Sign(props) {
                             ? { transform: 'translateY(0%)' }
                             : { transform: 'translateY(-100%)' }
                     } >
-
                     <Grid className={classes.mainGridContainer}
                         container
                         direction="column"
                         justify="center"
-                        alignItems="stretch" >
-
+                        alignItems="stretch"
+                    >
                         <Grid item xs={11} className={classes.mainGridBodyItem} >
-
                             <Grid className={classes.menuButtonContainer}
                                 container
                                 direction="column"
                                 justify="center"
                                 alignItems="stretch" >
-
                                 <Grid item xs={3} />
-
                                 <Grid item xs={6} className={classes.menuButtonContainerItem}>
-
                                     <Dialog
                                         open={openLogin}
                                         TransitionComponent={Transition}
                                         keepMounted
                                         aria-labelledby="alert-dialog-slide-title"
-                                        aria-describedby="alert-dialog-slide-description" >
-
+                                        aria-describedby="alert-dialog-slide-description"
+                                    >
                                         <DialogTitle id="alert-dialog-slide-title">
                                             {lang.currLang.buttons.signIn}
                                         </DialogTitle>
-
                                         <DialogContent>
-
                                             <Grid item xs={12} className={classes.menuButtonContainerItem}>
-
                                                 <Grid item xs={2} className={classes.menuDivButton} align="center">
                                                     <TextField
                                                         className={classes.textField}
                                                         id="email-field"
                                                         type="email"
                                                         label="Email"
-                                                        onChange={(e) => { changeAuthLogin(e) }} />
-
+                                                        onBlur={(e) => { changeAuthLogin(e) }} />
                                                 </Grid>
-
                                                 <Grid item xs={2} className={classes.menuDivButton} align="center">
                                                     <TextField
                                                         id="password-field"
                                                         className={classes.textField}
                                                         type={showPassword ? 'text' : 'password'}
                                                         label={lang.currLang.texts.password}
-                                                        onChange={(e) => { changeAuthPassword(e) }}
+                                                        onBlur={(e) => { changeAuthPassword(e) }}
                                                         InputProps={{
                                                             endAdornment: (
                                                                 <InputAdornment position="end">
@@ -544,29 +422,27 @@ function Sign(props) {
                                                             ),
                                                         }} />
                                                 </Grid>
-
-                                                <Grid item xs={2} className={classes.menuDivButton} align="center">
+                                                <Grid item xs={2} className={classes.menuDivButton}
+                                                    align="center"
+                                                >
                                                     <Typography>
                                                         {lang.currLang.texts.or}
                                                     </Typography>
                                                 </Grid>
-
-                                                <Grid item xs={2} className={classes.menuDivButton} align="center">
+                                                <Grid item xs={2} className={classes.menuDivButton}
+                                                    align="center"
+                                                >
                                                     <IconButton className={classes.button}
                                                         onClick={() => { click('useVk') }}
                                                         disabled={isLoading}>
                                                         <Icon path={mdiVk} size={2} color={themeMode.palette.type === 'light' ? 'rgba(0, 0, 0, 0.54)' : 'rgba(255, 255, 255, 1)'} />
                                                     </IconButton>
                                                 </Grid>
-
                                             </Grid>
-
                                             {isLoading
                                                 ? <LinearProgress /> :
                                                 ''}
-
                                         </DialogContent>
-
                                         {!isLoading
                                             ?
                                             <DialogActions>
@@ -575,33 +451,26 @@ function Sign(props) {
                                                     disabled={isLoading}>
                                                     {lang.currLang.buttons.cancel}
                                                 </Button>
-
                                                 <Button onClick={() => { click('signIn') }}
                                                     color="primary"
                                                     disabled={isLoading}>
                                                     {lang.currLang.buttons.signIn}
                                                 </Button>
-
                                             </DialogActions>
                                             : ''}
-
                                     </Dialog>
-
                                     <Dialog
                                         open={openRegist}
                                         TransitionComponent={Transition}
                                         keepMounted
                                         aria-labelledby="alert-dialog-slide-title"
-                                        aria-describedby="alert-dialog-slide-description" >
-
+                                        aria-describedby="alert-dialog-slide-description"
+                                    >
                                         <DialogTitle id="alert-dialog-slide-title">
                                             {lang.currLang.buttons.signUp}
                                         </DialogTitle>
-
                                         <DialogContent>
-
                                             <Grid item xs={12} className={classes.menuButtonContainerItem}>
-
                                                 <Grid item xs={2} className={classes.menuDivButton} align="center">
                                                     <TextField
                                                         error={regFieldErrors.emailErr}
@@ -610,10 +479,8 @@ function Sign(props) {
                                                         id="reg-email-field"
                                                         type="email"
                                                         label="Email"
-                                                        onChange={(e) => { changeRegistLogin(e) }} />
-
+                                                        onBlur={(e) => { changeRegistLogin(e) }} />
                                                 </Grid>
-
                                                 <Grid item xs={2} className={classes.menuDivButton} align="center">
                                                     <TextField
                                                         error={regFieldErrors.nicknameErr}
@@ -622,9 +489,8 @@ function Sign(props) {
                                                         id="reg-nickname-field"
                                                         type="text"
                                                         label={lang.currLang.texts.nickname}
-                                                        onChange={(e) => { changeRegistNickname(e) }} />
+                                                        onBlur={(e) => { changeRegistNickname(e) }} />
                                                 </Grid>
-
                                                 <Grid item xs={2} className={classes.menuDivButton} align="center">
                                                     <TextField
                                                         error={regFieldErrors.passwordErr}
@@ -633,7 +499,7 @@ function Sign(props) {
                                                         className={classes.textField}
                                                         type={showPassword ? 'text' : 'password'}
                                                         label={lang.currLang.texts.password}
-                                                        onChange={(e) => { changeRegistPassword(e) }}
+                                                        onBlur={(e) => { changeRegistPassword(e) }}
                                                         InputProps={{
                                                             endAdornment: (
                                                                 <InputAdornment position="end">
@@ -649,7 +515,6 @@ function Sign(props) {
                                                             ),
                                                         }} />
                                                 </Grid>
-
                                                 <Grid item xs={2} className={classes.menuDivButton} align="center">
                                                     <TextField
                                                         error={regFieldErrors.password2Err}
@@ -658,7 +523,7 @@ function Sign(props) {
                                                         className={classes.textField}
                                                         type={showPassword ? 'text' : 'password'}
                                                         label={lang.currLang.texts.passwordAgain}
-                                                        onChange={(e) => { changeRegistPassword2(e) }}
+                                                        onBlur={(e) => { changeRegistPassword2(e) }}
                                                         InputProps={{
                                                             endAdornment: (
                                                                 <InputAdornment position="end">
@@ -674,9 +539,7 @@ function Sign(props) {
                                                             ),
                                                         }} />
                                                 </Grid>
-
                                             </Grid>
-
                                             {isLoading
                                                 ? <LinearProgress />
                                                 : ''}
@@ -698,21 +561,17 @@ function Sign(props) {
                                             </DialogActions>
                                             : ''}
                                     </Dialog>
-
                                     <Grid item xs={2} className={classes.menuDivButton} align="center">
                                         <Button variant="contained" color="primary" className={classes.menuButton} onClick={() => { click('openLogin') }}>
                                             {lang.currLang.buttons.signIn}
                                         </Button>
                                     </Grid>
-
                                     <Grid item xs={2} className={classes.menuDivButton} align="center">
                                         <Button variant="contained" color="primary" className={classes.menuButton} onClick={() => { click('openRegist') }}>
                                             {lang.currLang.buttons.signUp}
                                         </Button>
                                     </Grid>
-
-                                    <Grid item xs={2} className={classes.menuDivButton} align="center"></Grid>
-
+                                    <Grid item xs={2} className={classes.menuDivButton} align="center" />
                                     <Grid item xs={2} className={classes.menuDivButton} align="center">
                                         <Button variant="contained"
                                             color="primary"
@@ -721,17 +580,11 @@ function Sign(props) {
                                             {lang.currLang.buttons.about}
                                         </Button>
                                     </Grid>
-
                                 </Grid>
-
                                 <Grid item xs={3} />
-
                             </Grid>
-
                         </Grid>
-
                         <Grid item xs={1} className={classes.mainGridFooterItem} >
-
                             <Grid className={classes.menuButtonContainerFooterLanguageButtons}
                                 container
                                 direction="row"
@@ -748,47 +601,41 @@ function Sign(props) {
                                     </Button>
                                 </Grid>
                             </Grid>
-
                         </Grid>
-
                     </Grid>
-
                 </div >
 
-                <div className={classes.aboutPage} style={page.aboutPage === true ? { transform: 'translateY(-100%)' } : { transform: 'translateY(0%)' }} >
-
+                <div className={classes.aboutPage}
+                    style={page.aboutPage === true
+                        ? { transform: 'translateY(-100%)' }
+                        : { transform: 'translateY(0%)' }
+                    }
+                >
                     <Grid className={classes.aboutGridContainer}
                         container
                         direction="column"
                         justify="center"
                         alignItems="stretch"
                         spacing={5} >
-
                         <Grid item
                             className={classes.aboutGridItem}
                             align='center'>
-
                             <Paper className={classes.aboutPaper}>
                                 <Typography>
                                     {lang.currLang.texts.about}
                                 </Typography>
                             </Paper>
-
                         </Grid>
-
                         <Grid item
                             className={classes.aboutGridItem}
                             align='center'>
-
                             <Button variant="contained"
                                 color="primary"
                                 className={classes.menuButton}
                                 onClick={() => (click('closeAboutPage'))} >
                                 {lang.currLang.buttons.close}
                             </Button>
-
                         </Grid>
-
                     </Grid>
                 </div>
             </div >
@@ -809,42 +656,12 @@ function Sign(props) {
     )
 }
 
-const mapStateToProps = store => {
-    return {
-        store,
-        lang: store.lang,
-        auth: store.auth,
-        errors: store.errors,
-        clouds: store.clouds,
-        stars: store.stars,
-    }
-}
-
-const mapDispatchToProps = (dispatch) => {
-    return {
-        setCurrLang: currLangState => dispatch(setCurrLang(currLangState)),
-        setUserState: State => dispatch(setUserState(State)),
-        setCloud: cloudState => dispatch(setCloud(cloudState)),
-        setStar: starState => dispatch(setStar(starState)),
-        setThemeMode: paletteState => dispatch(setThemeMode(paletteState)),
-    }
-}
-
-export default connect(
-    mapStateToProps,
-    mapDispatchToProps
-)(Sign)
-
 Sign.propTypes = {
     setCurrLang: PropTypes.func.isRequired,
     setUserState: PropTypes.func.isRequired,
-    setCloud: PropTypes.func.isRequired,
-    setThemeMode: PropTypes.func.isRequired,
     lang: PropTypes.object.isRequired,
     auth: PropTypes.object.isRequired,
     errors: PropTypes.object.isRequired,
-    clouds: PropTypes.object.isRequired,
-    stars: PropTypes.object.isRequired,
 }
 
 MySnackbarContentWrapper.propTypes = {
@@ -853,3 +670,24 @@ MySnackbarContentWrapper.propTypes = {
     onClose: PropTypes.func,
     variant: PropTypes.oneOf(['error', 'info', 'success', 'warning']).isRequired,
 };
+
+const mapStateToProps = store => {
+    return {
+        store,
+        lang: store.lang,
+        auth: store.auth,
+        errors: store.errors,
+    }
+}
+
+const mapDispatchToProps = (dispatch) => {
+    return {
+        setCurrLang: currLangState => dispatch(setCurrLang(currLangState)),
+        setUserState: State => dispatch(setUserState(State)),
+    }
+}
+
+export default connect(
+    mapStateToProps,
+    mapDispatchToProps
+)(Sign);

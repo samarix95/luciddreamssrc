@@ -1,4 +1,3 @@
-
 import { makeStyles } from '@material-ui/core/styles';
 
 import CheckCircleIcon from '@material-ui/icons/CheckCircle';
@@ -12,8 +11,8 @@ import MoonImg from '../img/moon.png';
 import AstronautImg from '../img/astronaut.png';
 
 export const params = {
-    amountStars: 50,
-    amountClouds: 10,
+    amountStars: 25,
+    amountClouds: 5,
     size: {
         min: 1,
         max: 5,
@@ -37,6 +36,26 @@ export function randomBetween(a, b) {
 }
 
 export const useStyles = makeStyles(theme => ({
+    pickerGridContainer: {
+        position: "relative",
+        width: "85%",
+        left: "50%",
+        transform: "translateX(-50%)",
+        marginBottom: "5px",
+    },
+    ratingGridContainer: {
+        position: "relative",
+        width: "85%",
+        top: "65%",
+        left: "50%",
+        transform: "translate(-50%, -50%)",
+    },
+    pickers: {
+        position: "relative",
+        width: "90%",
+        left: "50%",
+        transform: "translateX(-50%)",
+    },
     avatarRoot: {
         display: "flex",
         flexWrap: "wrap",
@@ -95,18 +114,19 @@ export const useStyles = makeStyles(theme => ({
         flexGrow: 1,
         position: 'relative',
         width: '100%',
-        height: '100%',
+        height: window.innerHeight - 1,
+        overflow: 'hidden',
     },
     mainPage: {
         top: 0,
         left: 0,
-        position: ' absolute',
+        position: 'absolute',
         transition: 'all 0.3s linear',
         width: '100%',
         height: '100%',
     },
     aboutPage: {
-        position: ' absolute',
+        position: 'absolute',
         transition: 'all 0.3s linear',
         top: '100%',
         width: '100%',

@@ -31,6 +31,9 @@ const words = {
         rating: 'Realistics',
         Dream: 'Regular dream',
         Cdream: 'C-dream',
+        NoDreams: "You don't have dreams",
+        pickDate: "Date",
+        pickTime: "Time",
     },
     errors: {
         emailLenght: 'Email must not be empty',

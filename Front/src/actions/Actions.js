@@ -1,4 +1,4 @@
-import { SET_LANG, SET_THEME_MODE } from '../actions/types';
+import { SET_LANG } from '../actions/types';
 
 export function setCloud(state) {
 	return {
@@ -18,10 +18,10 @@ export function setCurrLang(state) {
 		currLangState: state,
 	}
 }
-export function setThemeMode(state) {
+export function setTheme(state) {
 	return {
-		type: SET_THEME_MODE,
-		themeModeState: state,
+		type: state.type,
+		palette: state.palette,
 	}
 }
 export function setUserState(state) {
