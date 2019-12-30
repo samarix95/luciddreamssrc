@@ -12,6 +12,8 @@ const words = {
         about: 'О нас',
         cancel: 'Отмена',
         add: 'Добавить',
+        Edit: 'Изменить',
+        Delete: 'Удалить',
     },
     texts: {
         about: 'О нас О нас О нас О нас О нас О нас О нас О нас О нас О нас О нас О нас',
@@ -30,10 +32,11 @@ const words = {
         technics: 'Техники',
         rating: 'Реалистичность',
         Dream: 'Обычный сон',
-        Cdream: 'Осознанный сон',
+        Cdream: 'ОC',
         NoDreams: "У вас нет снов",
         pickDate: "Дата",
         pickTime: "Время",
+        TapToShow: "Нажмите на текст, чтобы отобразить подсвечивание",
     },
     errors: {
         emailLenght: 'Введите email',

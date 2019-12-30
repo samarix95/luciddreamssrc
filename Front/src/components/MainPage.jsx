@@ -224,26 +224,26 @@ function MainPage(props) {
                 auth.user.language === 0 ? setCurrLangAction(EnDict) : setCurrLangAction(RuDict);
             });
 
-        if (auth.user.times_mode === 0) {
-            setTheme({
-                type: SET_THEME_MODE,
-                palette: {
-                    type: "dark",
-                    primary: { main: "#f9a825" },
-                    secondary: { main: "#f50057" },
-                }
-            });
-        }
-        else {
-            setTheme({
-                type: SET_THEME_MODE,
-                palette: {
-                    type: "light",
-                    primary: { main: "#3f51b5" },
-                    secondary: { main: "#f50057" },
-                }
-            });
-        }
+        // if (auth.user.times_mode === 0) {
+        //     setTheme({
+        //         type: SET_THEME_MODE,
+        //         palette: {
+        //             type: "dark",
+        //             primary: { main: "#f9a825" },
+        //             secondary: { main: "#f50057" },
+        //         }
+        //     });
+        // }
+        // else {
+        //     setTheme({
+        //         type: SET_THEME_MODE,
+        //         palette: {
+        //             type: "light",
+        //             primary: { main: "#3f51b5" },
+        //             secondary: { main: "#f50057" },
+        //         }
+        //     });
+        // }
 
     }, [classes, setTheme, setCurrLangAction, auth.user.language, auth.user.times_mode, auth.user.id]);
 

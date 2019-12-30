@@ -22,7 +22,7 @@ function ViewDreams(props) {
     const classes = useStyles();
     const [isLoading, setIsLoading] = React.useState(true);
     const [dreams, setDreams] = React.useState([]);
-    
+
     React.useEffect(() => {
         setIsLoading(true);
         instance.post("/actions/users/getuserposts", { id: auth.user.id })
@@ -38,7 +38,7 @@ function ViewDreams(props) {
     return (
         <MuiThemeProvider theme={muiTheme}>
             <CssBaseline />
-            
+
             <div className={classes.root}>
                 <Grid className={classes.mainGridContainer}
                     container
@@ -47,7 +47,9 @@ function ViewDreams(props) {
                     alignItems="stretch" >
                     <Grid item xs={11} zeroMinWidth className={classes.mainGridDreamsBodyItem}>
                         {isLoading
-                            ? <CircularProgress />
+                            ? <div className={classes.centerCircularProgress}>
+                                <CircularProgress disableShrink />
+                            </div>
                             : <Container className={classes.mainGridDreamsBodyItemContainer}>
                                 <Paper className={classes.mainGridDreamsBodyItemContainerPaper}>
                                     {dreams.length !== 0

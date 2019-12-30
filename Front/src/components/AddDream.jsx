@@ -337,6 +337,7 @@ function AddDream(props) {
                                                 "italic",
                                                 "underline",
                                                 "strikethrough",
+                                                "colorfill",
                                             ]}
                                             onChange={changeContent}
                                             label={lang.currLang.texts.content}

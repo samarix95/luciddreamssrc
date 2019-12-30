@@ -36,6 +36,10 @@ export function randomBetween(a, b) {
 }
 
 export const useStyles = makeStyles(theme => ({
+    contentPaper: {
+        backgroundColor: theme.palette.text.main,
+        padding: 10,
+    },
     pickerGridContainer: {
         position: "relative",
         width: "85%",
@@ -43,9 +47,16 @@ export const useStyles = makeStyles(theme => ({
         transform: "translateX(-50%)",
         marginBottom: "5px",
     },
-    ratingGridContainer: {
+    div85width: {
         position: "relative",
         width: "85%",
+        top: "65%",
+        left: "50%",
+        transform: "translate(-50%, -50%)",
+    },
+    ratingGridContainer: {
+        position: "relative",
+        width: "100%",
         top: "65%",
         left: "50%",
         transform: "translate(-50%, -50%)",
@@ -57,17 +68,25 @@ export const useStyles = makeStyles(theme => ({
         transform: "translateX(-50%)",
     },
     avatarRoot: {
-        display: "flex",
-        flexWrap: "wrap",
-        overflow: 'auto',
+        // display: "flex",
+        // flexWrap: "wrap",
+        // overflow: 'auto',
+        textAlign: 'center',
+        width: '100%',
     },
     smallAvatar: {
         margin: theme.spacing(0.5),
         width: theme.spacing(5),
         height: theme.spacing(5),
+        display: 'inline-block',
     },
     smallChip: {
         margin: theme.spacing(0.5),
+    },
+    centerCircularProgress: {
+        position: 'relative',
+        top: '50%',
+        left: '50%',
     },
     mainGridDreamsBodyItemContainer: {
         position: 'absolute',

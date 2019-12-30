@@ -12,6 +12,8 @@ const words = {
         about: 'About us',
         cancel: 'Cancel',
         add: 'Add',
+        Edit: 'Edit',
+        Delete: 'Delete',
     },
     texts: {
         about: 'About us About us About us About us About us About us About us About us About us About us ',
@@ -34,6 +36,7 @@ const words = {
         NoDreams: "You don't have dreams",
         pickDate: "Date",
         pickTime: "Time",
+        TapToShow: "Tap on text to show highlights",
     },
     errors: {
         emailLenght: 'Email must not be empty',

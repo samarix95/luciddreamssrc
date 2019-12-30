@@ -217,10 +217,10 @@ function AddCDream(props) {
         }
         else {
             let convert = JSON.stringify(contentText);
-            
+
             let postData = {
                 title: titleText,
-                dreamDate: selectedDate.toLocaleString("ru-RU", {timeZone: 'Europe/London'}),
+                dreamDate: selectedDate.toLocaleString("ru-RU", { timeZone: 'Europe/London' }),
                 content: convert,
                 create_user: auth.user.id,
                 rating: realisticsValue,
@@ -339,7 +339,6 @@ function AddCDream(props) {
                                                 "italic",
                                                 "underline",
                                                 "strikethrough",
-                                                //"highlight",
                                                 "colorfill",
                                             ]}
                                             onChange={changeContent}
@@ -469,23 +468,25 @@ function AddCDream(props) {
                                     </FormControl>
                                 </Grid>
                                 <Grid item xs={1} className={classes.fullMinWidth} >
-                                    <Grid className={classes.ratingGridContainer}
-                                        container
-                                        direction="row"
-                                        justify="center"
-                                        alignItems="stretch" >
-                                        <Grid item xs={6}>
-                                            <Typography component="legend">
-                                                {lang.currLang.texts.rating} :
-                                            </Typography>
+                                    <div className={classes.div85width}>
+                                        <Grid className={classes.ratingGridContainer}
+                                            container
+                                            direction="row"
+                                            justify="center"
+                                            alignItems="stretch" >
+                                            <Grid item xs={6}>
+                                                <Typography component="legend">
+                                                    {lang.currLang.texts.rating} :
+                                                </Typography>
+                                            </Grid>
+                                            <Grid item xs={6}>
+                                                <Rating name="simple-controlled"
+                                                    value={realisticsValue}
+                                                    onChange={handleChangeRealistics}
+                                                />
+                                            </Grid>
                                         </Grid>
-                                        <Grid item xs={6}>
-                                            <Rating name="simple-controlled"
-                                                value={realisticsValue}
-                                                onChange={handleChangeRealistics}
-                                            />
-                                        </Grid>
-                                    </Grid>
+                                    </div>
                                 </Grid>
                             </Grid>
                         </Paper>
