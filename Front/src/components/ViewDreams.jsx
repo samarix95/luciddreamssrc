@@ -65,6 +65,7 @@ function ViewDreams(props) {
                                                     key={key}
                                                     lang={lang}
                                                     palette={themeMode.palette}
+                                                    history={history}
                                                 />
                                             ))}
                                         </Grid>

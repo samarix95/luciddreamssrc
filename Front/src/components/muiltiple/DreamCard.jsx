@@ -3,8 +3,12 @@ import clsx from "clsx";
 import MUIRichTextEditor from 'mui-rte';
 import { EditorState, convertFromRaw } from 'draft-js';
 
+import DialogContentText from "@material-ui/core/DialogContentText";
 import FormControlLabel from "@material-ui/core/FormControlLabel";
+import DialogContent from "@material-ui/core/DialogContent";
+import DialogActions from "@material-ui/core/DialogActions";
 import ListItemIcon from "@material-ui/core/ListItemIcon";
+import DialogTitle from "@material-ui/core/DialogTitle";
 import CardContent from "@material-ui/core/CardContent";
 import CardActions from "@material-ui/core/CardActions";
 import Typography from '@material-ui/core/Typography';
@@ -14,7 +18,9 @@ import MenuItem from "@material-ui/core/MenuItem";
 import Collapse from "@material-ui/core/Collapse";
 import Checkbox from '@material-ui/core/Checkbox';
 import Tooltip from '@material-ui/core/Tooltip';
+import Button from '@material-ui/core/Button';
 import Avatar from '@material-ui/core/Avatar';
+import Dialog from '@material-ui/core/Dialog';
 import Paper from '@material-ui/core/Paper';
 import Card from "@material-ui/core/Card";
 import Grid from '@material-ui/core/Grid';
@@ -30,14 +36,23 @@ import EditIcon from "@material-ui/icons/Edit";
 
 import { useStyles } from '../../styles/Styles';
 
+import { instance } from '../Config';
+
 export default function DreamCard(props) {
     const classes = useStyles();
-    const { post_title, post_content, post_type, tags, technics, rating, dream_date } = props.item;
-    const { lang, palette } = props;
+    const { post_id, post_title, post_content, post_type, tags, technics, rating, dream_date } = props.item;
+    const { lang, palette, history } = props;
     const [expanded, setExpanded] = React.useState(false);
     const [anchorEl, setAnchorEl] = React.useState(null);
+    const [openAlert, setOpenAlert] = React.useState(false);
+    const [alertTexts, setAlertTexts] = React.useState({
+        header: '',
+        body: '',
+        commit: '',
+        action: '',
+    });
 
-    const dateOfDream = new Date(dream_date).getDate() + '.' + new Date(dream_date).getMonth() + '.' + new Date(dream_date).getFullYear() + ' ' + new Date(dream_date).getHours() + ':' + ("0" + new Date(dream_date).getMinutes()).slice(-2);
+    const dateOfDream = new Date(dream_date).getDate() + '.' + (new Date(dream_date).getMonth() + 1) + '.' + new Date(dream_date).getFullYear() + ' ' + new Date(dream_date).getHours() + ':' + ("0" + new Date(dream_date).getMinutes()).slice(-2);
     const srcContent = post_content.toString();
     const jsonPparse = JSON.parse(srcContent);
     const convertfromraw = convertFromRaw(jsonPparse);
@@ -51,9 +66,107 @@ export default function DreamCard(props) {
         setAnchorEl(null);
     };
 
-    const clickMenu = (action) => {
-        closeMenu();
-        console.log(action);
+    const clickMenu = (action, event) => {
+        let newAlertTexts = alertTexts;
+        switch (action) {
+            case 'public':
+                if (event.target.checked) {
+                    newAlertTexts = { ...newAlertTexts, header: lang.currLang.texts.PublicAlert };
+                    newAlertTexts = { ...newAlertTexts, body: lang.currLang.texts.PublicText };
+                    newAlertTexts = { ...newAlertTexts, commit: lang.currLang.texts.Publish };
+                    newAlertTexts = { ...newAlertTexts, action: 'publicOk'};
+                    setAlertTexts(newAlertTexts);
+                }
+                else {
+                    newAlertTexts = { ...newAlertTexts, header: lang.currLang.texts.UnpublicAlert };
+                    newAlertTexts = { ...newAlertTexts, body: lang.currLang.texts.UnpublicText };
+                    newAlertTexts = { ...newAlertTexts, commit: lang.currLang.texts.Unpublish };
+                    newAlertTexts = { ...newAlertTexts, action: 'publicOk' };
+                    setAlertTexts(newAlertTexts);
+                }
+                setOpenAlert(true);
+                closeMenu();
+                break;
+
+            case 'edit':
+                closeMenu();
+                if (post_type === 0) {
+                    console.log('Edit regular');
+                    console.log(post_id);
+                }
+                else if (post_type === 1) {
+                    history.push({
+                        pathname: "/addcdream",
+                        defaultData: {
+                            post_id: post_id,
+                            post_title: post_title,
+                            dream_date: new Date(dream_date),
+                            post_content: post_content,
+                            tags: tags,
+                            technics: technics,
+                            rating: rating
+                        }
+                    });
+                }
+                break;
+
+            case 'delete':
+                newAlertTexts = { ...newAlertTexts, header: lang.currLang.texts.DeleteAlert };
+                newAlertTexts = { ...newAlertTexts, body: lang.currLang.texts.DeleteText };
+                newAlertTexts = { ...newAlertTexts, commit: lang.currLang.buttons.Delete };
+                newAlertTexts = { ...newAlertTexts, action: 'deleteOk' };
+                setAlertTexts(newAlertTexts);
+                closeMenu();
+                setOpenAlert(true);
+                break;
+
+            case 'closeAlert':
+                setOpenAlert(false);
+                break;
+
+            case 'deleteOk':
+                const postData = {
+                    post_id: post_id
+                };
+                instance
+                    .post('/actions/users/deletepost', postData)
+                    .then(res => {
+                        //TODO ADD LOADER
+                        closeMenu();
+                        setOpenAlert(false);
+                    })
+                    .catch(err => {
+                        alert('Cant delete post!');
+                        closeMenu();
+                        setOpenAlert(false);
+                    });
+                break;
+
+            case 'publicOk':
+                closeMenu();
+                setOpenAlert(false);
+                console.log(action + ' ' + post_id);
+                // const postData = {
+                //     post_id: post_id
+                // };
+                // instance
+                //     .post('/actions/users/updatepost', postData)
+                //     .then(res => {
+                //         //TODO ADD LOADER
+                //         closeMenu();
+                //         setOpenAlert(false);
+                //     })
+                //     .catch(err => {
+                //         alert('Cant delete post!');
+                //         closeMenu();
+                //         setOpenAlert(false);
+                //     });
+                break;
+
+            default:
+                console.log('Command not found');
+                break;
+        }
     };
 
     const handleExpandClick = () => {
@@ -70,6 +183,32 @@ export default function DreamCard(props) {
                 borderRadius: '4px',
             }}>
 
+            <Dialog
+                open={openAlert}
+                onClose={() => clickMenu('closeAlert')}
+                aria-labelledby="alert-dialog-title"
+                aria-describedby="alert-dialog-description"
+            >
+                <DialogTitle id="alert-dialog-title" >
+                    {alertTexts.header}
+                </DialogTitle>
+                <DialogContent >
+                    <DialogContentText id="alert-dialog-description" >
+                        {alertTexts.body}
+                    </DialogContentText>
+                </DialogContent>
+                <DialogActions>
+                    <Button onClick={() => clickMenu('closeAlert')}
+                        color="secondary">
+                        {lang.currLang.buttons.cancel}
+                    </Button>
+                    <Button onClick={() => clickMenu(alertTexts.action)}
+                        color="primary" autoFocus>
+                        {alertTexts.commit}
+                    </Button>
+                </DialogActions>
+            </Dialog>
+
             <Menu id="simple-menu"
                 anchorEl={anchorEl}
                 keepMounted
@@ -81,16 +220,15 @@ export default function DreamCard(props) {
                         <FormControlLabel
                             control={
                                 <Checkbox
-                                    onChange={() => clickMenu('public')}
+                                    onChange={(e) => clickMenu('public', e)}
                                     //checked={state.checkedB}
                                     value="checkedB"
                                     color="primary"
                                 />
                             }
-                        //label="Primary"
                         />
                     </ListItemIcon>
-                    {lang.currLang.buttons.Edit}
+                    {lang.currLang.texts.Public}
                 </MenuItem>
 
                 <MenuItem onClick={() => clickMenu('edit')}>

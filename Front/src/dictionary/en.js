@@ -14,6 +14,7 @@ const words = {
         add: 'Add',
         Edit: 'Edit',
         Delete: 'Delete',
+        Save: 'Save',
     },
     texts: {
         about: 'About us About us About us About us About us About us About us About us About us About us ',
@@ -37,6 +38,15 @@ const words = {
         pickDate: "Date",
         pickTime: "Time",
         TapToShow: "Tap on text to show highlights",
+        Public: "Public",
+        Publish: "Unpublish",
+        Unpublish: "Publish",
+        PublicAlert: "Are you sure you want to public the dream?",
+        PublicText: "After public your friends can read this dream.",
+        UnpublicAlert: "Are you sure you want to unpublic the dream?",
+        UnpublicText: "After unpublic your friends can't read this dream.",
+        DeleteAlert: "Are you sure you want to remove the dream?",
+        DeleteText: "You can't restore dream. Never.",
     },
     errors: {
         emailLenght: 'Email must not be empty',
@@ -52,6 +62,7 @@ const words = {
         NotLogin: 'You not loggin in',
         EmptyTitle: 'Title must not be empty',
         EmptyDream: 'Dream must not be empty',
+        NoChanges: 'No changes',
     },
 };
 

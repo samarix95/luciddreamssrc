@@ -41,6 +41,8 @@ import { useStyles } from '../styles/Styles';
 
 import { instance } from './Config';
 
+import { areArraysEqualSets } from '../functions';
+
 const ITEM_HEIGHT = 48;
 const ITEM_PADDING_TOP = 8;
 const MenuProps = {
@@ -106,6 +108,9 @@ function MySnackbarContentWrapper(props) {
     );
 }
 
+let defaultTechnics = [];
+let defaultTags = [];
+
 function AddCDream(props) {
     const classes = useStyles();
     const theme = useTheme();
@@ -157,12 +162,14 @@ function AddCDream(props) {
             }
         }
     })
+    const [isEditMode, setIsEditMode] = React.useState(false);
     const [openSnackbar, setOpenSnackbar] = React.useState(false);
     const [snackbarMessage, setSnackbarMessage] = React.useState('');
     const [isLoading, setIsLoading] = React.useState(false);
-    const [titleText, setTitleText] = React.useState();
+    const [titleText, setTitleText] = React.useState('');
     const [selectedDate, setSelectedDate] = React.useState(new Date());
     const [contentText, setContentText] = React.useState();
+    const [prevContentText, setPrevContentText] = React.useState();
     const [selectedLocations, setselectedLocations] = React.useState([]);
     const [selectedTechnics, setselectedTechnics] = React.useState([]);
     const [realisticsValue, setRealisticsValue] = React.useState(1);
@@ -185,8 +192,12 @@ function AddCDream(props) {
         setSelectedDate(date);
     };
     const changeContent = (state) => {
-        const raw = convertToRaw(state.getCurrentContent())
-        setContentText(raw);
+        const currCont = state.getCurrentContent();
+        const convert = convertToRaw(currCont);
+        const content = JSON.stringify(convert);
+        if (prevContentText !== content) {
+            setPrevContentText(content);
+        }
     };
     const savepost = () => {
         setIsLoading(true);
@@ -201,11 +212,20 @@ function AddCDream(props) {
             setSnackbarMessage(lang.currLang.errors.EmptyTitle);
             havErr = true;
         }
-        if (typeof (contentText) !== 'undefined') {
-            if (contentText.blocks[0].text.length === 0) {
-                setSnackbarMessage(lang.currLang.errors.EmptyDream);
-                havErr = true;
+        if (typeof (prevContentText) !== 'undefined') {
+            if (isEditMode) {
+                if (JSON.parse(prevContentText).blocks[0].text.length === 0) {
+                    setSnackbarMessage(lang.currLang.errors.EmptyDream);
+                    havErr = true;
+                }
             }
+            else {
+                if (JSON.parse(prevContentText).blocks[0].text.length === 0) {
+                    setSnackbarMessage(lang.currLang.errors.EmptyDream);
+                    havErr = true;
+                }
+            }
+
         }
         else {
             setSnackbarMessage(lang.currLang.errors.EmptyDream);
@@ -216,29 +236,130 @@ function AddCDream(props) {
             setIsLoading(false);
         }
         else {
-            let convert = JSON.stringify(contentText);
+            if (isEditMode) {
+                let hasChanges = false;
+                let postData = {
+                    post_id: props.location.defaultData.post_id,
+                };
 
-            let postData = {
-                title: titleText,
-                dreamDate: selectedDate.toLocaleString("ru-RU", { timeZone: 'Europe/London' }),
-                content: convert,
-                create_user: auth.user.id,
-                rating: realisticsValue,
-                post_type: 1,
-                nickname: auth.user.nickname,
-                tags: selectedLocations,
-                technics: selectedTechnics
+                if (props.location.defaultData.post_title !== titleText) {
+                    postData.title = titleText;
+                    hasChanges = true;
+                }
+
+                if (props.location.defaultData.dream_date.getTime() !== selectedDate.getTime()) {
+                    postData.dreamDate = selectedDate.toLocaleString("ru-RU", { timeZone: 'Europe/London' });
+                    hasChanges = true;
+                }
+
+                if (props.location.defaultData.post_content !== prevContentText) {
+                    postData.content = prevContentText;
+                    hasChanges = true;
+                }
+
+                if (props.location.defaultData.rating !== realisticsValue) {
+                    postData.rating = realisticsValue;
+                    hasChanges = true;
+                }
+
+                if (!areArraysEqualSets(defaultTechnics, selectedTechnics)) {
+                    hasChanges = true;
+                    let deleteTechnics = defaultTechnics.filter(item1 =>
+                        !selectedTechnics.some(item2 => (
+                            item2 === item1)
+                        )
+                    );
+                    let addTechnics = selectedTechnics.filter(item1 =>
+                        !defaultTechnics.some(item2 => (
+                            item2 === item1)
+                        )
+                    );
+                    if (addTechnics.length > 0) {
+                        let add = {};
+                        addTechnics.map((item, key) => (
+                            add[key] = item
+                        ));
+                        postData.technics = { ...postData.technics, add: add };
+                    }
+                    if (deleteTechnics.length > 0) {
+                        let remove = {};
+                        deleteTechnics.map((item, key) => (
+                            remove[key] = item
+                        ));
+                        postData.technics = { ...postData.technics, remove: remove };
+                    }
+                }
+
+                if (!areArraysEqualSets(defaultTags, selectedLocations)) {
+                    hasChanges = true;
+                    let deleteTags = defaultTags.filter(item1 =>
+                        !selectedLocations.some(item2 => (
+                            item2 === item1)
+                        )
+                    );
+                    let addTags = selectedLocations.filter(item1 =>
+                        !defaultTags.some(item2 => (
+                            item2 === item1)
+                        )
+                    );
+                    if (addTags.length > 0) {
+                        let add = {};
+                        addTags.map((item, key) => (
+                            add[key] = item
+                        ));
+                        postData.tags = { ...postData.tags, add: add };
+                    }
+                    if (deleteTags.length > 0) {
+                        let remove = {};
+                        deleteTags.map((item, key) => (
+                            remove[key] = item
+                        ));
+                        postData.tags = { ...postData.tags, remove: remove };
+                    }
+                }
+
+                if (hasChanges) {
+                    instance
+                        .post('/actions/users/updatepost', postData)
+                        .then(res => {
+                            setIsLoading(false);
+                            history.push("/luciddreams")
+                        })
+                        .catch(err => {
+                            setIsLoading(false);
+                        });
+                }
+                else {
+                    setSnackbarMessage(lang.currLang.errors.NoChanges);
+                    setOpenSnackbar(true);
+                    setIsLoading(false);
+                }
             }
+            else {
+                //let convert = JSON.stringify(prevContentText);
 
-            instance
-                .post('/actions/users/createpost', postData)
-                .then(res => {
-                    setIsLoading(false);
-                    history.push("/luciddreams")
-                })
-                .catch(err => {
-                    setIsLoading(false);
-                });
+                let postData = {
+                    title: titleText,
+                    dreamDate: selectedDate.toLocaleString("ru-RU", { timeZone: 'Europe/London' }),
+                    content: prevContentText,
+                    create_user: auth.user.id,
+                    rating: realisticsValue,
+                    post_type: 1,
+                    nickname: auth.user.nickname,
+                    tags: selectedLocations,
+                    technics: selectedTechnics
+                }
+
+                instance
+                    .post('/actions/users/createpost', postData)
+                    .then(res => {
+                        setIsLoading(false);
+                        history.push("/luciddreams")
+                    })
+                    .catch(err => {
+                        setIsLoading(false);
+                    });
+            }
         }
     };
 
@@ -264,7 +385,34 @@ function AddCDream(props) {
             .catch(err => {
                 console.log(err)
             });
-    }, [auth.user.id]);
+
+        if (typeof (props.location.defaultData) !== 'undefined') {
+            setIsEditMode(true);
+            defaultTechnics = [];
+            defaultTags = [];
+            const { post_title, dream_date, post_content, technics, tags, rating } = props.location.defaultData;
+            setTitleText(post_title);
+            setSelectedDate(dream_date);
+            setContentText(post_content);
+            setPrevContentText(post_content);
+
+            if (typeof tags[0][0] === 'string') {
+                lang.currLang.current === "Ru"
+                    ? tags.map(item => defaultTags.push(item[1]))
+                    : tags.map(item => defaultTags.push(item[2]));
+                setselectedLocations(defaultTags);
+            }
+
+            if (typeof technics[0][0] === 'string') {
+                lang.currLang.current === "Ru"
+                    ? technics.map(item => defaultTechnics.push(item[1]))
+                    : technics.map(item => defaultTechnics.push(item[2]));
+                setselectedTechnics(defaultTechnics);
+            }
+
+            setRealisticsValue(rating);
+        }
+    }, [auth.user.id, props.location.defaultData, lang.currLang]);
 
     return (
         <MuiThemeProvider theme={muiTheme}>
@@ -288,9 +436,10 @@ function AddCDream(props) {
                                     <TextField className={classes.inputDiv}
                                         required
                                         id="outlined-required"
+                                        value={titleText}
                                         label={lang.currLang.texts.title}
                                         variant="outlined"
-                                        onBlur={(e) => { blurTitle(e) }}
+                                        onChange={(e) => { blurTitle(e) }}
                                     />
                                 </Grid>
                                 <Grid item xs={1} className={classes.fullMinWidth} >
@@ -334,6 +483,10 @@ function AddCDream(props) {
                                 <Grid item xs={4} className={classes.fullMinWidth} >
                                     <div className={classes.inputScrollableDiv}>
                                         <MUIRichTextEditor
+                                            value={contentText}
+                                            onChange={changeContent}
+                                            label={lang.currLang.texts.content}
+                                            inlineToolbar={false}
                                             controls={[
                                                 "bold",
                                                 "italic",
@@ -341,9 +494,6 @@ function AddCDream(props) {
                                                 "strikethrough",
                                                 "colorfill",
                                             ]}
-                                            onChange={changeContent}
-                                            label={lang.currLang.texts.content}
-                                            inlineToolbar={false}
                                             customControls={[
                                                 {
                                                     name: "colorfill",
@@ -428,16 +578,19 @@ function AddCDream(props) {
                                                             <Chip
                                                                 size="small"
                                                                 avatar={
-                                                                    lang.currLang.current === "Ru"
-                                                                        ? < Avatar
-                                                                            alt={locations.find(locations => locations.name_rus === value).name_eng}
-                                                                            src={locations.find(locations => locations.name_rus === value).img_url}
-                                                                        />
-                                                                        : < Avatar
-                                                                            alt={locations.find(locations => locations.name_eng === value).name_eng}
-                                                                            src={locations.find(locations => locations.name_eng === value).img_url}
-                                                                        />
+                                                                    locations.length
+                                                                        ? lang.currLang.current === "Ru"
+                                                                            ? < Avatar
+                                                                                alt={locations.find(locations => locations.name_rus === value).name_eng}
+                                                                                src={locations.find(locations => locations.name_rus === value).img_url}
+                                                                            />
+                                                                            : < Avatar
+                                                                                alt={locations.find(locations => locations.name_eng === value).name_eng}
+                                                                                src={locations.find(locations => locations.name_eng === value).img_url}
+                                                                            />
+                                                                        : null
                                                                 }
+
                                                                 key={value}
                                                                 label={value}
                                                                 className={classes.chip}
@@ -505,7 +658,11 @@ function AddCDream(props) {
                                         variant="contained"
                                         color="secondary"
                                         className={classes.actionButton}
-                                        onClick={() => { history.push("/luciddreams") }}
+                                        onClick={() => {
+                                            isEditMode
+                                                ? history.push("/dreams")
+                                                : history.push("/luciddreams")
+                                        }}
                                     >
                                         {lang.currLang.buttons.close}
                                     </Button>
@@ -517,7 +674,10 @@ function AddCDream(props) {
                                         className={classes.actionButton}
                                         onClick={() => savepost()}
                                     >
-                                        {lang.currLang.buttons.add}
+                                        {isEditMode
+                                            ? lang.currLang.buttons.Save
+                                            : lang.currLang.buttons.add
+                                        }
                                     </Button>
                                 </Grid>
                             </Grid>
