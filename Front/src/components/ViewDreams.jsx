@@ -23,7 +23,7 @@ function ViewDreams(props) {
     const [isLoading, setIsLoading] = React.useState(true);
     const [dreams, setDreams] = React.useState([]);
 
-    React.useEffect(() => {
+    const loadPosts = React.useCallback(() => {
         setIsLoading(true);
         instance.post("/actions/users/getuserposts", { id: auth.user.id })
             .then(res => {
@@ -34,6 +34,10 @@ function ViewDreams(props) {
                 setIsLoading(false);
             });
     }, [auth.user.id]);
+
+    React.useEffect(() => {
+        loadPosts();
+    }, [loadPosts]);
 
     return (
         <MuiThemeProvider theme={muiTheme}>
@@ -66,6 +70,7 @@ function ViewDreams(props) {
                                                     lang={lang}
                                                     palette={themeMode.palette}
                                                     history={history}
+                                                    loadPosts={loadPosts}
                                                 />
                                             ))}
                                         </Grid>

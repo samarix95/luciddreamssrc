@@ -30,7 +30,9 @@ import Menu from '@material-ui/core/Menu';
 import Rating from "@material-ui/lab/Rating";
 
 import FormatColorFillIcon from '@material-ui/icons/FormatColorFill';
+import VisibilityOff from '@material-ui/icons/VisibilityOff';
 import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
+import Visibility from '@material-ui/icons/Visibility';
 import MoreVertIcon from "@material-ui/icons/MoreVert";
 import EditIcon from "@material-ui/icons/Edit";
 
@@ -40,11 +42,12 @@ import { instance } from '../Config';
 
 export default function DreamCard(props) {
     const classes = useStyles();
-    const { post_id, post_title, post_content, post_type, tags, technics, rating, dream_date } = props.item;
+    const { post_id, post_title, post_content, post_type, tags, technics, rating, dream_date, is_public } = props.item;
     const { lang, palette, history } = props;
     const [expanded, setExpanded] = React.useState(false);
     const [anchorEl, setAnchorEl] = React.useState(null);
     const [openAlert, setOpenAlert] = React.useState(false);
+    const [publicChecked, setPublicChecked] = React.useState(false);
     const [alertTexts, setAlertTexts] = React.useState({
         header: '',
         body: '',
@@ -57,6 +60,12 @@ export default function DreamCard(props) {
     const jsonPparse = JSON.parse(srcContent);
     const convertfromraw = convertFromRaw(jsonPparse);
     const text_content = EditorState.createWithContent(convertfromraw).getCurrentContent().getPlainText('');
+
+    React.useEffect(() => {
+        is_public === 1
+            ? setPublicChecked(true)
+            : setPublicChecked(false);
+    }, [is_public]);
 
     const openMenu = event => {
         setAnchorEl(event.currentTarget);
@@ -74,7 +83,7 @@ export default function DreamCard(props) {
                     newAlertTexts = { ...newAlertTexts, header: lang.currLang.texts.PublicAlert };
                     newAlertTexts = { ...newAlertTexts, body: lang.currLang.texts.PublicText };
                     newAlertTexts = { ...newAlertTexts, commit: lang.currLang.texts.Publish };
-                    newAlertTexts = { ...newAlertTexts, action: 'publicOk'};
+                    newAlertTexts = { ...newAlertTexts, action: 'publicOk' };
                     setAlertTexts(newAlertTexts);
                 }
                 else {
@@ -91,8 +100,16 @@ export default function DreamCard(props) {
             case 'edit':
                 closeMenu();
                 if (post_type === 0) {
-                    console.log('Edit regular');
-                    console.log(post_id);
+                    history.push({
+                        pathname: "/adddream",
+                        defaultData: {
+                            post_id: post_id,
+                            post_title: post_title,
+                            dream_date: new Date(dream_date),
+                            post_content: post_content,
+                            tags: tags,
+                        }
+                    });
                 }
                 else if (post_type === 1) {
                     history.push({
@@ -104,7 +121,7 @@ export default function DreamCard(props) {
                             post_content: post_content,
                             tags: tags,
                             technics: technics,
-                            rating: rating
+                            rating: rating,
                         }
                     });
                 }
@@ -134,6 +151,7 @@ export default function DreamCard(props) {
                         //TODO ADD LOADER
                         closeMenu();
                         setOpenAlert(false);
+                        props.loadPosts();
                     })
                     .catch(err => {
                         alert('Cant delete post!');
@@ -145,22 +163,34 @@ export default function DreamCard(props) {
             case 'publicOk':
                 closeMenu();
                 setOpenAlert(false);
-                console.log(action + ' ' + post_id);
-                // const postData = {
-                //     post_id: post_id
-                // };
-                // instance
-                //     .post('/actions/users/updatepost', postData)
-                //     .then(res => {
-                //         //TODO ADD LOADER
-                //         closeMenu();
-                //         setOpenAlert(false);
-                //     })
-                //     .catch(err => {
-                //         alert('Cant delete post!');
-                //         closeMenu();
-                //         setOpenAlert(false);
-                //     });
+                if (publicChecked) {
+                    const postData = {
+                        post_id: post_id,
+                        newPublic: 0
+                    };
+                    instance
+                        .post('/actions/users/updatepost', postData)
+                        .then(res => {
+                            setPublicChecked(false);
+                        })
+                        .catch(err => {
+                            setPublicChecked(true);
+                        });
+                }
+                else {
+                    const postData = {
+                        post_id: post_id,
+                        newPublic: 1,
+                    };
+                    instance
+                        .post('/actions/users/updatepost', postData)
+                        .then(res => {
+                            setPublicChecked(true);
+                        })
+                        .catch(err => {
+                            setPublicChecked(false);
+                        });
+                }
                 break;
 
             default:
@@ -221,7 +251,7 @@ export default function DreamCard(props) {
                             control={
                                 <Checkbox
                                     onChange={(e) => clickMenu('public', e)}
-                                    //checked={state.checkedB}
+                                    checked={publicChecked}
                                     value="checkedB"
                                     color="primary"
                                 />
@@ -253,13 +283,34 @@ export default function DreamCard(props) {
                     title={post_title}
                     subheader={dateOfDream}
                     action={
-                        <IconButton aria-label="settings" onClick={(e) => openMenu(e)}>
+                        <IconButton
+                            aria-label="settings"
+                            onClick={(e) => openMenu(e)}
+                        >
                             <MoreVertIcon />
                         </IconButton>
                     }
                 />
                 <CardContent>
                     <div className={classes.avatarRoot}>
+                        <div style={{ padding: '12px', }}>
+                            {publicChecked
+                                ? <Tooltip
+                                    disableFocusListener
+                                    disableTouchListener
+                                    title={lang.currLang.texts.PublicDescription}
+                                >
+                                    <Visibility />
+                                </Tooltip>
+                                : <Tooltip
+                                    disableFocusListener
+                                    disableTouchListener
+                                    title={lang.currLang.texts.UnpublicDescription}
+                                >
+                                    <VisibilityOff />
+                                </Tooltip>
+                            }
+                        </div>
                         <Chip variant="outlined"
                             label={
                                 post_type === 0

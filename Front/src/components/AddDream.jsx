@@ -39,6 +39,8 @@ import { useStyles } from '../styles/Styles';
 
 import { instance } from './Config';
 
+import { areArraysEqualSets } from '../functions';
+
 const ITEM_HEIGHT = 48;
 const ITEM_PADDING_TOP = 8;
 const MenuProps = {
@@ -104,12 +106,13 @@ function MySnackbarContentWrapper(props) {
     );
 }
 
+let defaultTags = [];
+
 function AddDream(props) {
     const classes = useStyles();
     const theme = useTheme();
     const { lang, themeMode, history, auth } = props;
     const muiTheme = createMuiTheme(themeMode);
-
     Object.assign(muiTheme, {
         overrides: {
             MUIRichTextEditor: {
@@ -156,32 +159,34 @@ function AddDream(props) {
             }
         }
     })
+    const [isEditMode, setIsEditMode] = React.useState(false);
     const [openSnackbar, setOpenSnackbar] = React.useState(false);
     const [snackbarMessage, setSnackbarMessage] = React.useState('');
     const [isLoading, setIsLoading] = React.useState(false);
-    const [titleText, setTitleText] = React.useState();
+    const [titleText, setTitleText] = React.useState('');
     const [selectedDate, setSelectedDate] = React.useState(new Date());
     const [contentText, setContentText] = React.useState();
+    const [prevContentText, setPrevContentText] = React.useState();
     const [selectedLocations, setselectedLocations] = React.useState([]);
     const [locations, setLocations] = React.useState({});
 
     const handleChangeLocations = (event) => {
         setselectedLocations(event.target.value);
     };
-
     const changeTitle = (event) => {
         setTitleText(event.target.value);
     };
-
     const handleDateChange = date => {
         setSelectedDate(date);
     };
-
     const changeContent = (state) => {
-        const raw = convertToRaw(state.getCurrentContent())
-        setContentText(raw);
+        const currCont = state.getCurrentContent();
+        const convert = convertToRaw(currCont);
+        const content = JSON.stringify(convert);
+        if (prevContentText !== content) {
+            setPrevContentText(content);
+        }
     };
-
     const savepost = () => {
         setIsLoading(true);
         let havErr = false;
@@ -197,8 +202,8 @@ function AddDream(props) {
             havErr = true;
         }
 
-        if (typeof (contentText) !== 'undefined') {
-            if (contentText.blocks[0].text.length === 0) {
+        if (typeof (prevContentText) !== 'undefined') {
+            if (JSON.parse(prevContentText).blocks[0].text.length === 0) {
                 setSnackbarMessage(lang.currLang.errors.EmptyDream);
                 havErr = true;
             }
@@ -213,38 +218,104 @@ function AddDream(props) {
             setIsLoading(false);
         }
         else {
+            if (isEditMode) {
+                let hasChanges = false;
+                let postData = {
+                    post_id: props.location.defaultData.post_id,
+                };
 
-            let convert = JSON.stringify(contentText);
+                if (props.location.defaultData.post_title !== titleText) {
+                    postData.title = titleText;
+                    hasChanges = true;
+                }
 
-            let postData = {
-                title: titleText,
-                dreamDate: selectedDate.toLocaleString("ru-RU", {timeZone: 'Europe/London'}),
-                content: convert,
-                create_user: auth.user.id,
-                post_type: 0,
-                nickname: auth.user.nickname,
-                tags: selectedLocations,
+                if (props.location.defaultData.dream_date.getTime() !== selectedDate.getTime()) {
+                    postData.dreamDate = selectedDate.toLocaleString("ru-RU", { timeZone: 'Europe/London' });
+                    hasChanges = true;
+                }
+
+                if (props.location.defaultData.post_content !== prevContentText) {
+                    postData.content = prevContentText;
+                    hasChanges = true;
+                }
+
+                if (!areArraysEqualSets(defaultTags, selectedLocations)) {
+                    hasChanges = true;
+                    let deleteTags = defaultTags.filter(item1 =>
+                        !selectedLocations.some(item2 => (
+                            item2 === item1)
+                        )
+                    );
+                    let addTags = selectedLocations.filter(item1 =>
+                        !defaultTags.some(item2 => (
+                            item2 === item1)
+                        )
+                    );
+                    if (addTags.length > 0) {
+                        let add = {};
+                        addTags.map((item, key) => (
+                            add[key] = item
+                        ));
+                        postData.tags = { ...postData.tags, add: add };
+                    }
+                    if (deleteTags.length > 0) {
+                        let remove = {};
+                        deleteTags.map((item, key) => (
+                            remove[key] = item
+                        ));
+                        postData.tags = { ...postData.tags, remove: remove };
+                    }
+                }
+
+                if (hasChanges) {
+                    instance
+                        .post('/actions/users/updatepost', postData)
+                        .then(res => {
+                            setIsLoading(false);
+                            history.push("/dreams")
+                        })
+                        .catch(err => {
+                            console.log(err);
+                            setIsLoading(false);
+                        });
+                }
+                else {
+                    setSnackbarMessage(lang.currLang.errors.NoChanges);
+                    setOpenSnackbar(true);
+                    setIsLoading(false);
+                }
             }
+            else {
+                //let convert = JSON.stringify(contentText);
 
-            instance
-                .post('/actions/users/createpost', postData)
-                .then(res => {
-                    setIsLoading(false);
-                    history.push("/luciddreams")
-                })
-                .catch(err => {
-                    setIsLoading(false);
-                });
+                let postData = {
+                    title: titleText,
+                    dreamDate: selectedDate.toLocaleString("ru-RU", { timeZone: 'Europe/London' }),
+                    content: prevContentText,
+                    create_user: auth.user.id,
+                    post_type: 0,
+                    nickname: auth.user.nickname,
+                    tags: selectedLocations,
+                }
+
+                instance
+                    .post('/actions/users/createpost', postData)
+                    .then(res => {
+                        setIsLoading(false);
+                        history.push("/luciddreams")
+                    })
+                    .catch(err => {
+                        setIsLoading(false);
+                    });
+            }
         }
     };
-
     const handleCloseSnackbar = (event, reason) => {
         if (reason === 'clickaway') {
             return;
         }
         setOpenSnackbar(false);
     };
-
     React.useEffect(() => {
         instance.get("/gettags")
             .then(res => {
@@ -253,7 +324,24 @@ function AddDream(props) {
             .catch(err => {
                 console.log(err)
             });
-    }, []);
+
+        if (typeof (props.location.defaultData) !== 'undefined') {
+            setIsEditMode(true);
+            defaultTags = [];
+            const { post_title, dream_date, post_content, tags } = props.location.defaultData;
+            setTitleText(post_title);
+            setSelectedDate(dream_date);
+            setContentText(post_content);
+            setPrevContentText(post_content);
+
+            if (typeof tags[0][0] === 'string') {
+                lang.currLang.current === "Ru"
+                    ? tags.map(item => defaultTags.push(item[1]))
+                    : tags.map(item => defaultTags.push(item[2]));
+                setselectedLocations(defaultTags);
+            }
+        }
+    }, [props.location.defaultData, lang.currLang]);
 
     return (
         <MuiThemeProvider theme={muiTheme}>
@@ -282,6 +370,7 @@ function AddDream(props) {
                                     <TextField className={classes.inputDiv}
                                         required
                                         id="outlined-required"
+                                        value={titleText}
                                         label={lang.currLang.texts.title}
                                         variant="outlined"
                                         onChange={(e) => { changeTitle(e) }}
@@ -332,6 +421,10 @@ function AddDream(props) {
                                     <div className={classes.inputScrollableDiv}>
 
                                         <MUIRichTextEditor
+                                            value={contentText}
+                                            onChange={changeContent}
+                                            label={lang.currLang.texts.content}
+                                            inlineToolbar={false}
                                             controls={[
                                                 "bold",
                                                 "italic",
@@ -339,9 +432,6 @@ function AddDream(props) {
                                                 "strikethrough",
                                                 "colorfill",
                                             ]}
-                                            onChange={changeContent}
-                                            label={lang.currLang.texts.content}
-                                            inlineToolbar={false}
                                             customControls={[
                                                 {
                                                     name: "colorfill",
@@ -378,16 +468,19 @@ function AddDream(props) {
                                                     <div className={classes.chips}>
                                                         {selected.map(value => (
                                                             <Chip
+                                                                size="small"
                                                                 avatar={
-                                                                    lang.currLang.current === "Ru"
-                                                                        ? < Avatar
-                                                                            alt={locations.find(locations => locations.name_rus === value).name_eng}
-                                                                            src={locations.find(locations => locations.name_rus === value).img_url}
-                                                                        />
-                                                                        : < Avatar
-                                                                            alt={locations.find(locations => locations.name_eng === value).name_eng}
-                                                                            src={locations.find(locations => locations.name_eng === value).img_url}
-                                                                        />
+                                                                    locations.length
+                                                                        ? lang.currLang.current === "Ru"
+                                                                            ? < Avatar
+                                                                                alt={locations.find(locations => locations.name_rus === value).name_eng}
+                                                                                src={locations.find(locations => locations.name_rus === value).img_url}
+                                                                            />
+                                                                            : < Avatar
+                                                                                alt={locations.find(locations => locations.name_eng === value).name_eng}
+                                                                                src={locations.find(locations => locations.name_eng === value).img_url}
+                                                                            />
+                                                                        : null
                                                                 }
                                                                 key={value}
                                                                 label={value}
@@ -441,7 +534,11 @@ function AddDream(props) {
                                         variant="contained"
                                         color="secondary"
                                         className={classes.actionButton}
-                                        onClick={() => { history.push("/luciddreams") }}
+                                        onClick={() => {
+                                            isEditMode
+                                                ? history.push("/dreams")
+                                                : history.push("/luciddreams")
+                                        }}
                                     >
                                         {lang.currLang.buttons.close}
                                     </Button>
@@ -453,7 +550,10 @@ function AddDream(props) {
                                         className={classes.actionButton}
                                         onClick={() => savepost()}
                                     >
-                                        {lang.currLang.buttons.add}
+                                        {isEditMode
+                                            ? lang.currLang.buttons.Save
+                                            : lang.currLang.buttons.add
+                                        }
                                     </Button>
                                 </Grid>
                             </Grid>

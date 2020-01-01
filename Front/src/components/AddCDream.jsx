@@ -213,19 +213,10 @@ function AddCDream(props) {
             havErr = true;
         }
         if (typeof (prevContentText) !== 'undefined') {
-            if (isEditMode) {
-                if (JSON.parse(prevContentText).blocks[0].text.length === 0) {
-                    setSnackbarMessage(lang.currLang.errors.EmptyDream);
-                    havErr = true;
-                }
+            if (JSON.parse(prevContentText).blocks[0].text.length === 0) {
+                setSnackbarMessage(lang.currLang.errors.EmptyDream);
+                havErr = true;
             }
-            else {
-                if (JSON.parse(prevContentText).blocks[0].text.length === 0) {
-                    setSnackbarMessage(lang.currLang.errors.EmptyDream);
-                    havErr = true;
-                }
-            }
-
         }
         else {
             setSnackbarMessage(lang.currLang.errors.EmptyDream);
@@ -323,9 +314,10 @@ function AddCDream(props) {
                         .post('/actions/users/updatepost', postData)
                         .then(res => {
                             setIsLoading(false);
-                            history.push("/luciddreams")
+                            history.push("/dreams")
                         })
                         .catch(err => {
+                            console.log(err);
                             setIsLoading(false);
                         });
                 }
@@ -412,7 +404,7 @@ function AddCDream(props) {
 
             setRealisticsValue(rating);
         }
-    }, [auth.user.id, props.location.defaultData, lang.currLang]);
+    }, [props.location.defaultData, lang.currLang]);
 
     return (
         <MuiThemeProvider theme={muiTheme}>
