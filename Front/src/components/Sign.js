@@ -2,18 +2,16 @@ import React from 'react';
 import { connect } from 'react-redux';
 import jwt_decode from "jwt-decode";
 import PropTypes from 'prop-types';
-import clsx from 'clsx';
 
-import { setCurrLang, setUserState } from '../actions/Actions';
-import { useStyles, variantIcon } from '../styles/Styles';
+import { GET_ERRORS, SET_CURRENT_USER, SET_SNACKBAR_MODE } from "../actions/types";
+import { setCurrLang, setUserState, setSnackbar } from '../actions/Actions';
+import { useStyles } from '../styles/Styles';
 import setAuthToken from "../utils/setAuthToken";
 import { instance } from './Config';
-import { GET_ERRORS, SET_CURRENT_USER } from "../actions/types";
 
 import RuDict from '../dictionary/ru';
 import EnDict from '../dictionary/en';
 
-import SnackbarContent from '@material-ui/core/SnackbarContent';
 import InputAdornment from '@material-ui/core/InputAdornment';
 import LinearProgress from '@material-ui/core/LinearProgress';
 import DialogActions from '@material-ui/core/DialogActions';
@@ -22,7 +20,6 @@ import DialogTitle from '@material-ui/core/DialogTitle';
 import IconButton from '@material-ui/core/IconButton';
 import Typography from '@material-ui/core/Typography';
 import TextField from '@material-ui/core/TextField';
-import Snackbar from '@material-ui/core/Snackbar';
 import Button from '@material-ui/core/Button';
 import Dialog from '@material-ui/core/Dialog';
 import Paper from '@material-ui/core/Paper';
@@ -31,82 +28,22 @@ import Grid from '@material-ui/core/Grid';
 
 import VisibilityOff from '@material-ui/icons/VisibilityOff';
 import Visibility from '@material-ui/icons/Visibility';
-import CloseIcon from '@material-ui/icons/Close';
 
-import { MuiThemeProvider, createMuiTheme, makeStyles } from '@material-ui/core/styles';
+import { MuiThemeProvider, createMuiTheme } from '@material-ui/core/styles';
 
 import CssBaseline from '@material-ui/core/CssBaseline';
 
 import { mdiVk } from '@mdi/js';
 import Icon from '@mdi/react';
 
-import { amber, green } from '@material-ui/core/colors';
-
 const Transition = React.forwardRef(function Transition(props, ref) {
     return <Slide direction="up" ref={ref} {...props} />;
 });
 
-const useStyles1 = makeStyles(theme => ({
-    success: {
-        backgroundColor: green[600],
-    },
-    error: {
-        backgroundColor: theme.palette.error.dark,
-    },
-    info: {
-        backgroundColor: theme.palette.primary.main,
-    },
-    warning: {
-        backgroundColor: amber[700],
-    },
-    icon: {
-        fontSize: 20,
-    },
-    iconVariant: {
-        opacity: 0.9,
-        marginRight: theme.spacing(1),
-    },
-    message: {
-        display: 'flex',
-        alignItems: 'center',
-    },
-}));
-
-function MySnackbarContentWrapper(props) {
-    const classes = useStyles1();
-    const { className, message, onClose, variant } = props;
-    const Icon = variantIcon[variant];
-
-    return (
-        <SnackbarContent
-            className={clsx(classes[variant], className)}
-            aria-describedby="client-snackbar"
-            message={
-                <span id="client-snackbar" className={classes.message}>
-                    <Icon className={clsx(classes.icon, classes.iconVariant)} />
-                    <Typography className={classes.mainGridContainer}
-                        align='center'
-                        variant='body2'>
-                        {message}
-                    </Typography>
-                </span>
-            }
-            action={[
-                <IconButton key="close" aria-label="close" color="inherit" onClick={onClose}>
-                    <CloseIcon className={classes.icon} />
-                </IconButton>,
-            ]}
-        />
-    );
-}
-
 function Sign(props) {
     const classes = useStyles();
-    const { history } = props;
-    const { themeMode, lang } = props.store;
+    const { history, themeMode, lang, setUserState, setSnackbar, setCurrLang } = props;
     const muiTheme = createMuiTheme(themeMode);
-    const [openSnackbar, setOpenSnackbar] = React.useState(false);
-    const [snackbarMessage, setSnackbarMessage] = React.useState('');
     const [loginData, setLoginData] = React.useState({
         email: '',
         password: '',
@@ -200,7 +137,7 @@ function Sign(props) {
                 localStorage.setItem("jwtToken", token);
                 setAuthToken(token);
                 const decoded = jwt_decode(token);
-                props.setUserState({
+                setUserState({
                     type: SET_CURRENT_USER,
                     payload: decoded
                 });
@@ -208,17 +145,25 @@ function Sign(props) {
                 history.push("/luciddreams");
             })
             .catch(err => {
-                console.log(err);
+                //console.log(err);
+                let errorMessage = '';
                 if (err.response.data.email === 'UserNotExist') {
-                    setSnackbarMessage(lang.currLang.errors.UserNotExist);
+                    errorMessage = lang.currLang.errors.UserNotExist;
                 }
                 if (err.response.data.email === 'EmailIsNotValid') {
-                    setSnackbarMessage(lang.currLang.errors.EmailIsNotValid);
+                    errorMessage = lang.currLang.errors.EmailIsNotValid;
                 }
                 if (err.response.data.passwordincorrect === 'IncorrectPassword') {
-                    setSnackbarMessage(lang.currLang.errors.IncorrectPassword);
+                    errorMessage = lang.currLang.errors.IncorrectPassword;
                 }
-                setOpenSnackbar(true);
+                setSnackbar({
+                    type: SET_SNACKBAR_MODE,
+                    snackbar: {
+                        open: true,
+                        variant: 'error',
+                        message: errorMessage,
+                    },
+                });
                 setIsLoading(false);
             });
     };
@@ -273,17 +218,25 @@ function Sign(props) {
                     setIsLoading(false);
                 })
                 .catch(err => {
-                    props.setUserState({
+                    let errorMessage = '';
+                    setUserState({
                         type: GET_ERRORS,
                         payload: err.response.data
                     });
                     if (err.response.data.email === 'EmailIsBusy') {
-                        setSnackbarMessage(lang.currLang.errors.EmailIsBusy);
+                        errorMessage = lang.currLang.errors.EmailIsBusy;
                     }
                     if (err.response.data.password === 'PasswordLenght5Symbols') {
-                        setSnackbarMessage(lang.currLang.errors.PasswordLenght5Symbols);
+                        errorMessage = lang.currLang.errors.PasswordLenght5Symbols;
                     }
-                    setOpenSnackbar(true);
+                    setSnackbar({
+                        type: SET_SNACKBAR_MODE,
+                        snackbar: {
+                            open: true,
+                            variant: 'error',
+                            message: errorMessage,
+                        },
+                    });
                     setIsLoading(false);
                 });
         }
@@ -339,18 +292,12 @@ function Sign(props) {
                 break;
         }
     };
-    const handleCloseSnackbar = (event, reason) => {
-        if (reason === 'clickaway') {
-            return;
-        }
-        setOpenSnackbar(false);
-    };
     const changeLanguage = (language) => {
         if (language === 'Ru') {
-            props.setCurrLang(RuDict);
+            setCurrLang(RuDict);
         }
         else {
-            props.setCurrLang(EnDict);
+            setCurrLang(EnDict);
         }
     }
 
@@ -639,19 +586,6 @@ function Sign(props) {
                     </Grid>
                 </div>
             </div >
-
-            <Snackbar
-                open={openSnackbar}
-                onClose={handleCloseSnackbar}
-                autoHideDuration={3000}>
-                <MySnackbarContentWrapper
-                    className={classes.margin}
-                    onClose={handleCloseSnackbar}
-                    variant='error'
-                    message={snackbarMessage}
-                />
-            </Snackbar>
-
         </MuiThemeProvider>
     )
 }
@@ -659,24 +593,15 @@ function Sign(props) {
 Sign.propTypes = {
     setCurrLang: PropTypes.func.isRequired,
     setUserState: PropTypes.func.isRequired,
+    setSnackbar: PropTypes.func.isRequired,
+    themeMode: PropTypes.object.isRequired,
     lang: PropTypes.object.isRequired,
-    auth: PropTypes.object.isRequired,
-    errors: PropTypes.object.isRequired,
 }
-
-MySnackbarContentWrapper.propTypes = {
-    className: PropTypes.string,
-    message: PropTypes.string,
-    onClose: PropTypes.func,
-    variant: PropTypes.oneOf(['error', 'info', 'success', 'warning']).isRequired,
-};
 
 const mapStateToProps = store => {
     return {
-        store,
+        themeMode: store.themeMode,
         lang: store.lang,
-        auth: store.auth,
-        errors: store.errors,
     }
 }
 
@@ -684,6 +609,7 @@ const mapDispatchToProps = (dispatch) => {
     return {
         setCurrLang: currLangState => dispatch(setCurrLang(currLangState)),
         setUserState: State => dispatch(setUserState(State)),
+        setSnackbar: snackbar => dispatch(setSnackbar(snackbar)),
     }
 }
 

@@ -42,7 +42,6 @@ function ViewDreams(props) {
     return (
         <MuiThemeProvider theme={muiTheme}>
             <CssBaseline />
-
             <div className={classes.root}>
                 <Grid className={classes.mainGridContainer}
                     container
@@ -141,7 +140,6 @@ function ViewDreams(props) {
             </div>
         </MuiThemeProvider >
     );
-
 }
 
 ViewDreams.propTypes = {

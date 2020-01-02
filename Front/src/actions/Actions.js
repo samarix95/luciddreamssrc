@@ -27,6 +27,12 @@ export function setTheme(state) {
 export function setUserState(state) {
 	return {
 		type: state.type,
-		payload: state.payload
+		payload: state.payload,
+	}
+}
+export function setSnackbar(state) {
+	return {
+		type: state.type,
+		snackbar: state.snackbar,
 	}
 }

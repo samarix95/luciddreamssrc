@@ -101,7 +101,7 @@ export default function DreamCard(props) {
                 closeMenu();
                 if (post_type === 0) {
                     history.push({
-                        pathname: "/adddream",
+                        pathname: "/addregulardream",
                         defaultData: {
                             post_id: post_id,
                             post_title: post_title,

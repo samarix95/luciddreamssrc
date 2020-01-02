@@ -9,6 +9,7 @@ import MapImg from '../img/map.png';
 import SunImg from '../img/sun.png';
 import MoonImg from '../img/moon.png';
 import AstronautImg from '../img/astronaut.png';
+import CloudSvg from '../img/cloud.svg';
 
 export const params = {
     amountStars: 25,
@@ -199,7 +200,8 @@ export const useStyles = makeStyles(theme => ({
     AppCloud: {
         position: 'absolute',
         backgroundRepeat: 'no-repeat',
-        backgroundImage: 'url(https://www.turbotobias.dk/wp-content/uploads/2019/03/White-cloud-type3.svg)',
+        //backgroundImage: 'url(https://www.turbotobias.dk/wp-content/uploads/2019/03/White-cloud-type3.svg)',
+        backgroundImage: 'url(' + CloudSvg + ')',
         animation: '$moveclouds infinite linear',
         zIndex: -1,
     },

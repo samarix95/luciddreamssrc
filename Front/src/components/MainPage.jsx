@@ -1,7 +1,6 @@
-import React, { useEffect } from "react";
+import React from "react";
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
-import clsx from 'clsx';
 
 import SnackbarContent from "@material-ui/core/SnackbarContent";
 import ButtonBase from '@material-ui/core/ButtonBase';
@@ -12,17 +11,15 @@ import Button from '@material-ui/core/Button';
 import Slide from "@material-ui/core/Slide";
 import Grid from '@material-ui/core/Grid';
 
-import { SET_THEME_MODE } from "../actions/types";
+import { SET_THEME_MODE, SET_SNACKBAR_MODE } from "../actions/types";
 
-import { setCurrLang, setTheme } from '../actions/Actions';
-import { useStyles, variantIcon } from '../styles/Styles';
+import { setCurrLang, setTheme, setSnackbar } from '../actions/Actions';
+import { useStyles } from '../styles/Styles';
 import { instance } from './Config';
 import { CheckTimeOut } from '../utils/CheckLoginTimeOut';
 
-import { MuiThemeProvider, createMuiTheme, makeStyles } from '@material-ui/core/styles';
+import { MuiThemeProvider, createMuiTheme } from '@material-ui/core/styles';
 import CssBaseline from '@material-ui/core/CssBaseline';
-
-import { amber, green } from '@material-ui/core/colors';
 
 import CloseIcon from "@material-ui/icons/Close";
 import SaveIcon from "@material-ui/icons/Save";
@@ -34,74 +31,14 @@ function TransitionDown(props) {
     return <Slide {...props} direction="down" />;
 }
 
-const useStyles1 = makeStyles(theme => ({
-    success: {
-        backgroundColor: green[600],
-    },
-    error: {
-        backgroundColor: theme.palette.error.dark,
-    },
-    info: {
-        backgroundColor: theme.palette.primary.main,
-    },
-    warning: {
-        backgroundColor: amber[700],
-    },
-    icon: {
-        fontSize: 20,
-    },
-    iconVariant: {
-        opacity: 0.9,
-        marginRight: theme.spacing(1),
-    },
-    message: {
-        display: 'flex',
-        alignItems: 'center',
-    },
-}));
-
-function SnackbarContentWrapper(props) {
-    const classes = useStyles1();
-    const { className, message, onClose, variant } = props;
-    const Icon = variantIcon[variant];
-
-    return (
-        <SnackbarContent
-            className={clsx(classes[variant], className)}
-            aria-describedby="message-snackbar"
-            message={
-                <span id="message-snackbar" className={classes.message}>
-                    <Icon className={clsx(classes.icon, classes.iconVariant)} />
-                    <Typography className={classes.mainGridContainer}
-                        align='center'
-                        variant='body2'>
-                        {message}
-                    </Typography>
-                </span>
-            }
-            action={[
-                <IconButton key="close" aria-label="close" color="inherit" onClick={onClose}>
-                    <CloseIcon className={classes.icon} />
-                </IconButton>,
-            ]}
-        />
-    );
-}
-
 function MainPage(props) {
     const classes = useStyles();
-    const { lang, themeMode, auth } = props.store;
+    const { lang, themeMode, auth, history, setCurrLangAction, setTheme, setSnackbar } = props;
     const muiTheme = createMuiTheme(themeMode);
-    const { setCurrLangAction, setTheme, history } = props;
     const [prevLanguage, setPrevLanguage] = React.useState(undefined);
     const [openLangSnakbar, setOpenLangSnakbar] = React.useState(false);
-    const [openMessageSnackbar, setOpenMessageSnackbar] = React.useState(false);
     const [langSnakbarMessage, setLangSnakbarMessage] = React.useState('');
     const [transition, setTransition] = React.useState(undefined);
-    const [infoSnackbar, setInfoSnackbar] = React.useState({
-        variant: '',
-        message: '',
-    });
 
     const switchMode = () => {
         let newPaletteType = themeMode.palette.type === "light" ? "dark" : "light";
@@ -115,13 +52,16 @@ function MainPage(props) {
                 secondary: { main: secondaryColor },
             }
         });
-    }
+    };
+
     const onAstronautClick = () => {
         alert('Тут должны перейти на страницу космонафта');
     };
+
     const onMapClick = () => {
         alert('Тут должны перейти на страницу карты');
     };
+
     const changeLanguage = (language) => {
         if (language !== lang.currLang.current) {
             if (language === 'Ru') {
@@ -139,7 +79,8 @@ function MainPage(props) {
                 setOpenLangSnakbar(true);
             }
         }
-    }
+    };
+
     const handleCloseLangSnakbar = () => {
         switch (prevLanguage) {
             case 'En':
@@ -154,6 +95,7 @@ function MainPage(props) {
         }
         setOpenLangSnakbar(false);
     };
+
     const handleSaveLangSnakbar = () => {
         let newLang;
         switch (lang.currLang.current) {
@@ -167,26 +109,27 @@ function MainPage(props) {
                 newLang = 0;
                 break;
         }
-        let userid = props.store.auth.user.id;
-        let usernickname = props.store.auth.user.nickname;
+        let userid = auth.user.id;
+        let usernickname = auth.user.nickname;
         let newUserData = {
             language: newLang,
             id: userid,
             nickname: usernickname,
         };
-
         //Проверка на таймаут
         let check = CheckTimeOut();
-
         if (check) {
             instance
                 .post('/actions/users/updateuserdata', newUserData)
                 .then(res => {
-                    let newInfoSnackbar = infoSnackbar;
-                    newInfoSnackbar = { ...newInfoSnackbar, variant: "success" };
-                    newInfoSnackbar = { ...newInfoSnackbar, message: lang.currLang.texts.success };
-                    setInfoSnackbar(newInfoSnackbar);
-                    setOpenMessageSnackbar(true);
+                    setSnackbar({
+                        type: SET_SNACKBAR_MODE,
+                        snackbar: {
+                            open: true,
+                            variant: 'success',
+                            message: lang.currLang.texts.success,
+                        },
+                    });
                     setOpenLangSnakbar(false);
                 })
                 .catch(err => {
@@ -195,26 +138,22 @@ function MainPage(props) {
 
         }
         else {
-            let newInfoSnackbar = infoSnackbar;
-            newInfoSnackbar = { ...newInfoSnackbar, variant: "error" };
-            newInfoSnackbar = { ...newInfoSnackbar, message: lang.currLang.errors.NotLogin };
-            setInfoSnackbar(newInfoSnackbar);
-            setOpenMessageSnackbar(true);
+            setSnackbar({
+                type: SET_SNACKBAR_MODE,
+                snackbar: {
+                    open: true,
+                    variant: 'error',
+                    message: lang.currLang.errors.NotLogin,
+                },
+            });
             handleCloseLangSnakbar();
         }
     };
-    const handleCloseMessageSnackbar = (event, reason) => {
-        if (reason === 'clickaway') {
-            return;
-        }
-        setOpenMessageSnackbar(false);
-    };
-    useEffect(() => {
 
+    React.useEffect(() => {
         let id = {
             id: auth.user.id,
         };
-
         instance
             .post('/actions/users/getuserdata', id)
             .then(res => {
@@ -223,7 +162,6 @@ function MainPage(props) {
             .catch(err => {
                 auth.user.language === 0 ? setCurrLangAction(EnDict) : setCurrLangAction(RuDict);
             });
-
         // if (auth.user.times_mode === 0) {
         //     setTheme({
         //         type: SET_THEME_MODE,
@@ -244,7 +182,6 @@ function MainPage(props) {
         //         }
         //     });
         // }
-
     }, [classes, setTheme, setCurrLangAction, auth.user.language, auth.user.times_mode, auth.user.id]);
 
     return (
@@ -290,22 +227,20 @@ function MainPage(props) {
                 />
             </Snackbar>
 
-            <div className={classes.root} id='rootDiv'>
-
+            <div className={classes.root}>
                 <div className={classes.mainPage}>
-
                     <Grid className={classes.mainGridContainer}
                         container
                         direction="column"
                         justify="center"
-                        alignItems="stretch" >
-
+                        alignItems="stretch"
+                    >
                         <Grid item xs={4} className={classes.mainGridHeadItem} >
                             <Grid container className={classes.mainGridContainer}
                                 direction="row"
                                 justify="space-around"
-                                alignItems="stretch" >
-
+                                alignItems="stretch"
+                            >
                                 <Grid item xs={4} >
                                     <ButtonBase className={classes.AstronautButton}
                                         type='button'
@@ -316,7 +251,6 @@ function MainPage(props) {
                                         </div>
                                     </ButtonBase>
                                 </Grid>
-
                                 <Grid item xs={4} >
                                     <ButtonBase className={classes.image}
                                         type='button'
@@ -340,7 +274,6 @@ function MainPage(props) {
                                 </Grid>
                             </Grid>
                         </Grid>
-
                         <Grid item xs={1} className={classes.mainGridHeadItem} >
                             <Grid className={classes.mainGridContainer}
                                 container
@@ -351,29 +284,25 @@ function MainPage(props) {
                                     <Typography className={classes.mainGridContainer}
                                         align='center'
                                         variant='h6'>
-                                        {lang.currLang.texts.hello + props.store.auth.user.nickname}
+                                        {lang.currLang.texts.hello + auth.user.nickname}
                                     </Typography>
                                 </Grid>
                             </Grid>
                         </Grid>
-
                         <Grid item xs={6} className={classes.mainGridBodyItem} >
-
                             <Grid className={classes.mainGridContainer}
                                 container
                                 direction="column"
                                 justify="center"
-                                alignItems="stretch" >
-
+                                alignItems="stretch"
+                            >
                                 <Grid className={classes.menuButtonContainer}
                                     container
                                     direction="column"
                                     justify="center"
-                                    alignItems="stretch" >
-
-
+                                    alignItems="stretch"
+                                >
                                     <Grid item xs={12} className={classes.menuButtonContainerItem} >
-
                                         <Grid item xs={2} className={classes.menuDivButton} align="center">
                                             <Button
                                                 variant="contained"
@@ -388,7 +317,6 @@ function MainPage(props) {
                                                 {lang.currLang.buttons.dreamJoirnal}
                                             </Button>
                                         </Grid>
-
                                         <Grid item xs={2} className={classes.menuDivButton} align="center">
                                             <Button
                                                 variant="contained"
@@ -396,14 +324,13 @@ function MainPage(props) {
                                                 className={classes.menuButton}
                                                 onClick={() => {
                                                     let check = CheckTimeOut();
-                                                    if (check) history.push("/adddream");
+                                                    if (check) history.push("/addregulardream");
                                                     else history.push("/");
                                                 }}
                                             >
                                                 {lang.currLang.buttons.addDream}
                                             </Button>
                                         </Grid>
-
                                         <Grid item xs={2} className={classes.menuDivButton} align="center">
                                             <Button
                                                 variant="contained"
@@ -418,29 +345,21 @@ function MainPage(props) {
                                                 {lang.currLang.buttons.addCDream}
                                             </Button>
                                         </Grid>
-
                                         <Grid item xs={2} className={classes.menuDivButton} align="center">
                                             <Button variant="contained" color="primary" className={classes.menuButton}>
                                                 {lang.currLang.buttons.techniques}
                                             </Button>
                                         </Grid>
-
                                         <Grid item xs={2} className={classes.menuDivButton} align="center">
                                             <Button variant="contained" color="primary" className={classes.menuButton}>
                                                 {lang.currLang.buttons.adventures}
                                             </Button>
                                         </Grid>
-
                                     </Grid>
-
                                 </Grid>
-
                             </Grid>
-
                         </Grid>
-
                         <Grid item xs={1} className={classes.mainGridFooterItem} >
-
                             <Grid className={classes.menuButtonContainerFooterLanguageButtons}
                                 container
                                 direction="row"
@@ -457,41 +376,28 @@ function MainPage(props) {
                                     </Button>
                                 </Grid>
                             </Grid>
-
                         </Grid>
-
                     </Grid>
-
                 </div>
-
             </div>
-
-            <Snackbar
-                open={openMessageSnackbar}
-                onClose={handleCloseMessageSnackbar}
-                autoHideDuration={3000}>
-                <SnackbarContentWrapper
-                    className={classes.margin}
-                    onClose={handleCloseMessageSnackbar}
-                    variant={infoSnackbar.variant}
-                    message={infoSnackbar.message}
-                />
-            </Snackbar>
-
         </MuiThemeProvider>
     );
 };
 
-
-
 MainPage.propTypes = {
-    setTheme: PropTypes.func.isRequired,
     setCurrLangAction: PropTypes.func.isRequired,
+    setTheme: PropTypes.func.isRequired,
+    setSnackbar: PropTypes.func.isRequired,
+    lang: PropTypes.object.isRequired,
+    themeMode: PropTypes.object.isRequired,
+    auth: PropTypes.object.isRequired,
 }
 
 const mapStateToProps = store => {
     return {
-        store,
+        lang: store.lang,
+        themeMode: store.themeMode,
+        auth: store.auth,
     }
 }
 
@@ -499,6 +405,7 @@ const mapDispatchToProps = (dispatch) => {
     return {
         setCurrLangAction: currLangState => dispatch(setCurrLang(currLangState)),
         setTheme: palette => dispatch(setTheme(palette)),
+        setSnackbar: snackbar => dispatch(setSnackbar(snackbar)),
     }
 }
 

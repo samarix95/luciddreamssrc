@@ -1,26 +1,23 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
-import { Router, Route, Switch } from "react-router-dom";
+import { Router } from "react-router-dom";
 import './App.css';
 
 import history from '../history';
 import { store } from "../store";
 import { CheckTimeOut } from '../utils/CheckLoginTimeOut';
 import setAuthToken from "../utils/setAuthToken";
-import { SET_CURRENT_USER, SET_THEME_MODE } from "../actions/types"
-import { setTheme } from '../actions/Actions';
-import PrivateRoute from "../components/PrivateRoute";
+import { SET_CURRENT_USER, SET_THEME_MODE } from "../actions/types";
 
-import AddDream from './AddDream';
-import ViewDreams from './ViewDreams';
-import AddCDream from './AddCDream';
-import MainPage from "./MainPage";
-import Sign from './Sign';
+import Routes from '../Routes';
 
 import { useStyles, params, randomBetween } from '../styles/Styles';
 
 let check = CheckTimeOut();
+let stars = [];
+let clouds = [];
+
 if (!check) {
     localStorage.removeItem("jwtToken");
     setAuthToken(false);
@@ -34,10 +31,7 @@ else {
     history.push("/luciddreams");
 }
 
-let stars = [];
-let clouds = [];
-
-if (new Date().getHours() >= 16) {
+if (new Date().getHours() >= 16 || (new Date().getHours() >= 0 && new Date().getHours() < 6)) {
     store.dispatch({
         type: SET_THEME_MODE,
         palette: {
@@ -61,11 +55,10 @@ else {
 }
 
 function App(props) {
+    const { type } = props;
     const classes = useStyles();
-
     stars = [];
     clouds = [];
-
     for (let i = 0; i < params.amountStars; i++) {
         let size = Math.round(Math.random() * 10) === 0
             ? params.size.giant
@@ -110,17 +103,16 @@ function App(props) {
 
     return (
         <Router history={history}>
-
             <div className={classes.AppDivDark}>
                 <div className={classes.AppDivLight}
-                    style={props.type === "light"
+                    style={type === "light"
                         ? { opacity: 1, }
                         : { opacity: 0, }}
                 />
-                {props.type === "light"
+                {type === "light"
                     ?
                     <div className={classes.AppCloudsDiv}
-                        style={props.type === "light"
+                        style={type === "light"
                             ? { opacity: 1, }
                             : { opacity: 0, }}
                     >
@@ -128,7 +120,7 @@ function App(props) {
                     </div>
                     :
                     <div className={classes.AppStarsDiv}
-                        style={props.type === "light"
+                        style={type === "light"
                             ? { opacity: 0, }
                             : { opacity: 1, }}
                     >
@@ -136,21 +128,13 @@ function App(props) {
                     </div>
                 }
             </div>
-
-            <Route exact path="/" component={Sign} />
-            <Switch>
-                <PrivateRoute exact path="/luciddreams" component={MainPage} />
-                <PrivateRoute exact path="/addcdream" component={AddCDream} />
-                <PrivateRoute exact path="/adddream" component={AddDream} />
-                <PrivateRoute exact path="/dreams" component={ViewDreams} />
-            </Switch>
+            <Routes />
         </Router>
     );
 };
 
 App.propTypes = {
     type: PropTypes.string.isRequired,
-    setTheme: PropTypes.func.isRequired,
 }
 
 const mapStateToProps = store => {
@@ -161,7 +145,6 @@ const mapStateToProps = store => {
 
 const mapDispatchToProps = (dispatch) => {
     return {
-        setTheme: palette => dispatch(setTheme(palette)),
     }
 }
 

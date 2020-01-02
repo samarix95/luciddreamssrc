@@ -60,7 +60,7 @@ const words = {
         EmailIsNotValid: 'Введен некорректный email',
         IncorrectPassword: 'Неверный email или пароль',
         EmailIsBusy: 'Email занят',
-        PasswordLenght5Symbols: 'Минимальная длина пароля: 5 символов',
+        PasswordLenght5Symbols: 'Длина пароля - больше 5 символов',
         NotLogin: 'Вы не авторизированы',
         EmptyTitle: 'Пустой заголовок',
         EmptyDream: 'Пустое поле сна',

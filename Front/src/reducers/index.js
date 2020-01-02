@@ -5,6 +5,7 @@ import { starsReducer } from './star';
 import { themeReducer } from './themeMode';
 import authReducer from './authReducer';
 import errorReducer from './errorReducer';
+import { snackbarReducer } from './snackbarReducer';
 
 export const rootReducer = combineReducers({
     lang: currLangReducer,
@@ -13,4 +14,5 @@ export const rootReducer = combineReducers({
     themeMode: themeReducer,
     auth: authReducer,
     errors: errorReducer,
+    snackbar: snackbarReducer,
 });

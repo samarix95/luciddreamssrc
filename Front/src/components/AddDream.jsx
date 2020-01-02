@@ -1,21 +1,16 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
-import clsx from 'clsx';
 import DateFnsUtils from '@date-io/date-fns';
 import ruLocale from "date-fns/locale/ru";
 import enLocale from "date-fns/locale/ru";
 
-import SnackbarContent from '@material-ui/core/SnackbarContent';
 import LinearProgress from '@material-ui/core/LinearProgress';
 import CssBaseline from '@material-ui/core/CssBaseline';
 import FormControl from "@material-ui/core/FormControl";
-import IconButton from '@material-ui/core/IconButton';
 import InputLabel from "@material-ui/core/InputLabel";
-import Typography from '@material-ui/core/Typography';
 import TextField from '@material-ui/core/TextField';
 import MenuItem from "@material-ui/core/MenuItem";
-import Snackbar from '@material-ui/core/Snackbar';
 import Avatar from "@material-ui/core/Avatar";
 import Select from "@material-ui/core/Select";
 import Button from '@material-ui/core/Button';
@@ -27,15 +22,15 @@ import Grid from '@material-ui/core/Grid';
 import MUIRichTextEditor from 'mui-rte';
 import { convertToRaw } from 'draft-js';
 
-import { MuiThemeProvider, createMuiTheme, useTheme, makeStyles } from '@material-ui/core/styles';
+import { MuiThemeProvider, createMuiTheme, useTheme } from '@material-ui/core/styles';
 
 import { MuiPickersUtilsProvider, KeyboardTimePicker, KeyboardDatePicker } from '@material-ui/pickers';
 
 import FormatColorFillIcon from '@material-ui/icons/FormatColorFill';
-import ErrorIcon from '@material-ui/icons/Error';
-import CloseIcon from '@material-ui/icons/Close';
 
 import { useStyles } from '../styles/Styles';
+import { setSnackbar } from '../actions/Actions';
+import { SET_SNACKBAR_MODE } from "../actions/types";
 
 import { instance } from './Config';
 
@@ -61,57 +56,12 @@ function getStyles(name, selectedLocations, theme) {
     };
 }
 
-const useStyles1 = makeStyles(theme => ({
-    error: {
-        backgroundColor: theme.palette.error.dark,
-    },
-    icon: {
-        fontSize: 20,
-    },
-    iconVariant: {
-        opacity: 0.9,
-        marginRight: theme.spacing(1),
-    },
-    message: {
-        display: 'flex',
-        alignItems: 'center',
-    },
-}));
-
-function MySnackbarContentWrapper(props) {
-    const classes = useStyles1();
-    const { className, message, onClose } = props;
-    const Icon = ErrorIcon;
-
-    return (
-        <SnackbarContent
-            className={clsx(classes.error, className)}
-            aria-describedby="client-snackbar"
-            message={
-                <span id="client-snackbar" className={classes.message}>
-                    <Icon className={clsx(classes.icon, classes.iconVariant)} />
-                    <Typography className={classes.mainGridContainer}
-                        align='center'
-                        variant='body2'>
-                        {message}
-                    </Typography>
-                </span>
-            }
-            action={[
-                <IconButton key="close" aria-label="close" color="inherit" onClick={onClose}>
-                    <CloseIcon className={classes.icon} />
-                </IconButton>,
-            ]}
-        />
-    );
-}
-
 let defaultTags = [];
 
 function AddDream(props) {
     const classes = useStyles();
     const theme = useTheme();
-    const { lang, themeMode, history, auth } = props;
+    const { lang, themeMode, history, auth, setSnackbar } = props;
     const muiTheme = createMuiTheme(themeMode);
     Object.assign(muiTheme, {
         overrides: {
@@ -160,8 +110,6 @@ function AddDream(props) {
         }
     })
     const [isEditMode, setIsEditMode] = React.useState(false);
-    const [openSnackbar, setOpenSnackbar] = React.useState(false);
-    const [snackbarMessage, setSnackbarMessage] = React.useState('');
     const [isLoading, setIsLoading] = React.useState(false);
     const [titleText, setTitleText] = React.useState('');
     const [selectedDate, setSelectedDate] = React.useState(new Date());
@@ -173,12 +121,15 @@ function AddDream(props) {
     const handleChangeLocations = (event) => {
         setselectedLocations(event.target.value);
     };
+
     const changeTitle = (event) => {
         setTitleText(event.target.value);
     };
+
     const handleDateChange = date => {
         setSelectedDate(date);
     };
+
     const changeContent = (state) => {
         const currCont = state.getCurrentContent();
         const convert = convertToRaw(currCont);
@@ -187,34 +138,42 @@ function AddDream(props) {
             setPrevContentText(content);
         }
     };
+
     const savepost = () => {
         setIsLoading(true);
         let havErr = false;
-
+        let errorMessage = '';
         if (typeof (titleText) !== 'undefined') {
             if (titleText.length === 0) {
-                setSnackbarMessage(lang.currLang.errors.EmptyTitle);
+                errorMessage = lang.currLang.errors.EmptyTitle;
                 havErr = true;
             }
         }
         else {
-            setSnackbarMessage(lang.currLang.errors.EmptyTitle);
+            errorMessage = lang.currLang.errors.EmptyTitle;
             havErr = true;
         }
 
         if (typeof (prevContentText) !== 'undefined') {
             if (JSON.parse(prevContentText).blocks[0].text.length === 0) {
-                setSnackbarMessage(lang.currLang.errors.EmptyDream);
+                errorMessage = lang.currLang.errors.EmptyDream;
                 havErr = true;
             }
         }
         else {
-            setSnackbarMessage(lang.currLang.errors.EmptyDream);
+            errorMessage = lang.currLang.errors.EmptyDream;
             havErr = true;
         }
 
         if (havErr) {
-            setOpenSnackbar(true);
+            setSnackbar({
+                type: SET_SNACKBAR_MODE,
+                snackbar: {
+                    open: true,
+                    variant: 'error',
+                    message: errorMessage,
+                },
+            });
             setIsLoading(false);
         }
         else {
@@ -280,14 +239,18 @@ function AddDream(props) {
                         });
                 }
                 else {
-                    setSnackbarMessage(lang.currLang.errors.NoChanges);
-                    setOpenSnackbar(true);
+                    setSnackbar({
+                        type: SET_SNACKBAR_MODE,
+                        snackbar: {
+                            open: true,
+                            variant: 'error',
+                            message: lang.currLang.errors.NoChanges,
+                        },
+                    });
                     setIsLoading(false);
                 }
             }
             else {
-                //let convert = JSON.stringify(contentText);
-
                 let postData = {
                     title: titleText,
                     dreamDate: selectedDate.toLocaleString("ru-RU", { timeZone: 'Europe/London' }),
@@ -297,7 +260,6 @@ function AddDream(props) {
                     nickname: auth.user.nickname,
                     tags: selectedLocations,
                 }
-
                 instance
                     .post('/actions/users/createpost', postData)
                     .then(res => {
@@ -310,12 +272,7 @@ function AddDream(props) {
             }
         }
     };
-    const handleCloseSnackbar = (event, reason) => {
-        if (reason === 'clickaway') {
-            return;
-        }
-        setOpenSnackbar(false);
-    };
+
     React.useEffect(() => {
         instance.get("/gettags")
             .then(res => {
@@ -346,26 +303,20 @@ function AddDream(props) {
     return (
         <MuiThemeProvider theme={muiTheme}>
             <CssBaseline />
-
             <div className={classes.root} >
-
                 <Grid className={classes.mainGridContainer}
                     container
                     direction="column"
                     justify="center"
                     alignItems="stretch" >
-
                     <Grid item xs={11} className={classes.mainGridBodyItem}>
-
                         <Paper className={classes.paper}>
-
                             <Grid container
                                 className={classes.mainGridContainer}
                                 direction="column"
                                 justify="center"
                                 alignItems="center"
                             >
-
                                 <Grid item xs={2} className={classes.fullMinWidth} >
                                     <TextField className={classes.inputDiv}
                                         required
@@ -376,7 +327,6 @@ function AddDream(props) {
                                         onChange={(e) => { changeTitle(e) }}
                                     />
                                 </Grid>
-
                                 <Grid item xs={2} className={classes.fullMinWidth} >
                                     <MuiPickersUtilsProvider utils={DateFnsUtils}
                                         locale={lang.currLang.current === "Ru"
@@ -415,7 +365,6 @@ function AddDream(props) {
                                         </Grid>
                                     </MuiPickersUtilsProvider>
                                 </Grid>
-
                                 <Grid item xs={5} className={classes.fullMinWidth} >
 
                                     <div className={classes.inputScrollableDiv}>
@@ -448,7 +397,6 @@ function AddDream(props) {
                                     </div>
 
                                 </Grid>
-
                                 <Grid item xs={3} className={classes.fullMinWidth} >
                                     <FormControl className={classes.inputDiv}>
                                         <InputLabel id="location-chip-label">
@@ -511,13 +459,9 @@ function AddDream(props) {
                                         </Select>
                                     </FormControl>
                                 </Grid>
-
                             </Grid>
-
                         </Paper>
-
                     </Grid>
-
                     <Grid item xs={1} className={classes.mainGridBodyItem} >
 
                         {isLoading
@@ -560,26 +504,13 @@ function AddDream(props) {
                         }
                     </Grid>
                 </Grid>
-
             </div>
-
-            <Snackbar
-                open={openSnackbar}
-                onClose={handleCloseSnackbar}
-                autoHideDuration={3000}>
-                <MySnackbarContentWrapper
-                    className={classes.margin}
-                    onClose={handleCloseSnackbar}
-                    variant='error'
-                    message={snackbarMessage}
-                />
-            </Snackbar>
-
         </MuiThemeProvider >
     );
 };
 
 AddDream.propTypes = {
+    setSnackbar: PropTypes.func.isRequired,
     themeMode: PropTypes.object.isRequired,
     lang: PropTypes.object.isRequired,
     auth: PropTypes.object.isRequired,
@@ -595,6 +526,7 @@ const mapStateToProps = store => {
 
 const mapDispatchToProps = (dispatch) => {
     return {
+        setSnackbar: snackbar => dispatch(setSnackbar(snackbar)),
     }
 }
 
