@@ -1,5 +1,7 @@
 import React from 'react';
 import clsx from "clsx";
+import { connect } from 'react-redux';
+import PropTypes from 'prop-types';
 import MUIRichTextEditor from 'mui-rte';
 import { EditorState, convertFromRaw } from 'draft-js';
 
@@ -40,10 +42,13 @@ import { useStyles } from '../../styles/Styles';
 
 import { instance } from '../Config';
 
-export default function DreamCard(props) {
+import { SET_SNACKBAR_MODE } from "../../actions/types";
+import { setSnackbar } from '../../actions/Actions';
+
+function DreamCard(props) {
     const classes = useStyles();
     const { post_id, post_title, post_content, post_type, tags, technics, rating, dream_date, is_public } = props.item;
-    const { lang, palette, history } = props;
+    const { lang, palette, history, setSnackbar } = props;
     const [expanded, setExpanded] = React.useState(false);
     const [anchorEl, setAnchorEl] = React.useState(null);
     const [openAlert, setOpenAlert] = React.useState(false);
@@ -150,6 +155,14 @@ export default function DreamCard(props) {
                     .then(res => {
                         //TODO ADD LOADER
                         closeMenu();
+                        setSnackbar({
+                            type: SET_SNACKBAR_MODE,
+                            snackbar: {
+                                open: true,
+                                variant: 'success',
+                                message: lang.currLang.texts.success,
+                            },
+                        });
                         setOpenAlert(false);
                         props.loadPosts();
                     })
@@ -172,6 +185,14 @@ export default function DreamCard(props) {
                         .post('/actions/users/updatepost', postData)
                         .then(res => {
                             setPublicChecked(false);
+                            setSnackbar({
+                                type: SET_SNACKBAR_MODE,
+                                snackbar: {
+                                    open: true,
+                                    variant: 'success',
+                                    message: lang.currLang.texts.success,
+                                },
+                            });
                         })
                         .catch(err => {
                             setPublicChecked(true);
@@ -186,6 +207,14 @@ export default function DreamCard(props) {
                         .post('/actions/users/updatepost', postData)
                         .then(res => {
                             setPublicChecked(true);
+                            setSnackbar({
+                                type: SET_SNACKBAR_MODE,
+                                snackbar: {
+                                    open: true,
+                                    variant: 'success',
+                                    message: lang.currLang.texts.success,
+                                },
+                            });
                         })
                         .catch(err => {
                             setPublicChecked(false);
@@ -439,3 +468,27 @@ export default function DreamCard(props) {
         </Grid>
     );
 }
+
+DreamCard.propTypes = {
+    setSnackbar: PropTypes.func.isRequired,
+    lang: PropTypes.object.isRequired,
+    palette: PropTypes.object.isRequired,
+}
+
+const mapStateToProps = store => {
+    return {
+        lang: store.lang,
+        palette: store.themeMode.palette,
+    }
+}
+
+const mapDispatchToProps = (dispatch) => {
+    return {
+        setSnackbar: snackbar => dispatch(setSnackbar(snackbar)),
+    }
+}
+
+export default connect(
+    mapStateToProps,
+    mapDispatchToProps
+)(DreamCard);

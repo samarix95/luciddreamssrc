@@ -70,7 +70,11 @@ function MySnackbarContentWrapper(props) {
                 </span>
             }
             action={[
-                <IconButton key="close" aria-label="close" color="inherit" onClick={onClose}>
+                <IconButton key="close"
+                    aria-label="close"
+                    color="inherit"
+                    onClick={onClose}
+                >
                     <CloseIcon className={classes.icon} />
                 </IconButton>,
             ]}
@@ -94,8 +98,8 @@ function Routes(props) {
             type: SET_SNACKBAR_MODE,
             snackbar: {
                 open: false,
-                variant: 'error',
-                message: '',
+                variant: openSnackbarVariant,
+                message: snackbarMessage,
             },
         });
     };

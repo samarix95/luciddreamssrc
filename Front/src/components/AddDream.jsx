@@ -231,6 +231,14 @@ function AddDream(props) {
                         .post('/actions/users/updatepost', postData)
                         .then(res => {
                             setIsLoading(false);
+                            setSnackbar({
+                                type: SET_SNACKBAR_MODE,
+                                snackbar: {
+                                    open: true,
+                                    variant: 'success',
+                                    message: lang.currLang.texts.success,
+                                },
+                            });
                             history.push("/dreams")
                         })
                         .catch(err => {
@@ -264,6 +272,14 @@ function AddDream(props) {
                     .post('/actions/users/createpost', postData)
                     .then(res => {
                         setIsLoading(false);
+                        setSnackbar({
+                            type: SET_SNACKBAR_MODE,
+                            snackbar: {
+                                open: true,
+                                variant: 'success',
+                                message: lang.currLang.texts.success,
+                            },
+                        });
                         history.push("/luciddreams")
                     })
                     .catch(err => {

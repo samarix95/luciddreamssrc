@@ -66,8 +66,6 @@ function ViewDreams(props) {
                                                 <DreamCard
                                                     item={item}
                                                     key={key}
-                                                    lang={lang}
-                                                    palette={themeMode.palette}
                                                     history={history}
                                                     loadPosts={loadPosts}
                                                 />
