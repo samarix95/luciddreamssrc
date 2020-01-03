@@ -205,8 +205,14 @@ function Sign(props) {
             instance
                 .post('/actions/users/register', registData)
                 .then(res => {
-                    //TODO нормальный popup
-                    alert(lang.currLang.texts.sucessRegistration);
+                    setSnackbar({
+                        type: SET_SNACKBAR_MODE,
+                        snackbar: {
+                            open: true,
+                            variant: 'success',
+                            message: lang.currLang.texts.sucessRegistration,
+                        },
+                    });
                     let newRegistData = registData;
                     newRegistData = { ...newRegistData, email: '' };
                     newRegistData = { ...newRegistData, nickname: '' };

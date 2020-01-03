@@ -167,7 +167,14 @@ function DreamCard(props) {
                         props.loadPosts();
                     })
                     .catch(err => {
-                        alert('Cant delete post!');
+                        setSnackbar({
+                            type: SET_SNACKBAR_MODE,
+                            snackbar: {
+                                open: true,
+                                variant: 'error',
+                                message: lang.currLang.texts.CantDeletePost,
+                            },
+                        });
                         closeMenu();
                         setOpenAlert(false);
                     });

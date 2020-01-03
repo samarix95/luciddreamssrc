@@ -65,6 +65,7 @@ const words = {
         EmptyTitle: 'Title must not be empty',
         EmptyDream: 'Dream must not be empty',
         NoChanges: 'No changes',
+        CantDeletePost: 'Error deleting dream',
     },
 };
 

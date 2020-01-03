@@ -65,6 +65,7 @@ const words = {
         EmptyTitle: 'Пустой заголовок',
         EmptyDream: 'Пустое поле сна',
         NoChanges: 'Нет изменений',
+        CantDeletePost: 'Ошибка удаления сна',
     },
 };
 
