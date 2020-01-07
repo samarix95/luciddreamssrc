@@ -5,7 +5,7 @@ const words = {
         signUp: 'Регистрация',
         dreamJoirnal: 'Дневник снов',
         addDream: 'Добавить сон',
-        addCDream: 'Добавить осознанный сон',
+        addCDream: 'Добавить осозн. сон',
         techniques: 'Техники',
         adventures: 'Приключения',
         close: 'Назад',

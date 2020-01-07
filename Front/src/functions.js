@@ -1,20 +1,13 @@
-export function areArraysEqualSets(a1, a2) {
-    let superSet = {};
-    for (let i = 0; i < a1.length; i++) {
-        const e = a1[i] + typeof a1[i];
-        superSet[e] = 1;
+export function compare(obj1, obj2) {
+    if (!Object.keys(obj2).every(key => obj1.hasOwnProperty(key))) {
+        return false;
     }
-    for (let i = 0; i < a2.length; i++) {
-        const e = a2[i] + typeof a2[i];
-        if (!superSet[e]) {
-            return false;
+    return Object.keys(obj1).every(function (key) {
+        if (typeof obj1[key] == "object") {
+            return compare(obj1[key], obj2[key]);
         }
-        superSet[e] = 2;
-    }
-    for (let e in superSet) {
-        if (superSet[e] === 1) {
-            return false;
+        else {
+            return obj1[key] === obj2[key];
         }
-    }
-    return true;
+    });
 }

@@ -7,22 +7,19 @@ import enLocale from "date-fns/locale/ru";
 
 import LinearProgress from '@material-ui/core/LinearProgress';
 import CssBaseline from '@material-ui/core/CssBaseline';
-import FormControl from "@material-ui/core/FormControl";
-import InputLabel from "@material-ui/core/InputLabel";
 import TextField from '@material-ui/core/TextField';
-import MenuItem from "@material-ui/core/MenuItem";
 import Avatar from "@material-ui/core/Avatar";
-import Select from "@material-ui/core/Select";
 import Button from '@material-ui/core/Button';
 import Paper from '@material-ui/core/Paper';
-import Input from "@material-ui/core/Input";
 import Chip from "@material-ui/core/Chip";
 import Grid from '@material-ui/core/Grid';
+
+import Autocomplete from "@material-ui/lab/Autocomplete";
 
 import MUIRichTextEditor from 'mui-rte';
 import { convertToRaw } from 'draft-js';
 
-import { MuiThemeProvider, createMuiTheme, useTheme } from '@material-ui/core/styles';
+import { MuiThemeProvider, createMuiTheme } from '@material-ui/core/styles';
 
 import { MuiPickersUtilsProvider, KeyboardTimePicker, KeyboardDatePicker } from '@material-ui/pickers';
 
@@ -34,33 +31,12 @@ import { SET_SNACKBAR_MODE } from "../actions/types";
 
 import { instance } from './Config';
 
-import { areArraysEqualSets } from '../functions';
-
-const ITEM_HEIGHT = 48;
-const ITEM_PADDING_TOP = 8;
-const MenuProps = {
-    PaperProps: {
-        style: {
-            maxHeight: ITEM_HEIGHT * 5 + ITEM_PADDING_TOP,
-            width: 250
-        }
-    }
-};
-
-function getStyles(name, selectedLocations, theme) {
-    return {
-        fontWeight:
-            selectedLocations.indexOf(name) === -1
-                ? theme.typography.fontWeightSmall
-                : theme.typography.fontWeightMedium
-    };
-}
+import { compare } from '../functions';
 
 let defaultTags = [];
 
 function AddDream(props) {
     const classes = useStyles();
-    const theme = useTheme();
     const { lang, themeMode, history, auth, setSnackbar } = props;
     const muiTheme = createMuiTheme(themeMode);
     Object.assign(muiTheme, {
@@ -89,16 +65,18 @@ function AddDream(props) {
                     borderRadius: '4px',
                 },
                 placeHolder: {
+                    height: '72%',
                 },
                 editor: {
-                    height: '69%',
+                    height: '72%',
                     width: '100%',
                     position: 'relative',
                     overflow: 'hidden',
                     //Эдитор
                 },
                 editorContainer: {
-                    padding: "18.5px 14px",
+                    margin: '0 !Important',
+                    padding: "0px 14px",
                     borderRadius: '4px',
                     position: 'relative',
                     boxSizing: 'border-box',
@@ -118,8 +96,8 @@ function AddDream(props) {
     const [selectedLocations, setselectedLocations] = React.useState([]);
     const [locations, setLocations] = React.useState({});
 
-    const handleChangeLocations = (event) => {
-        setselectedLocations(event.target.value);
+    const handleChangeLocations = (event, value) => {
+        setselectedLocations(value);
     };
 
     const changeTitle = (event) => {
@@ -179,6 +157,7 @@ function AddDream(props) {
         else {
             if (isEditMode) {
                 let hasChanges = false;
+                let tagChanges = false;
                 let postData = {
                     post_id: props.location.defaultData.post_id,
                 };
@@ -198,35 +177,44 @@ function AddDream(props) {
                     hasChanges = true;
                 }
 
-                if (!areArraysEqualSets(defaultTags, selectedLocations)) {
+                if (defaultTags.length === selectedLocations.length) {
+                    if (!compare(defaultTags, selectedLocations)) {
+                        hasChanges = true;
+                        tagChanges = true;
+                    }
+                }
+                else {
                     hasChanges = true;
-                    let deleteTags = defaultTags.filter(item1 =>
-                        !selectedLocations.some(item2 => (
-                            item2 === item1)
-                        )
-                    );
-                    let addTags = selectedLocations.filter(item1 =>
-                        !defaultTags.some(item2 => (
-                            item2 === item1)
-                        )
-                    );
-                    if (addTags.length > 0) {
-                        let add = {};
-                        addTags.map((item, key) => (
-                            add[key] = item
-                        ));
-                        postData.tags = { ...postData.tags, add: add };
-                    }
-                    if (deleteTags.length > 0) {
-                        let remove = {};
-                        deleteTags.map((item, key) => (
-                            remove[key] = item
-                        ));
-                        postData.tags = { ...postData.tags, remove: remove };
-                    }
+                    tagChanges = true;
                 }
 
                 if (hasChanges) {
+                    if (tagChanges) {
+                        let deleteTags = defaultTags.filter(item1 =>
+                            !selectedLocations.some(item2 => (
+                                item2.id === item1.id)
+                            )
+                        );
+                        let addTags = selectedLocations.filter(item1 =>
+                            !defaultTags.some(item2 => (
+                                item2.id === item1.id)
+                            )
+                        );
+                        if (addTags.length > 0) {
+                            let add = {};
+                            addTags.map((item, key) => (
+                                add[key] = item
+                            ));
+                            postData.tags = { ...postData.tags, add: add };
+                        }
+                        if (deleteTags.length > 0) {
+                            let remove = {};
+                            deleteTags.map((item, key) => (
+                                remove[key] = item
+                            ));
+                            postData.tags = { ...postData.tags, remove: remove };
+                        }
+                    }
                     instance
                         .post('/actions/users/updatepost', postData)
                         .then(res => {
@@ -290,6 +278,7 @@ function AddDream(props) {
     };
 
     React.useEffect(() => {
+        defaultTags = [];
         instance.get("/gettags")
             .then(res => {
                 setLocations(res.data);
@@ -300,17 +289,20 @@ function AddDream(props) {
 
         if (typeof (props.location.defaultData) !== 'undefined') {
             setIsEditMode(true);
-            defaultTags = [];
             const { post_title, dream_date, post_content, tags } = props.location.defaultData;
             setTitleText(post_title);
             setSelectedDate(dream_date);
             setContentText(post_content);
             setPrevContentText(post_content);
-
             if (typeof tags[0][0] === 'string') {
-                lang.currLang.current === "Ru"
-                    ? tags.map(item => defaultTags.push(item[1]))
-                    : tags.map(item => defaultTags.push(item[2]));
+                tags.forEach(item => {
+                    let location = {};
+                    location.id = Number(item[0]);
+                    location.name_rus = item[1];
+                    location.name_eng = item[2];
+                    location.img_url = item[3];
+                    defaultTags.push(location);
+                });
                 setselectedLocations(defaultTags);
             }
         }
@@ -414,66 +406,45 @@ function AddDream(props) {
 
                                 </Grid>
                                 <Grid item xs={3} className={classes.fullMinWidth} >
-                                    <FormControl className={classes.inputDiv}>
-                                        <InputLabel id="location-chip-label">
-                                            {lang.currLang.texts.tags}
-                                        </InputLabel>
-                                        <Select
-                                            labelId="location-chip-label"
-                                            id="location-chip"
+                                    {locations.length
+                                        ? <Autocomplete
                                             multiple
-                                            value={selectedLocations}
-                                            onChange={handleChangeLocations}
-                                            input={
-                                                <Input id="select-location-chip" />
-                                            }
-                                            renderValue={selected =>
-                                                (
-                                                    <div className={classes.chips}>
-                                                        {selected.map(value => (
-                                                            <Chip
-                                                                size="small"
-                                                                avatar={
-                                                                    locations.length
-                                                                        ? lang.currLang.current === "Ru"
-                                                                            ? < Avatar
-                                                                                alt={locations.find(locations => locations.name_rus === value).name_eng}
-                                                                                src={locations.find(locations => locations.name_rus === value).img_url}
-                                                                            />
-                                                                            : < Avatar
-                                                                                alt={locations.find(locations => locations.name_eng === value).name_eng}
-                                                                                src={locations.find(locations => locations.name_eng === value).img_url}
-                                                                            />
-                                                                        : null
-                                                                }
-                                                                key={value}
-                                                                label={value}
-                                                                className={classes.chip}
-                                                            />
-                                                        ))}
-                                                    </div>
-                                                )
-                                            }
-                                            MenuProps={MenuProps}
-                                        >
-                                            {Object.keys(locations)
-                                                .map(item =>
-                                                    <MenuItem
-                                                        key={locations[item].id + ' chip'}
-                                                        value={
-                                                            lang.currLang.current === "Ru"
-                                                                ? locations[item].name_rus
-                                                                : locations[item].name_eng
-                                                        }
-                                                        style={getStyles(locations[item].name_eng, selectedLocations, theme)}
-                                                    >
-                                                        {lang.currLang.current === "Ru"
-                                                            ? locations[item].name_rus
-                                                            : locations[item].name_eng}
-                                                    </MenuItem>
-                                                )}
-                                        </Select>
-                                    </FormControl>
+                                            className={classes.inputDiv}
+                                            id="tags-outlined"
+                                            size="small"
+                                            options={locations}
+                                            getOptionLabel={option => (
+                                                <Chip
+                                                    size="small"
+                                                    className={classes.chip}
+                                                    avatar={
+                                                        <Avatar src={option.img_url} />
+                                                    }
+                                                    label={
+                                                        lang.currLang.current === "Ru"
+                                                            ? option.name_rus
+                                                            : option.name_eng
+                                                    }
+                                                />
+                                            )}
+                                            defaultValue={
+                                                defaultTags.map(item => {
+                                                    return locations[item.id - 1];
+                                                })}
+                                            onChange={(event, value) => handleChangeLocations(event, value)}
+                                            filterSelectedOptions
+                                            renderInput={params => (
+                                                <TextField
+                                                    {...params}
+                                                    label={lang.currLang.texts.tags}
+                                                    fullWidth
+                                                />
+                                            )}
+                                        />
+                                        : <div className={classes.inputDiv}>
+                                            <LinearProgress />
+                                        </div>
+                                    }
                                 </Grid>
                             </Grid>
                         </Paper>

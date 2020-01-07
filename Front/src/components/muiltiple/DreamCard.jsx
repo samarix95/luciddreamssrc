@@ -316,7 +316,40 @@ function DreamCard(props) {
             <Card raised={false}
                 className={classes.card}>
                 <CardHeader
-                    title={post_title}
+                    title={
+                        <Grid container
+                            direction="row"
+                            justify="flex-start"
+                            alignItems="center"
+                        >
+                            <Grid item xs={10} >
+                                <Typography variant='h6'>
+                                    {post_title}
+                                </Typography>
+                            </Grid>
+                            <Grid item xs={2} >
+                                <Tooltip
+                                    disableFocusListener
+                                    disableTouchListener
+                                    title={publicChecked
+                                        ? lang.currLang.texts.PublicDescription
+                                        : lang.currLang.texts.UnpublicDescription
+                                    }
+                                >
+                                    {publicChecked
+                                        ? <Visibility style={{
+                                            display: "block",
+                                            margin: "auto"
+                                        }} />
+                                        : <VisibilityOff style={{
+                                            display: "block",
+                                            margin: "auto"
+                                        }} />
+                                    }
+                                </Tooltip>
+                            </Grid>
+                        </Grid>
+                    }
                     subheader={dateOfDream}
                     action={
                         <IconButton
@@ -329,24 +362,6 @@ function DreamCard(props) {
                 />
                 <CardContent>
                     <div className={classes.avatarRoot}>
-                        <div style={{ padding: '12px', }}>
-                            {publicChecked
-                                ? <Tooltip
-                                    disableFocusListener
-                                    disableTouchListener
-                                    title={lang.currLang.texts.PublicDescription}
-                                >
-                                    <Visibility />
-                                </Tooltip>
-                                : <Tooltip
-                                    disableFocusListener
-                                    disableTouchListener
-                                    title={lang.currLang.texts.UnpublicDescription}
-                                >
-                                    <VisibilityOff />
-                                </Tooltip>
-                            }
-                        </div>
                         <Chip variant="outlined"
                             label={
                                 post_type === 0

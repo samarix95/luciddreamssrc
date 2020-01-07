@@ -14,6 +14,7 @@ import AddCDream from './components/AddCDream';
 import ViewDreams from './components/ViewDreams';
 import MainPage from "./components/MainPage";
 import Sign from './components/Sign';
+import Technics from './components/Technics';
 
 import { useStyles, variantIcon } from './styles/Styles';
 
@@ -128,6 +129,7 @@ function Routes(props) {
                 <PrivateRoute exact path="/dreams" component={ViewDreams} />
                 <PrivateRoute exact path="/addregulardream" component={AddDream} />
                 <PrivateRoute exact path="/addcdream" component={AddCDream} />
+                <PrivateRoute exact path="/technics" component={Technics} />
             </Switch>
         </div>
     );

@@ -346,7 +346,16 @@ function MainPage(props) {
                                             </Button>
                                         </Grid>
                                         <Grid item xs={2} className={classes.menuDivButton} align="center">
-                                            <Button variant="contained" color="primary" className={classes.menuButton}>
+                                            <Button
+                                                variant="contained"
+                                                color="primary"
+                                                className={classes.menuButton}
+                                                onClick={() => {
+                                                    let check = CheckTimeOut();
+                                                    if (check) history.push("/technics");
+                                                    else history.push("/");
+                                                }}
+                                            >
                                                 {lang.currLang.buttons.techniques}
                                             </Button>
                                         </Grid>

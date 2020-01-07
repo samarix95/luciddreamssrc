@@ -75,6 +75,12 @@ export const useStyles = makeStyles(theme => ({
         textAlign: 'center',
         width: '100%',
     },
+    verySmallAvatar: {
+        margin: theme.spacing(1),
+        width: theme.spacing(3),
+        height: theme.spacing(3),
+        display: 'inline-block',
+    },
     smallAvatar: {
         margin: theme.spacing(0.5),
         width: theme.spacing(5),
@@ -90,6 +96,7 @@ export const useStyles = makeStyles(theme => ({
         left: '50%',
     },
     mainGridDreamsBodyItemContainer: {
+        paddingTop: '16px',
         position: 'absolute',
         boxSizing: 'border-box',
         maxHeight: '90%',
