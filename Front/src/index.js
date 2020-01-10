@@ -8,14 +8,7 @@ import { Provider } from "react-redux";
 import { store } from "./store";
 
 ReactDOM.render(
-    <div id='global'
-        style={{
-            overflow: 'auto',
-            height: '100%',
-            position: 'relative',
-        }}
-    >
-
+    <div id='global' >
         <Provider store={store}>
             <App />
         </Provider>

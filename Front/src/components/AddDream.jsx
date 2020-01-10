@@ -450,7 +450,6 @@ function AddDream(props) {
                         </Paper>
                     </Grid>
                     <Grid item xs={1} className={classes.mainGridBodyItem} >
-
                         {isLoading
                             ? <LinearProgress />
                             : <Grid
@@ -459,7 +458,6 @@ function AddDream(props) {
                                 justify="space-evenly"
                                 alignItems="center"
                             >
-
                                 <Grid item>
                                     <Button
                                         variant="contained"

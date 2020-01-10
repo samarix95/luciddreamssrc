@@ -11,6 +11,7 @@ import PrivateRoute from "./components/PrivateRoute";
 
 import AddDream from './components/AddDream';
 import AddCDream from './components/AddCDream';
+import AddTechnics from './components/AddTechnics';
 import ViewDreams from './components/ViewDreams';
 import MainPage from "./components/MainPage";
 import Sign from './components/Sign';
@@ -130,6 +131,7 @@ function Routes(props) {
                 <PrivateRoute exact path="/addregulardream" component={AddDream} />
                 <PrivateRoute exact path="/addcdream" component={AddCDream} />
                 <PrivateRoute exact path="/technics" component={Technics} />
+                <PrivateRoute exact path="/addtechnics" component={AddTechnics} />
             </Switch>
         </div>
     );

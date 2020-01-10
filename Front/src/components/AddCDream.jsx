@@ -402,8 +402,7 @@ function AddCDream(props) {
                     alignItems="stretch" >
                     <Grid item xs={11} className={classes.mainGridBodyItem}>
                         <Paper className={classes.paper}>
-                            <Grid className={classes.mainGridContainer}
-                                style={{ flexWrap: 'nowrap' }}
+                            <Grid className={`${classes.mainGridContainer} ${classes.noWrap}`}
                                 container
                                 direction="column"
                                 justify="center"

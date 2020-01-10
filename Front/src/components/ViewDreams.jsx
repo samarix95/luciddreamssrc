@@ -73,36 +73,9 @@ function ViewDreams(props) {
                                         </Grid>
                                         :
                                         <div>
-                                            <div
-                                                style={{
-                                                    position: "relative",
-                                                    left: "50%",
-                                                    transform: "translateX(-50%)",
-                                                    width: 200,
-                                                    height: 100,
-                                                }}
-                                            >
-                                            </div>
-                                            <div
-                                                style={{
-                                                    position: "relative",
-                                                    left: "50%",
-                                                    transform: "translateX(-50%)",
-                                                    width: 200,
-                                                    height: 200,
-                                                    background: "url('https://static.thenounproject.com/png/603669-200.png') no-repeat center",
-                                                }}>
-                                            </div>
-                                            <div
-                                                style={{
-                                                    position: "relative",
-                                                    left: "50%",
-                                                    transform: "translateX(-50%)",
-                                                    width: 200,
-                                                    height: 100,
-                                                    textAlign: "center",
-                                                }}
-                                            >
+                                            <div className={classes.divDreamsNotFound} />
+                                            <div className={`${classes.divDreamsNotFound} ${classes.divDreamsNotFoundImg}`} />
+                                            <div className={classes.divDreamsNotFound}>
                                                 <Typography>
                                                     {lang.currLang.texts.NoDreams}
                                                 </Typography>

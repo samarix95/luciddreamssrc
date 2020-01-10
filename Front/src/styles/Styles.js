@@ -37,6 +37,38 @@ export function randomBetween(a, b) {
 }
 
 export const useStyles = makeStyles(theme => ({
+    SwipeableViews: {
+        position: 'relative',
+        height: '90%',
+        '& .react-swipeable-view-container': {
+            height: '100% !Important',
+        },
+    },
+    media: {
+        height: 140,
+    },
+    iconCenter: {
+        display: "block",
+        margin: "auto"
+    },
+    dreamCardDiv: {
+        marginTop: '15px',
+        marginBottom: '15px',
+        width: '100%',
+        height: 'auto',
+        borderRadius: '4px',
+    },
+    divDreamsNotFoundImg: {
+        background: "url('https://static.thenounproject.com/png/603669-200.png') no-repeat center",
+    },
+    divDreamsNotFound: {
+        position: "relative",
+        left: "50%",
+        transform: "translateX(-50%)",
+        width: 200,
+        height: 100,
+        textAlign: "center",
+    },
     contentPaper: {
         backgroundColor: theme.palette.text.main,
         padding: 10,
@@ -69,9 +101,6 @@ export const useStyles = makeStyles(theme => ({
         transform: "translateX(-50%)",
     },
     avatarRoot: {
-        // display: "flex",
-        // flexWrap: "wrap",
-        // overflow: 'auto',
         textAlign: 'center',
         width: '100%',
     },
@@ -207,7 +236,6 @@ export const useStyles = makeStyles(theme => ({
     AppCloud: {
         position: 'absolute',
         backgroundRepeat: 'no-repeat',
-        //backgroundImage: 'url(https://www.turbotobias.dk/wp-content/uploads/2019/03/White-cloud-type3.svg)',
         backgroundImage: 'url(' + CloudSvg + ')',
         animation: '$moveclouds infinite linear',
         zIndex: -1,
@@ -372,11 +400,13 @@ export const useStyles = makeStyles(theme => ({
         left: '50%',
         transform: 'translate(-50%, -50%)',
         opacity: 1,
-        //overflowY: 'auto',
     },
     chips: {
         display: "flex",
-        flexWrap: "wrap"
+        flexWrap: "wrap",
+    },
+    noWrap: {
+        flexWrap: 'nowrap',
     },
     chip: {
         margin: 1

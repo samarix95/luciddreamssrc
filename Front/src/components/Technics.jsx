@@ -3,18 +3,17 @@ import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 
 import CircularProgress from '@material-ui/core/CircularProgress';
-import ListItemText from '@material-ui/core/ListItemText';
 import Container from '@material-ui/core/Container';
-import ListItem from '@material-ui/core/ListItem';
 import Button from '@material-ui/core/Button';
 import Paper from '@material-ui/core/Paper';
 import Grid from '@material-ui/core/Grid';
-import List from '@material-ui/core/List';
 
 import CssBaseline from '@material-ui/core/CssBaseline';
 
 import { MuiThemeProvider, createMuiTheme } from '@material-ui/core/styles';
 
+import { CheckTimeOut } from '../utils/CheckLoginTimeOut';
+import TechnicCard from './muiltiple/TechnicCard';
 import { useStyles } from '../styles/Styles';
 import { instance } from './Config';
 
@@ -59,20 +58,20 @@ function Technics(props) {
                             </div>
                             : <Container className={classes.mainGridDreamsBodyItemContainer}>
                                 <Paper className={classes.mainGridDreamsBodyItemContainerPaper}>
-                                    <List component="nav">
+                                    <Grid className={classes.mainGridDreamsContainer}
+                                        container
+                                        direction="column"
+                                        justify="center"
+                                        alignItems="stretch"
+                                    >
                                         {technics.map((item, key) => (
-                                            <ListItem key={key}
-                                                button
-                                                onClick={() => { alert(item.id) }}
-                                            >
-                                                <ListItemText primary={
-                                                    lang.currLang.current === "Ru"
-                                                        ? item.name_rus
-                                                        : item.name_eng
-                                                } />
-                                            </ListItem>
+                                            <TechnicCard key={key}
+                                                item={item}
+                                                loadTechnics={loadTechnics}
+                                                history={history}
+                                            />
                                         ))}
-                                    </List>
+                                    </Grid>
                                 </Paper>
                             </Container>
                         }
@@ -82,9 +81,8 @@ function Technics(props) {
                             direction="row"
                             justify="space-evenly"
                             alignItems="center"
-                            spacing={1}
                         >
-                            <Grid item xs={6} align="center">
+                            <Grid item>
                                 <Button
                                     variant="contained"
                                     color="secondary"
@@ -95,14 +93,15 @@ function Technics(props) {
                                 </Button>
                             </Grid>
                             {auth.user.roles < 2 //0 - admin; 1 - moderator
-                                ? <Grid item xs={6}>
+                                ? <Grid item>
                                     <Button
                                         variant="contained"
                                         color="primary"
                                         className={classes.actionButton}
                                         onClick={() => {
-                                            alert('У тебя есть права, ты можешь добавлять')
-                                            //history.push("/luciddreams")
+                                            let check = CheckTimeOut();
+                                            if (check) history.push("/addtechnics");
+                                            else history.push("/");
                                         }}
                                     >
                                         {lang.currLang.buttons.add}

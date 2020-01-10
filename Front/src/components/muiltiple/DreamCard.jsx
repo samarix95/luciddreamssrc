@@ -153,7 +153,6 @@ function DreamCard(props) {
                 instance
                     .post('/actions/users/deletepost', postData)
                     .then(res => {
-                        //TODO ADD LOADER
                         closeMenu();
                         setSnackbar({
                             type: SET_SNACKBAR_MODE,
@@ -240,17 +239,8 @@ function DreamCard(props) {
     };
 
     return (
-        <Grid item xs={12}
-            style={{
-                marginTop: '15px',
-                marginBottom: '15px',
-                width: '100%',
-                height: 'auto',
-                borderRadius: '4px',
-            }}>
-
-            <Dialog
-                open={openAlert}
+        <Grid item xs={12} className={classes.dreamCardDiv}>
+            <Dialog open={openAlert}
                 onClose={() => clickMenu('closeAlert')}
                 aria-labelledby="alert-dialog-title"
                 aria-describedby="alert-dialog-description"
@@ -313,7 +303,7 @@ function DreamCard(props) {
 
             </Menu>
 
-            <Card raised={false}
+            <Card raised={true}
                 className={classes.card}>
                 <CardHeader
                     title={
@@ -337,14 +327,8 @@ function DreamCard(props) {
                                     }
                                 >
                                     {publicChecked
-                                        ? <Visibility style={{
-                                            display: "block",
-                                            margin: "auto"
-                                        }} />
-                                        : <VisibilityOff style={{
-                                            display: "block",
-                                            margin: "auto"
-                                        }} />
+                                        ? <Visibility className={classes.iconCenter} />
+                                        : <VisibilityOff className={classes.iconCenter} />
                                     }
                                 </Tooltip>
                             </Grid>
@@ -415,7 +399,9 @@ function DreamCard(props) {
                             : true
                         }
                         variant='body2'
-                        style={{ padding: '12px', }}
+                        style={{
+                            padding: '12px',
+                        }}
                     >
                         {expanded
                             ? lang.currLang.texts.TapToShow
@@ -466,8 +452,10 @@ function DreamCard(props) {
                         {post_type === 0
                             ? ''
                             :
-                            <Grid style={{ paddingTop: '10px', }}
-                                container
+                            <Grid container
+                                style={{
+                                    paddingTop: '10px',
+                                }}
                                 direction="row"
                                 justify="center"
                                 alignItems="stretch" >
