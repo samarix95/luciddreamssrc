@@ -1,6 +1,6 @@
 const words = {
     current: 'En',
-    buttons : {
+    buttons: {
         signIn: 'Sign in',
         signUp: 'Sign up',
         dreamJoirnal: 'Dream joirnal',
@@ -15,6 +15,7 @@ const words = {
         Edit: 'Edit',
         Delete: 'Delete',
         Save: 'Save',
+        addTag: 'Add location',
     },
     texts: {
         about: 'About us About us About us About us About us About us About us About us About us About us ',
@@ -31,6 +32,7 @@ const words = {
         description: 'Description',
         content: "What's a dream",
         tags: 'Locations',
+        dreams: 'Dreams',
         technics: 'Technics',
         rating: 'Realistics',
         Dream: 'Regular dream',

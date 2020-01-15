@@ -59,7 +59,9 @@ function MainPage(props) {
     };
 
     const onMapClick = () => {
-        alert('Тут должны перейти на страницу карты');
+        let check = CheckTimeOut();
+        if (check) history.push("/dreammap");
+        else history.push("/");
     };
 
     const changeLanguage = (language) => {

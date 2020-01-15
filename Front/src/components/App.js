@@ -82,7 +82,7 @@ function App(props) {
     for (let i = 0; i < params.amountClouds; i++) {
         let left = Math.round(Math.random() * 50 + 90);
         let top = Math.round(Math.random() * 100 / 100 * 90);
-        let scale = Math.random() * 1.5 - 0.5;
+        let scale = Math.random() * 2 - 0.5;
         let opacity = Math.random() * 90 / 100;
         let speed = Math.random() * 30 + 15;
         clouds.push(

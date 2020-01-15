@@ -264,7 +264,6 @@ function DreamCard(props) {
                     </Button>
                 </DialogActions>
             </Dialog>
-
             <Menu id="simple-menu"
                 anchorEl={anchorEl}
                 keepMounted
@@ -302,10 +301,12 @@ function DreamCard(props) {
                 </MenuItem>
 
             </Menu>
-
             <Card raised={true}
                 className={classes.card}>
                 <CardHeader
+                    style={{
+                        paddingBottom: '0px',
+                    }}
                     title={
                         <Grid container
                             direction="row"
@@ -313,8 +314,11 @@ function DreamCard(props) {
                             alignItems="center"
                         >
                             <Grid item xs={10} >
-                                <Typography variant='h6'>
-                                    {post_title}
+                                <Typography variant='subtitle1'>
+                                    {post_title} (
+                                    {post_type === 0
+                                        ? lang.currLang.texts.Dream
+                                        : lang.currLang.texts.Cdream})
                                 </Typography>
                             </Grid>
                             <Grid item xs={2} >
@@ -344,54 +348,6 @@ function DreamCard(props) {
                         </IconButton>
                     }
                 />
-                <CardContent>
-                    <div className={classes.avatarRoot}>
-                        <Chip variant="outlined"
-                            label={
-                                post_type === 0
-                                    ? lang.currLang.texts.Dream
-                                    : lang.currLang.texts.Cdream
-                            }
-                        />
-                        {technics.map((technic, key) =>
-                            technic[0]
-                                ? <Chip className={classes.smallChip}
-                                    key={key}
-                                    label={lang.currLang.current === "Ru"
-                                        ? technic[1]
-                                        : technic[2]}
-                                />
-                                : ''
-                        )}
-                    </div>
-                    <div className={classes.avatarRoot}>
-                        {tags.map((tag, key) =>
-                            tag[0]
-                                ? <Tooltip key={key}
-                                    disableFocusListener
-                                    disableTouchListener
-                                    title={
-                                        lang.currLang.current === "Ru"
-                                            ? tag[1]
-                                            : tag[2]
-                                    }
-                                >
-                                    <Avatar className={classes.smallAvatar}
-                                        alt="Remy Sharp"
-                                        src={tag[3]}
-                                        style={palette.type === 'dark'
-                                            ? {
-                                                filter: 'invert(1)',
-                                            }
-                                            : {
-
-                                            }}
-                                    />
-                                </Tooltip>
-                                : ''
-                        )}
-                    </div>
-                </CardContent>
                 <CardActions disableSpacing={true}>
                     <Typography
                         noWrap={expanded
@@ -424,6 +380,42 @@ function DreamCard(props) {
                     timeout="auto"
                     unmountOnExit >
                     <CardContent>
+                        <div className={classes.avatarRoot}>
+                            {technics.map((technic, key) =>
+                                technic[0]
+                                    ? <Chip className={classes.smallChip}
+                                        key={key}
+                                        label={lang.currLang.current === "Ru"
+                                            ? technic[1]
+                                            : technic[2]}
+                                    />
+                                    : ''
+                            )}
+                        </div>
+                        <div className={classes.avatarRoot}>
+                            {tags.map((tag, key) =>
+                                tag[0]
+                                    ? <Tooltip key={key}
+                                        disableFocusListener
+                                        disableTouchListener
+                                        title={
+                                            lang.currLang.current === "Ru"
+                                                ? tag[1]
+                                                : tag[2]
+                                        }
+                                    >
+                                        <Avatar className={classes.smallAvatar}
+                                            src={tag[3]}
+                                            style={palette.type === 'dark'
+                                                ? {
+                                                    filter: 'invert(1)',
+                                                }
+                                                : {}}
+                                        />
+                                    </Tooltip>
+                                    : ''
+                            )}
+                        </div>
                         <Paper className={classes.contentPaper}>
                             <MUIRichTextEditor
                                 controls={[

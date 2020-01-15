@@ -108,13 +108,13 @@ export const useStyles = makeStyles(theme => ({
         margin: theme.spacing(1),
         width: theme.spacing(3),
         height: theme.spacing(3),
-        display: 'inline-block',
+        display: 'inline-flex !Important',
     },
     smallAvatar: {
         margin: theme.spacing(0.5),
         width: theme.spacing(5),
         height: theme.spacing(5),
-        display: 'inline-block',
+        display: 'inline-flex !Important',
     },
     smallChip: {
         margin: theme.spacing(0.5),
@@ -347,6 +347,7 @@ export const useStyles = makeStyles(theme => ({
     },
     mainGridBodyItem: {
         maxWidth: '100% !Important',
+        position: 'relative',
     },
     menuButtonContainerItem: {
         maxWidth: '100% !Important',
@@ -367,6 +368,10 @@ export const useStyles = makeStyles(theme => ({
     actionButton: {
         minWidth: '40vw',
         maxWidth: '40vw',
+    },
+    poppupButton: {
+        minWidth: '90%',
+        maxWidth: '90%',
     },
     mainGridFooterItem: {
         maxWidth: '100% !Important',

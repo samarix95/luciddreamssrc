@@ -9,6 +9,8 @@ import { setSnackbar } from './actions/Actions';
 
 import PrivateRoute from "./components/PrivateRoute";
 
+import DreamMap from './components/DreamMap';
+import AddLocation from './components/AddLocation';
 import AddDream from './components/AddDream';
 import AddCDream from './components/AddCDream';
 import AddTechnics from './components/AddTechnics';
@@ -126,6 +128,8 @@ function Routes(props) {
             </Snackbar>
             <Route exact path="/" component={Sign} />
             <Switch>
+                <PrivateRoute exact path="/dreammap" component={DreamMap} />
+                <PrivateRoute exact path="/addlocation" component={AddLocation} />
                 <PrivateRoute exact path="/luciddreams" component={MainPage} />
                 <PrivateRoute exact path="/dreams" component={ViewDreams} />
                 <PrivateRoute exact path="/addregulardream" component={AddDream} />
