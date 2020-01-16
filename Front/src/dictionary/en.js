@@ -15,7 +15,7 @@ const words = {
         Edit: 'Edit',
         Delete: 'Delete',
         Save: 'Save',
-        addTag: 'Add location',
+        addTag: 'New loc',
     },
     texts: {
         about: 'About us About us About us About us About us About us About us About us About us About us ',
@@ -52,6 +52,8 @@ const words = {
         UnpublicDescription: "Your friends can't read this dream",
         DeleteAlert: "Are you sure you want to remove?",
         DeleteText: "You can't restore data.",
+        Name: "Name",
+        ChangeIcon: "Icon",
     },
     errors: {
         emailLenght: 'Email must not be empty',
@@ -65,11 +67,14 @@ const words = {
         EmailIsBusy: 'Email is busy',
         PasswordLenght5Symbols: 'Minimum password length: 5 symbols',
         NotLogin: 'You not loggin in',
+        EmptyName: 'Name must not be empty',
         EmptyTitle: 'Title must not be empty',
         EmptyDescription: 'Description must not be empty',
         EmptyDream: 'Dream must not be empty',
         NoChanges: 'No changes',
         CantDeletePost: 'Error deleting dream',
+        IconNotChange: 'Change icon',
+        ColorNotChange: 'Change color',
     },
 };
 

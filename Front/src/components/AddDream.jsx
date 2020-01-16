@@ -7,6 +7,7 @@ import enLocale from "date-fns/locale/ru";
 
 import LinearProgress from '@material-ui/core/LinearProgress';
 import CssBaseline from '@material-ui/core/CssBaseline';
+import IconButton from '@material-ui/core/IconButton';
 import TextField from '@material-ui/core/TextField';
 import Avatar from "@material-ui/core/Avatar";
 import Button from '@material-ui/core/Button';
@@ -24,6 +25,7 @@ import { MuiThemeProvider, createMuiTheme } from '@material-ui/core/styles';
 import { MuiPickersUtilsProvider, KeyboardTimePicker, KeyboardDatePicker } from '@material-ui/pickers';
 
 import FormatColorFillIcon from '@material-ui/icons/FormatColorFill';
+import AddIcon from '@material-ui/icons/Add';
 
 import { useStyles } from '../styles/Styles';
 import { setSnackbar } from '../actions/Actions';
@@ -95,6 +97,15 @@ function AddDream(props) {
     const [prevContentText, setPrevContentText] = React.useState();
     const [selectedLocations, setselectedLocations] = React.useState([]);
     const [locations, setLocations] = React.useState({});
+
+    const addLocation = () => {
+        history.push({
+            pathname: "/addlocation",
+            defaultData: {
+                prevUrl: "/addregulardream",
+            }
+        });
+    };
 
     const handleChangeLocations = (event, value) => {
         setselectedLocations(value);
@@ -406,45 +417,60 @@ function AddDream(props) {
 
                                 </Grid>
                                 <Grid item xs={3} className={classes.fullMinWidth} >
-                                    {locations.length
-                                        ? <Autocomplete
-                                            multiple
-                                            className={classes.inputDiv}
-                                            id="tags-outlined"
-                                            size="small"
-                                            options={locations}
-                                            getOptionLabel={option => (
-                                                <Chip
+                                    <Grid container
+                                        className={classes.mainGridContainer}
+                                        direction="row"
+                                        justify="center"
+                                        alignItems="center"
+                                    >
+                                        <Grid item xs={10} style={{ position: 'relative' }}>
+                                            {locations.length
+                                                ? <Autocomplete
+                                                    multiple
+                                                    className={classes.inputDiv}
+                                                    id="tags-outlined"
                                                     size="small"
-                                                    className={classes.chip}
-                                                    avatar={
-                                                        <Avatar src={option.img_url} />
+                                                    options={locations}
+                                                    getOptionLabel={option => (
+                                                        <Chip
+                                                            size="small"
+                                                            className={classes.chip}
+                                                            avatar={
+                                                                <Avatar src={option.img_url} />
+                                                            }
+                                                            label={
+                                                                lang.currLang.current === "Ru"
+                                                                    ? option.name_rus
+                                                                    : option.name_eng
+                                                            }
+                                                        />
+                                                    )}
+                                                    defaultValue={
+                                                        defaultTags.map(item => {
+                                                            return locations[item.id - 1];
+                                                        })
                                                     }
-                                                    label={
-                                                        lang.currLang.current === "Ru"
-                                                            ? option.name_rus
-                                                            : option.name_eng
-                                                    }
+                                                    onChange={(event, value) => handleChangeLocations(event, value)}
+                                                    filterSelectedOptions
+                                                    renderInput={params => (
+                                                        <TextField
+                                                            {...params}
+                                                            label={lang.currLang.texts.tags}
+                                                            fullWidth
+                                                        />
+                                                    )}
                                                 />
-                                            )}
-                                            defaultValue={
-                                                defaultTags.map(item => {
-                                                    return locations[item.id - 1];
-                                                })}
-                                            onChange={(event, value) => handleChangeLocations(event, value)}
-                                            filterSelectedOptions
-                                            renderInput={params => (
-                                                <TextField
-                                                    {...params}
-                                                    label={lang.currLang.texts.tags}
-                                                    fullWidth
-                                                />
-                                            )}
-                                        />
-                                        : <div className={classes.inputDiv}>
-                                            <LinearProgress />
-                                        </div>
-                                    }
+                                                : <div className={classes.inputDiv}>
+                                                    <LinearProgress />
+                                                </div>
+                                            }
+                                        </Grid>
+                                        <Grid item xs={2}>
+                                            <IconButton onClick={addLocation}>
+                                                <AddIcon fontSize="small" />
+                                            </IconButton>
+                                        </Grid>
+                                    </Grid>
                                 </Grid>
                             </Grid>
                         </Paper>

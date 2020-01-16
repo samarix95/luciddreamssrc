@@ -21,421 +21,397 @@ const JSONtable = {
     0: {
         0: {
             id: 5,
-            color: "#666699",
         },
         1: {
             id: 3,
-            color: "#cc9900",
         },
         2: {
             id: 4,
-            color: "#669900",
         },
         3: {
             id: 4,
-            color: "#669900",
         },
         4: {
             id: 4,
-            color: "#669900",
         },
         5: {
             id: 4,
-            color: "#669900",
+
         },
         6: {
             id: 4,
-            color: "#669900",
+
         },
         7: {
             id: 4,
-            color: "#669900",
+
         },
         8: {
             id: 4,
-            color: "#669900",
+
         },
         9: {
             id: 4,
-            color: "#669900",
+
         },
     },
     1: {
         0: {
             id: 5,
-            color: "#666699",
         },
         1: {
             id: 6,
-            color: "#3399ff",
         },
         2: {
             id: 4,
-            color: "#669900",
+
         },
         3: {
             id: 4,
-            color: "#669900",
+
         },
         4: {
             id: 4,
-            color: "#669900",
+
         },
         5: {
             id: 4,
-            color: "#669900",
+
         },
         6: {
             id: 4,
-            color: "#669900",
+
         },
         7: {
             id: 4,
-            color: "#669900",
+
         },
         8: {
             id: 4,
-            color: "#669900",
+
         },
         9: {
             id: 4,
-            color: "#669900",
+
         },
     },
     2: {
         0: {
             id: 5,
-            color: "#666699",
         },
         1: {
             id: 5,
-            color: "#666699",
         },
         2: {
             id: 4,
-            color: "#669900",
+
         },
         3: {
             id: 4,
-            color: "#669900",
+
         },
         4: {
             id: 4,
-            color: "#669900",
+
         },
         5: {
             id: 4,
-            color: "#669900",
+
         },
         6: {
             id: 4,
-            color: "#669900",
+
         },
         7: {
             id: 4,
-            color: "#669900",
+
         },
         8: {
             id: 4,
-            color: "#669900",
+
         },
         9: {
             id: 4,
-            color: "#669900",
+
         },
     },
     3: {
         0: {
             id: 5,
-            color: "#666699",
         },
         1: {
             id: 5,
-            color: "#666699",
         },
         2: {
             id: 4,
-            color: "#669900",
+
         },
         3: {
             id: 4,
-            color: "#669900",
+
         },
         4: {
             id: 4,
-            color: "#669900",
+
         },
         5: {
             id: 4,
-            color: "#669900",
+
         },
         6: {
             id: 4,
-            color: "#669900",
+
         },
         7: {
             id: 4,
-            color: "#669900",
+
         },
         8: {
             id: 4,
-            color: "#669900",
+
         },
         9: {
             id: 4,
-            color: "#669900",
+
         },
     },
     4: {
         0: {
             id: 5,
-            color: "#666699",
         },
         1: {
             id: 5,
-            color: "#666699",
         },
         2: {
             id: 4,
-            color: "#669900",
+
         },
         3: {
             id: 4,
-            color: "#669900",
+
         },
         4: {
             id: 4,
-            color: "#669900",
+
         },
         5: {
             id: 4,
-            color: "#669900",
+
         },
         6: {
             id: 4,
-            color: "#669900",
+
         },
         7: {
             id: 4,
-            color: "#669900",
+
         },
         8: {
             id: 4,
-            color: "#669900",
+
         },
         9: {
             id: 4,
-            color: "#669900",
+
         },
     },
     5: {
         0: {
             id: 5,
-            color: "#666699",
         },
         1: {
             id: 5,
-            color: "#666699",
         },
         2: {
             id: 4,
-            color: "#669900",
+
         },
         3: {
             id: 4,
-            color: "#669900",
+
         },
         4: {
             id: 4,
-            color: "#669900",
+
         },
         5: {
             id: 4,
-            color: "#669900",
+
         },
         6: {
             id: 4,
-            color: "#669900",
+
         },
         7: {
             id: 4,
-            color: "#669900",
+
         },
         8: {
             id: 4,
-            color: "#669900",
+
         },
         9: {
             id: 4,
-            color: "#669900",
+
         },
     },
     6: {
         0: {
             id: 5,
-            color: "#666699",
         },
         1: {
             id: 5,
-            color: "#666699",
         },
         2: {
             id: 4,
-            color: "#669900",
+
         },
         3: {
             id: 4,
-            color: "#669900",
+
         },
         4: {
             id: 4,
-            color: "#669900",
+
         },
         5: {
             id: 4,
-            color: "#669900",
+
         },
         6: {
             id: 4,
-            color: "#669900",
+
         },
         7: {
             id: 4,
-            color: "#669900",
+
         },
         8: {
             id: 6,
-            color: "#3399ff",
         },
         9: {
             id: 4,
-            color: "#669900",
+
         },
     },
     7: {
         0: {
             id: 5,
-            color: "#666699",
         },
         1: {
             id: 5,
-            color: "#666699",
         },
         2: {
             id: 4,
-            color: "#669900",
+
         },
         3: {
             id: 4,
-            color: "#669900",
+
         },
         4: {
             id: 4,
-            color: "#669900",
+
         },
         5: {
             id: 4,
-            color: "#669900",
+
         },
         6: {
             id: 4,
-            color: "#669900",
+
         },
         7: {
             id: 4,
-            color: "#669900",
+
         },
         8: {
             id: 4,
-            color: "#669900",
+
         },
         9: {
             id: 4,
-            color: "#669900",
+
         },
     },
     8: {
         0: {
             id: 5,
-            color: "#666699",
         },
         1: {
             id: 5,
-            color: "#666699",
         },
         2: {
             id: 4,
-            color: "#669900",
+
         },
         3: {
             id: 4,
-            color: "#669900",
+
         },
         4: {
             id: 4,
-            color: "#669900",
+
         },
         5: {
             id: 4,
-            color: "#669900",
+
         },
         6: {
             id: 4,
-            color: "#669900",
+
         },
         7: {
             id: 4,
-            color: "#669900",
+
         },
         8: {
             id: 4,
-            color: "#669900",
+
         },
         9: {
             id: 4,
-            color: "#669900",
+
         },
     },
     9: {
         0: {
             id: 5,
-            color: "#666699",
         },
         1: {
             id: 5,
-            color: "#666699",
         },
         2: {
             id: 4,
-            color: "#669900",
+
         },
         3: {
             id: 4,
-            color: "#669900",
+
         },
         4: {
             id: 4,
-            color: "#669900",
+
         },
         5: {
             id: 4,
-            color: "#669900",
+
         },
         6: {
             id: 4,
-            color: "#669900",
+
         },
         7: {
             id: 4,
-            color: "#669900",
+
         },
         8: {
             id: 4,
-            color: "#669900",
+
         },
         9: {
             id: 4,
-            color: "#669900",
+
         },
     },
 };
@@ -478,9 +454,9 @@ function DreamMap(props) {
                         cellWidth={cellSize * 0.6}
                         dreamMap={dreamMap}
                         id={dreamMap[row][col].id}
-                        color={dreamMap[row][col].color}
                         locations={locations}
                         loadMap={loadMap}
+                        history={history}
                     />
                 );
                 i++;
@@ -603,7 +579,7 @@ function DreamMap(props) {
                             justify="space-evenly"
                             alignItems="center"
                         >
-                            <Grid item xs={6} align="center">
+                            <Grid item>
                                 <Button className={classes.actionButton}
                                     variant="contained"
                                     color="secondary"
@@ -612,13 +588,13 @@ function DreamMap(props) {
                                     {lang.currLang.buttons.close}
                                 </Button>
                             </Grid>
-                            <Grid item xs={6}>
+                            <Grid item>
                                 <Button className={classes.actionButton}
                                     variant="contained"
                                     color="primary"
                                     onClick={() => { history.push("/addlocation") }}
                                 >
-                                    {lang.currLang.buttons.addTag}
+                                    {lang.currLang.buttons.add}
                                 </Button>
                             </Grid>
                         </Grid>

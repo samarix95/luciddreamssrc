@@ -15,7 +15,7 @@ const words = {
         Edit: 'Изменить',
         Delete: 'Удалить',
         Save: 'Сохранить',
-        addTag: 'Новое место',
+        addTag: '+ место',
     },
     texts: {
         about: 'О нас О нас О нас О нас О нас О нас О нас О нас О нас О нас О нас О нас',
@@ -52,6 +52,8 @@ const words = {
         UnpublicDescription: "Ваши друзья не могут прочитать этот сон",
         DeleteAlert: "Вы точно хотите удалить?",
         DeleteText: "После удаления запись не получится восстановить.",
+        Name: "Наименование",
+        ChangeIcon: "Иконка",
     },
     errors: {
         emailLenght: 'Введите email',
@@ -65,11 +67,14 @@ const words = {
         EmailIsBusy: 'Email занят',
         PasswordLenght5Symbols: 'Длина пароля - больше 5 символов',
         NotLogin: 'Вы не авторизированы',
+        EmptyName: 'Пустое наименование',
         EmptyTitle: 'Пустой заголовок',
         EmptyDescription: 'Пустое описание',
         EmptyDream: 'Пустое поле сна',
         NoChanges: 'Нет изменений',
         CantDeletePost: 'Ошибка удаления сна',
+        IconNotChange: 'Выберите иконку',
+        ColorNotChange: 'Выберите цвет',
     },
 };
 

@@ -8,6 +8,7 @@ import enLocale from "date-fns/locale/ru";
 import LinearProgress from '@material-ui/core/LinearProgress';
 import CssBaseline from '@material-ui/core/CssBaseline';
 import Typography from '@material-ui/core/Typography';
+import IconButton from '@material-ui/core/IconButton';
 import TextField from '@material-ui/core/TextField';
 import Avatar from "@material-ui/core/Avatar";
 import Button from '@material-ui/core/Button';
@@ -27,6 +28,7 @@ import { MuiThemeProvider, createMuiTheme } from '@material-ui/core/styles';
 import { MuiPickersUtilsProvider, KeyboardTimePicker, KeyboardDatePicker } from '@material-ui/pickers';
 
 import FormatColorFillIcon from '@material-ui/icons/FormatColorFill';
+import AddIcon from '@material-ui/icons/Add';
 
 import { useStyles } from '../styles/Styles';
 import { SET_SNACKBAR_MODE } from "../actions/types";
@@ -102,6 +104,15 @@ function AddCDream(props) {
     const [realisticsValue, setRealisticsValue] = React.useState(1);
     const [locations, setLocations] = React.useState({});
     const [technics, setTechnics] = React.useState({});
+
+    const addLocation = () => {
+        history.push({
+            pathname: "/addlocation",
+            defaultData: {
+                prevUrl: "/addcdream",
+            }
+        });
+    };
 
     const handleChangeRealistics = (event, newValue) => {
         setRealisticsValue(newValue);
@@ -485,42 +496,56 @@ function AddCDream(props) {
                                     </div>
                                 </Grid>
                                 <Grid item xs={2} className={classes.fullMinWidth} >
-                                    {technics.length
-                                        ? <Autocomplete
-                                            multiple
-                                            className={classes.inputDiv}
-                                            id="technics-outlined"
-                                            size="small"
-                                            options={technics}
-                                            getOptionLabel={option => (
-                                                <Chip
+                                    <Grid container
+                                        className={classes.mainGridContainer}
+                                        direction="row"
+                                        justify="center"
+                                        alignItems="center"
+                                    >
+                                        <Grid item xs={10} style={{ position: 'relative' }}>
+                                            {technics.length
+                                                ? <Autocomplete
+                                                    multiple
+                                                    className={classes.inputDiv}
+                                                    id="technics-outlined"
                                                     size="small"
-                                                    className={classes.chip}
-                                                    label={
-                                                        lang.currLang.current === "Ru"
-                                                            ? option.name_rus
-                                                            : option.name_eng
-                                                    }
+                                                    options={technics}
+                                                    getOptionLabel={option => (
+                                                        <Chip
+                                                            size="small"
+                                                            className={classes.chip}
+                                                            label={
+                                                                lang.currLang.current === "Ru"
+                                                                    ? option.name_rus
+                                                                    : option.name_eng
+                                                            }
+                                                        />
+                                                    )}
+                                                    defaultValue={
+                                                        defaultTechnics.map(item => {
+                                                            return technics[item.id - 1];
+                                                        })}
+                                                    onChange={(event, value) => handleChangeTechnics(event, value)}
+                                                    filterSelectedOptions
+                                                    renderInput={params => (
+                                                        <TextField
+                                                            {...params}
+                                                            label={lang.currLang.texts.technics}
+                                                            fullWidth
+                                                        />
+                                                    )}
                                                 />
-                                            )}
-                                            defaultValue={
-                                                defaultTechnics.map(item => {
-                                                    return technics[item.id - 1];
-                                                })}
-                                            onChange={(event, value) => handleChangeTechnics(event, value)}
-                                            filterSelectedOptions
-                                            renderInput={params => (
-                                                <TextField
-                                                    {...params}
-                                                    label={lang.currLang.texts.technics}
-                                                    fullWidth
-                                                />
-                                            )}
-                                        />
-                                        : <div className={classes.inputDiv}>
-                                            <LinearProgress />
-                                        </div>
-                                    }
+                                                : <div className={classes.inputDiv}>
+                                                    <LinearProgress />
+                                                </div>
+                                            }
+                                        </Grid>
+                                        <Grid item xs={2}>
+                                            <IconButton onClick={addLocation}>
+                                                <AddIcon fontSize="small" />
+                                            </IconButton>
+                                        </Grid>
+                                    </Grid>
                                 </Grid>
                                 <Grid item xs={2} className={classes.fullMinWidth} >
                                     {locations.length

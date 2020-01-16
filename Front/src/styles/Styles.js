@@ -37,6 +37,14 @@ export function randomBetween(a, b) {
 }
 
 export const useStyles = makeStyles(theme => ({
+    formControl: {
+        position: 'absolute',
+        left: '50%',
+        top: '50%',
+        transform: 'translate(-50%, -50%)',
+        width: 'auto',
+        height: 'auto',
+    },
     SwipeableViews: {
         position: 'relative',
         height: '90%',

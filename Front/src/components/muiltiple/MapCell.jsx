@@ -3,6 +3,7 @@ import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 
 import FormControl from "@material-ui/core/FormControl";
+import IconButton from '@material-ui/core/IconButton';
 import Typography from "@material-ui/core/Typography";
 import MenuItem from "@material-ui/core/MenuItem";
 import Popover from "@material-ui/core/Popover";
@@ -13,16 +14,17 @@ import Grid from "@material-ui/core/Grid";
 
 import Skeleton from '@material-ui/lab/Skeleton';
 
+import EditIcon from '@material-ui/icons/Edit';
+
 import { useStyles } from '../../styles/Styles';
 //import { SET_SNACKBAR_MODE } from "../../actions/types";
 import { setSnackbar } from '../../actions/Actions';
 
 function MapCell(props) {
     const classes = useStyles();
-    const { i, j, cellHeight, cellWidth, id, color, locations, palette, lang, loadMap } = props;
+    const { i, j, cellHeight, cellWidth, id, locations, palette, lang, loadMap, history } = props;
     const [anchorEl, setAnchorEl] = React.useState(null);
     const [tagId, setTagId] = React.useState(id);
-
     const disabledSave = tagId === id ? true : false;
 
     const handleClick = event => {
@@ -37,6 +39,21 @@ function MapCell(props) {
     const changeTagId = event => {
         setTagId(event.target.value);
     };
+
+    const editLocation = () => {
+        history.push({
+            pathname: "/addlocation",
+            defaultData: {
+                id: tagId,
+                name_rus: locations.find(loc => loc.id === tagId).name_rus,
+                name_eng: locations.find(loc => loc.id === tagId).name_eng,
+                img_url: locations.find(loc => loc.id === tagId).img_url,
+                color: locations.find(loc => loc.id === tagId).color,
+                prevUrl: "/dreammap",
+            }
+        });
+    };
+
     const saveCellLoc = () => {
         let newCell = {
             "i": i,
@@ -69,7 +86,7 @@ function MapCell(props) {
                     style={{
                         backgroundImage: 'url(' + locations.find(loc => loc.id === tagId).img_url + ')',
                         backgroundSize: 'contain',
-                        backgroundColor: color,
+                        backgroundColor: locations.find(loc => loc.id === tagId).color,
                         overflow: 'hidden',
                         //position: 'absolute',
                         // width: cellWidth,
@@ -116,18 +133,39 @@ function MapCell(props) {
                                 justify="center"
                                 alignItems="stretch"
                             >
-                                <Grid item
-                                    style={{
-                                        textAlign: 'center'
-                                    }}
-                                >
-                                    <Typography component='div' variant='h6'>
-                                        {/* {i + ' ' + j} */}
-                                        {lang.currLang.current === "Ru"
-                                            ? locations.find(loc => loc.id === tagId).name_rus
-                                            : locations.find(loc => loc.id === tagId).name_eng
-                                        }
-                                    </Typography>
+                                <Grid item>
+                                    <Grid className={classes.mainGridContainer}
+                                        container
+                                        direction="row"
+                                        justify="center"
+                                        alignItems="stretch"
+                                    >
+                                        <Grid item xs={10}
+                                            style={{
+                                                textAlign: 'center',
+                                                position: 'relative',
+                                            }}
+                                        >
+                                            <Typography variant='h6'
+                                                style={{
+                                                    position: 'absolute',
+                                                    top: '50%',
+                                                    left: '50%',
+                                                    transform: 'translate(-50%, -50%)',
+                                                }}
+                                            >
+                                                {lang.currLang.current === "Ru"
+                                                    ? locations.find(loc => loc.id === tagId).name_rus
+                                                    : locations.find(loc => loc.id === tagId).name_eng
+                                                }
+                                            </Typography>
+                                        </Grid>
+                                        <Grid item xs={2}>
+                                            <IconButton onClick={editLocation}>
+                                                <EditIcon fontSize="small" />
+                                            </IconButton >
+                                        </Grid>
+                                    </Grid>
                                 </Grid>
                                 <Grid item>
                                     <Grid
@@ -137,7 +175,7 @@ function MapCell(props) {
                                         alignItems="center"
                                     >
                                         <Grid item>
-                                            <FormControl className={classes.formControl}>
+                                            <FormControl>
                                                 <Select value={tagId}
                                                     onChange={changeTagId}
                                                     MenuProps={{
@@ -157,7 +195,8 @@ function MapCell(props) {
                                                                     ? {
                                                                         filter: 'invert(1)',
                                                                     }
-                                                                    : {}}
+                                                                    : {}
+                                                                }
                                                             />
                                                         </MenuItem>
                                                     ))}

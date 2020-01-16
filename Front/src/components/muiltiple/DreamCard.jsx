@@ -37,6 +37,7 @@ import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
 import Visibility from '@material-ui/icons/Visibility';
 import MoreVertIcon from "@material-ui/icons/MoreVert";
 import EditIcon from "@material-ui/icons/Edit";
+import DeleteIcon from "@material-ui/icons/Delete";
 
 import { useStyles } from '../../styles/Styles';
 
@@ -295,7 +296,7 @@ function DreamCard(props) {
 
                 <MenuItem onClick={() => clickMenu('delete')}>
                     <ListItemIcon>
-                        <EditIcon fontSize="small" />
+                        <DeleteIcon fontSize="small" />
                     </ListItemIcon>
                     {lang.currLang.buttons.Delete}
                 </MenuItem>

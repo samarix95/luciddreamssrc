@@ -80,7 +80,7 @@ function App(props) {
     }
 
     for (let i = 0; i < params.amountClouds; i++) {
-        let left = Math.round(Math.random() * 50 + 90);
+        let left = Math.round(Math.random() * 50 + 150);
         let top = Math.round(Math.random() * 100 / 100 * 90);
         let scale = Math.random() * 2 - 0.5;
         let opacity = Math.random() * 90 / 100;
