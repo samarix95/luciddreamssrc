@@ -99,6 +99,7 @@ function AddDream(props) {
     const [locations, setLocations] = React.useState({});
 
     const addLocation = () => {
+        saveToLocalStorage();
         history.push({
             pathname: "/addlocation",
             defaultData: {
@@ -238,6 +239,7 @@ function AddDream(props) {
                                     message: lang.currLang.texts.success,
                                 },
                             });
+                            window.localStorage.removeItem('postData');
                             history.push("/dreams")
                         })
                         .catch(err => {
@@ -279,6 +281,7 @@ function AddDream(props) {
                                 message: lang.currLang.texts.success,
                             },
                         });
+                        window.localStorage.removeItem('postData');
                         history.push("/luciddreams")
                     })
                     .catch(err => {
@@ -288,7 +291,21 @@ function AddDream(props) {
         }
     };
 
+    const saveToLocalStorage = () => {
+        let data = {
+            titleText: titleText,
+            selectedDate: selectedDate,
+            contentText: contentText,
+            selectedLocations: selectedLocations,
+        };
+        window.localStorage.setItem("postData", JSON.stringify(data));
+    };
+
     React.useEffect(() => {
+        if (window.localStorage.getItem("postData"))
+            console.log(JSON.parse(window.localStorage.getItem("postData")));
+        else
+            console.log('Local storage clear');
         defaultTags = [];
         instance.get("/gettags")
             .then(res => {
