@@ -54,6 +54,7 @@ const words = {
         DeleteText: "После удаления запись не получится восстановить.",
         Name: "Наименование",
         ChangeIcon: "Иконка",
+        FindIcon: "Поиск иконки по названию",
     },
     errors: {
         emailLenght: 'Введите email',

@@ -34,7 +34,7 @@ function AddLocation(props) {
     const [prevUrl, setPrevUrl] = React.useState('');
     const [isIconsLoading, setIsIconsLoading] = React.useState(false);
     const [locationIcons, setLocationIcons] = React.useState([]);
-
+    const [searchName, setSearchName] = React.useState('');
     const [nameEn, setNameEn] = React.useState('');
     const [nameRu, setNameRu] = React.useState('');
     const [selectedIcon, setSelectedIcon] = React.useState('');
@@ -65,38 +65,10 @@ function AddLocation(props) {
     };
 
     const loadIconsList = () => {
-        let errorMessage = '';
-        let error = false;
-
-        if (nameRu.length === 0) {
-            errorMessage = lang.currLang.errors.EmptyName;
-            error = true;
-            setValue(0);
-        }
-        else {
-            if (nameEn.length === 0) {
-                errorMessage = lang.currLang.errors.EmptyName;
-                error = true;
-                setValue(1);
-            }
-        }
-
-        if (error) {
-            setLocationIcons([]);
-            setSelectedIcon('');
-            setSnackbar({
-                type: SET_SNACKBAR_MODE,
-                snackbar: {
-                    open: true,
-                    variant: 'error',
-                    message: errorMessage,
-                },
-            });
-        }
-        else {
+        if (searchName.length !== 0) {
             setIsIconsLoading(true);
             const postData = {
-                name: nameEn,
+                name: searchName.replace(/ /g, "%20"),
             };
             instance
                 .post('/actions/users/geticons', postData)
@@ -124,7 +96,12 @@ function AddLocation(props) {
                 errorMessage = lang.currLang.errors.IconNotChange;
                 error = true;
             }
-            if (nameRu.length === 0 || nameEn.length === 0) {
+            if (nameRu.length === 0) {
+                errorMessage = lang.currLang.errors.EmptyName;
+                error = true;
+                setValue(0);
+            }
+            if (nameEn.length === 0) {
                 errorMessage = lang.currLang.errors.EmptyName;
                 error = true;
                 setValue(1);
@@ -147,7 +124,25 @@ function AddLocation(props) {
                     img_url: selectedIcon,
                     color: iconColor
                 };
-                console.log(postData);
+                instance
+                    .post('/actions/users/createlocation', postData)
+                    .then(res => {
+                        if (res.data.length === 0) {
+                            setSnackbar({
+                                type: SET_SNACKBAR_MODE,
+                                snackbar: {
+                                    open: true,
+                                    variant: 'success',
+                                    message: lang.currLang.texts.success,
+                                },
+                            });
+                            prevUrl.length === 0
+                                ? history.push("/dreammap")
+                                : history.push(prevUrl);
+                        }
+                        else {
+                        }
+                    });
             }
         }
         else {
@@ -174,7 +169,15 @@ function AddLocation(props) {
             }
 
             if (chages) {
-                console.log(postData);
+                instance
+                    .post('/actions/users/updatelocation', postData)
+                    .then(res => {
+                        if (res.data.length === 0) {
+
+                        }
+                        else {
+                        }
+                    });
             }
             else {
                 setSnackbar({
@@ -247,8 +250,8 @@ function AddLocation(props) {
                                 justify="center"
                                 alignItems="stretch"
                             >
-                                <Grid item className={`${classes.mainGridBodyItem} ${classes.height6}`} >
-                                    <Paper >
+                                <Grid item className={`${classes.mainGridBodyItem} ${classes.height5}`}>
+                                    <Paper>
                                         <Tabs centered
                                             value={value}
                                             onChange={handleChange}
@@ -306,56 +309,78 @@ function AddLocation(props) {
                                                     label={lang.currLang.texts.Name}
                                                     variant="outlined"
                                                     onChange={changeNameEn}
-                                                    onBlur={loadIconsList}
                                                 />
                                             </Grid>
                                         </Grid>
                                     </SwipeableViews>
                                 </Grid>
-                                <Grid item className={`${classes.mainGridBodyItem} ${classes.height2}`} >
-                                    <div className={classes.formControl}>
-                                        {!isIconsLoading
-                                            ? <FormControl
-                                                disabled={locationIcons.length !== 0
+                                <Grid item className={`${classes.mainGridBodyItem} ${classes.height3}`}>
+                                    <Grid className={`${classes.height12}`}
+                                        container
+                                        direction="column"
+                                        justify="center"
+                                        alignItems="stretch"
+                                    >
+                                        <Grid item className={`${classes.mainGridBodyItem} ${classes.height6}`}>
+                                            <TextField className={classes.inputDiv}
+                                                disabled={!isIconsLoading
                                                     ? false
                                                     : true
                                                 }
-                                            >
-                                                <InputLabel id="select-icon">
-                                                    {lang.currLang.texts.ChangeIcon}
-                                                </InputLabel>
-                                                <Select value={selectedIcon}
-                                                    style={{
-                                                        minWidth: 100,
-                                                    }}
-                                                    labelId="select-icon"
-                                                    onChange={changeIcon}
-                                                    MenuProps={{
-                                                        PaperProps: {
-                                                            style: {
-                                                                maxHeight: 48 * 4.5 + 8,
-                                                                width: 'auto',
-                                                            },
-                                                        },
-                                                    }}
-                                                >
-                                                    {locationIcons.map((item, key) => (
-                                                        <MenuItem key={key} value={item} >
-                                                            <Avatar className={classes.smallAvatar}
-                                                                src={item}
-                                                                style={palette.type === 'dark'
-                                                                    ? {
-                                                                        filter: 'invert(1)',
-                                                                    }
-                                                                    : {}}
-                                                            />
-                                                        </MenuItem>
-                                                    ))}
-                                                </Select>
-                                            </FormControl>
-                                            : <CircularProgress />
-                                        }
-                                    </div>
+                                                value={searchName}
+                                                id="outlined-required"
+                                                label={lang.currLang.texts.FindIcon}
+                                                variant="outlined"
+                                                onChange={(event) => setSearchName(event.target.value)}
+                                                onBlur={loadIconsList}
+                                            />
+                                        </Grid>
+                                        <Grid item className={`${classes.mainGridBodyItem} ${classes.height6}`}>
+                                            <div className={classes.formControl}>
+                                                {!isIconsLoading
+                                                    ? <FormControl
+                                                        disabled={locationIcons.length !== 0
+                                                            ? false
+                                                            : true
+                                                        }
+                                                    >
+                                                        <InputLabel id="select-icon">
+                                                            {lang.currLang.texts.ChangeIcon}
+                                                        </InputLabel>
+                                                        <Select value={selectedIcon}
+                                                            style={{
+                                                                minWidth: 100,
+                                                            }}
+                                                            labelId="select-icon"
+                                                            onChange={changeIcon}
+                                                            MenuProps={{
+                                                                PaperProps: {
+                                                                    style: {
+                                                                        maxHeight: 48 * 4.5 + 8,
+                                                                        width: 'auto',
+                                                                    },
+                                                                },
+                                                            }}
+                                                        >
+                                                            {locationIcons.map((item, key) => (
+                                                                <MenuItem key={key} value={item} >
+                                                                    <Avatar className={classes.smallAvatar}
+                                                                        src={item}
+                                                                        style={palette.type === 'dark'
+                                                                            ? {
+                                                                                filter: 'invert(1)',
+                                                                            }
+                                                                            : {}}
+                                                                    />
+                                                                </MenuItem>
+                                                            ))}
+                                                        </Select>
+                                                    </FormControl>
+                                                    : <CircularProgress />
+                                                }
+                                            </div>
+                                        </Grid>
+                                    </Grid>
                                 </Grid>
                                 <Grid item className={`${classes.mainGridBodyItem} ${classes.height4}`}>
                                     <SliderPicker className={classes.inputDiv}

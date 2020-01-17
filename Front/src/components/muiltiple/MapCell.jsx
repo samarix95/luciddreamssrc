@@ -215,6 +215,9 @@ function MapCell(props) {
                             direction="row"
                             justify="space-around"
                             alignItems="stretch"
+                            style={{
+                                padding: '16px'
+                            }}
                         >
                             <Grid item xs={6} align="center">
                                 <Button className={classes.poppupButton}

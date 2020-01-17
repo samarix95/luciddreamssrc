@@ -533,14 +533,14 @@ function AddCDream(props) {
                                         />
                                     </div>
                                 </Grid>
-                                <Grid item xs={2} className={classes.fullMinWidth} >
+                                <Grid item xs={2} className={classes.fullMinWidth}>
                                     <Grid container
                                         className={classes.mainGridContainer}
                                         direction="row"
                                         justify="center"
                                         alignItems="center"
                                     >
-                                        <Grid item xs={10} style={{ position: 'relative' }}>
+                                        <Grid item xs={12} style={{ position: 'relative' }}>
                                             {technics.length
                                                 ? <Autocomplete
                                                     multiple
@@ -578,53 +578,62 @@ function AddCDream(props) {
                                                 </div>
                                             }
                                         </Grid>
+                                    </Grid>
+                                </Grid>
+                                <Grid item xs={2} className={classes.fullMinWidth}>
+                                    <Grid container
+                                        className={classes.mainGridContainer}
+                                        direction="row"
+                                        justify="center"
+                                        alignItems="center"
+                                    >
+                                        <Grid item xs={10} style={{ position: 'relative' }}>
+                                            {locations.length
+                                                ? <Autocomplete
+                                                    multiple
+                                                    className={classes.inputDiv}
+                                                    id="tags-outlined"
+                                                    size="small"
+                                                    options={locations}
+                                                    getOptionLabel={option => (
+                                                        <Chip
+                                                            size="small"
+                                                            className={classes.chip}
+                                                            avatar={
+                                                                <Avatar src={option.img_url} />
+                                                            }
+                                                            label={
+                                                                lang.currLang.current === "Ru"
+                                                                    ? option.name_rus
+                                                                    : option.name_eng
+                                                            }
+                                                        />
+                                                    )}
+                                                    defaultValue={
+                                                        defaultTags.map(item => {
+                                                            return locations[item.id - 1];
+                                                        })}
+                                                    onChange={(event, value) => handleChangeLocations(event, value)}
+                                                    filterSelectedOptions
+                                                    renderInput={params => (
+                                                        <TextField
+                                                            {...params}
+                                                            label={lang.currLang.texts.tags}
+                                                            fullWidth
+                                                        />
+                                                    )}
+                                                />
+                                                : <div className={classes.inputDiv}>
+                                                    <LinearProgress />
+                                                </div>
+                                            }
+                                        </Grid>
                                         <Grid item xs={2}>
                                             <IconButton onClick={addLocation}>
                                                 <AddIcon fontSize="small" />
                                             </IconButton>
                                         </Grid>
                                     </Grid>
-                                </Grid>
-                                <Grid item xs={2} className={classes.fullMinWidth} >
-                                    {locations.length
-                                        ? <Autocomplete
-                                            multiple
-                                            className={classes.inputDiv}
-                                            id="tags-outlined"
-                                            size="small"
-                                            options={locations}
-                                            getOptionLabel={option => (
-                                                <Chip
-                                                    size="small"
-                                                    className={classes.chip}
-                                                    avatar={
-                                                        <Avatar src={option.img_url} />
-                                                    }
-                                                    label={
-                                                        lang.currLang.current === "Ru"
-                                                            ? option.name_rus
-                                                            : option.name_eng
-                                                    }
-                                                />
-                                            )}
-                                            defaultValue={
-                                                defaultTags.map(item => {
-                                                    return locations[item.id - 1];
-                                                })}
-                                            onChange={(event, value) => handleChangeLocations(event, value)}
-                                            filterSelectedOptions
-                                            renderInput={params => (
-                                                <TextField
-                                                    {...params}
-                                                    label={lang.currLang.texts.tags}
-                                                    fullWidth
-                                                />
-                                            )}
-                                        />
-                                        : <div className={classes.inputDiv}>
-                                            <LinearProgress />
-                                        </div>
-                                    }
                                 </Grid>
                                 <Grid item xs={1} className={classes.fullMinWidth} >
                                     <div className={classes.div85width}>

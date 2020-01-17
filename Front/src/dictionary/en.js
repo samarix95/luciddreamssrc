@@ -54,6 +54,7 @@ const words = {
         DeleteText: "You can't restore data.",
         Name: "Name",
         ChangeIcon: "Icon",
+        FindIcon: "Search icon",
     },
     errors: {
         emailLenght: 'Email must not be empty',
