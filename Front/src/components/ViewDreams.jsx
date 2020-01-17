@@ -43,12 +43,13 @@ function ViewDreams(props) {
         <MuiThemeProvider theme={muiTheme}>
             <CssBaseline />
             <div className={classes.root}>
-                <Grid className={classes.mainGridContainer}
-                    container
+                <Grid container
+                    className={`${classes.height12}`}
                     direction="column"
                     justify="center"
-                    alignItems="stretch" >
-                    <Grid item xs={11} zeroMinWidth className={classes.mainGridDreamsBodyItem}>
+                    alignItems="stretch"
+                >
+                    <Grid item className={`${classes.hiddenOverflow} ${classes.height11}`}>
                         {isLoading
                             ? <div className={classes.centerCircularProgress}>
                                 <CircularProgress disableShrink />
@@ -56,7 +57,7 @@ function ViewDreams(props) {
                             : <Container className={classes.mainGridDreamsBodyItemContainer}>
                                 <Paper className={classes.mainGridDreamsBodyItemContainerPaper}>
                                     {dreams.length !== 0
-                                        ? <Grid className={classes.mainGridDreamsContainer}
+                                        ? <Grid className={`${classes.mainGridDreamsContainer}`}
                                             container
                                             direction="column"
                                             justify="center"
@@ -71,8 +72,7 @@ function ViewDreams(props) {
                                                 />
                                             ))}
                                         </Grid>
-                                        :
-                                        <div>
+                                        : <div>
                                             <div className={classes.divDreamsNotFound} />
                                             <div className={`${classes.divDreamsNotFound} ${classes.divDreamsNotFoundImg}`} />
                                             <div className={classes.divDreamsNotFound}>
@@ -86,17 +86,14 @@ function ViewDreams(props) {
                             </Container>
                         }
                     </Grid>
-                    <Grid item xs={1} zeroMinWidth className={classes.mainGridBodyItem}>
-                        <Grid
-                            container
+                    <Grid item className={`${classes.mainGridBodyItem} ${classes.height1}`}>
+                        <Grid container
                             direction="row"
                             justify="space-evenly"
                             alignItems="center"
-                            spacing={1}
                         >
                             <Grid item xs={6} align="center">
-                                <Button
-                                    variant="contained"
+                                <Button variant="contained"
                                     color="secondary"
                                     className={classes.actionButton}
                                     onClick={() => { history.push("/luciddreams") }}

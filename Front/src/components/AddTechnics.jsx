@@ -142,19 +142,18 @@ function AddTechnics(props) {
         <MuiThemeProvider theme={muiTheme}>
             <CssBaseline />
             <div className={classes.root} >
-                <Grid className={classes.mainGridContainer}
-                    container
+                <Grid container
+                    className={`${classes.height12}`}
                     direction="column"
                     justify="center"
                     alignItems="stretch" >
-                    <Grid item xs={11} className={classes.mainGridBodyItem}>
+                    <Grid item className={`${classes.mainGridBodyItem} ${classes.height11}`}>
                         <Paper className={classes.paper}>
                             <Paper style={{
                                 position: 'relative',
                                 height: '10%',
                             }}>
-                                <Tabs
-                                    centered
+                                <Tabs centered
                                     value={value}
                                     onChange={handleChange}
                                     indicatorColor="primary"
@@ -166,18 +165,22 @@ function AddTechnics(props) {
                             </Paper>
                             <SwipeableViews className={classes.SwipeableViews}
                                 animateHeight
-                                axis={muiTheme.direction === "rtl" ? "x-reverse" : "x"}
+                                axis={
+                                    muiTheme.direction === "rtl"
+                                        ? "x-reverse"
+                                        : "x"
+                                }
                                 index={value}
                                 onChangeIndex={handleChangeIndex}
                             >
                                 <Grid container
-                                    className={classes.mainGridContainer}
+                                    className={`${classes.height12}`}
                                     direction="column"
                                     justify="center"
-                                    alignItems="center"
+                                    alignItems="stretch"
                                     role="tabpanel"
                                 >
-                                    <Grid item xs={2} className={classes.fullMinWidth} >
+                                    <Grid item className={`${classes.mainGridBodyItem} ${classes.height2}`}>
                                         <TextField className={classes.inputDiv}
                                             error={fileldsErr.titleRu}
                                             required
@@ -188,7 +191,7 @@ function AddTechnics(props) {
                                             onChange={(e) => { changeData(e, 'title-ru') }}
                                         />
                                     </Grid>
-                                    <Grid item xs={10} className={classes.fullMinWidth} >
+                                    <Grid item className={`${classes.mainGridBodyItem} ${classes.height10}`}>
                                         <TextField className={classes.inputDiv}
                                             error={fileldsErr.descriptionRu}
                                             required
@@ -203,13 +206,13 @@ function AddTechnics(props) {
                                     </Grid>
                                 </Grid>
                                 <Grid container
-                                    className={classes.mainGridContainer}
+                                    className={`${classes.height12}`}
                                     direction="column"
                                     justify="center"
-                                    alignItems="center"
+                                    alignItems="stretch"
                                     role="tabpanel"
                                 >
-                                    <Grid item xs={2} className={classes.fullMinWidth} >
+                                    <Grid item className={`${classes.mainGridBodyItem} ${classes.height2}`}>
                                         <TextField className={classes.inputDiv}
                                             error={fileldsErr.titleEn}
                                             required
@@ -220,7 +223,7 @@ function AddTechnics(props) {
                                             onChange={(e) => { changeData(e, 'title-en') }}
                                         />
                                     </Grid>
-                                    <Grid item xs={10} className={classes.fullMinWidth} >
+                                    <Grid item className={`${classes.mainGridBodyItem} ${classes.height10}`}>
                                         <TextField className={classes.inputDiv}
                                             error={fileldsErr.descriptionEn}
                                             required
@@ -237,7 +240,7 @@ function AddTechnics(props) {
                             </SwipeableViews>
                         </Paper>
                     </Grid>
-                    <Grid item xs={1} zeroMinWidth className={classes.mainGridBodyItem}>
+                    <Grid item className={`${classes.mainGridBodyItem} ${classes.height1}`}>
                         <Grid container
                             direction="row"
                             justify="space-evenly"

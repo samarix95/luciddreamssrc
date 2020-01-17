@@ -106,6 +106,7 @@ function AddCDream(props) {
     const [technics, setTechnics] = React.useState({});
 
     const addLocation = () => {
+        saveToLocalStorage();
         history.push({
             pathname: "/addlocation",
             defaultData: {
@@ -131,6 +132,7 @@ function AddCDream(props) {
     };
 
     const handleDateChange = date => {
+        saveToLocalStorage();
         setSelectedDate(date);
     };
 
@@ -139,6 +141,7 @@ function AddCDream(props) {
         const convert = convertToRaw(currCont);
         const content = JSON.stringify(convert);
         if (prevContentText !== content) {
+            saveToLocalStorage();
             setPrevContentText(content);
         }
     };
@@ -294,6 +297,7 @@ function AddCDream(props) {
                                     message: lang.currLang.texts.success,
                                 },
                             });
+                            window.localStorage.removeItem("postСDreamData");
                             history.push("/dreams")
                         })
                         .catch(err => {
@@ -338,6 +342,7 @@ function AddCDream(props) {
                                 message: lang.currLang.texts.success,
                             },
                         });
+                        window.localStorage.removeItem("postСDreamData");
                         history.push("/luciddreams")
                     })
                     .catch(err => {
@@ -347,7 +352,40 @@ function AddCDream(props) {
         }
     };
 
+    const saveToLocalStorage = () => {
+        let data = {};
+        if (window.localStorage.getItem("postСDreamData")) {
+            data = JSON.parse(window.localStorage.getItem("postСDreamData"));
+        }
+        data.selectedDate = selectedDate;
+        if (titleText.length !== 0) {
+            data.titleText = titleText;
+        }
+        if (typeof prevContentText !== 'undefined')
+            if (prevContentText.length !== 0) {
+                data.contentText = prevContentText;
+            }
+        window.localStorage.setItem("postСDreamData", JSON.stringify(data));
+    };
+
+    const loadFromLocalStorage = () => {
+        const { selectedDate, titleText, contentText } = JSON.parse(window.localStorage.getItem("postСDreamData"));
+        if (typeof selectedDate !== 'undefined') {
+            setSelectedDate(new Date(selectedDate));
+        }
+        if (typeof titleText !== 'undefined') {
+            setTitleText(titleText);
+        }
+        if (typeof contentText !== 'undefined') {
+            setContentText(contentText);
+            setPrevContentText(contentText);
+        }
+    };
+
     React.useEffect(() => {
+        if (window.localStorage.getItem("postСDreamData"))
+            loadFromLocalStorage();
+
         defaultTechnics = [];
         defaultTags = [];
         instance.get("/gettags")
@@ -417,8 +455,7 @@ function AddCDream(props) {
                                 container
                                 direction="column"
                                 justify="center"
-                                alignItems="center"
-                            >
+                                alignItems="center" >
                                 <Grid item xs={2} className={classes.fullMinWidth} >
                                     <TextField className={classes.inputDiv}
                                         required
@@ -427,6 +464,7 @@ function AddCDream(props) {
                                         label={lang.currLang.texts.title}
                                         variant="outlined"
                                         onChange={(e) => { blurTitle(e) }}
+                                        onBlur={saveToLocalStorage}
                                     />
                                 </Grid>
                                 <Grid item xs={1} className={classes.fullMinWidth} >
@@ -596,8 +634,8 @@ function AddCDream(props) {
                                             justify="center"
                                             alignItems="stretch" >
                                             <Grid item xs={6}>
-                                                <Typography component="legend">
-                                                    {lang.currLang.texts.rating} :
+                                                <Typography variant="body2">
+                                                    {lang.currLang.texts.rating}:
                                                 </Typography>
                                             </Grid>
                                             <Grid item xs={6}>
@@ -627,9 +665,10 @@ function AddCDream(props) {
                                         color="secondary"
                                         className={classes.actionButton}
                                         onClick={() => {
+                                            window.localStorage.removeItem("postСDreamData");
                                             isEditMode
                                                 ? history.push("/dreams")
-                                                : history.push("/luciddreams")
+                                                : history.push("/luciddreams");
                                         }}
                                     >
                                         {lang.currLang.buttons.close}

@@ -33,9 +33,6 @@ import { MuiThemeProvider, createMuiTheme } from '@material-ui/core/styles';
 
 import CssBaseline from '@material-ui/core/CssBaseline';
 
-import { mdiVk } from '@mdi/js';
-import Icon from '@mdi/react';
-
 const Transition = React.forwardRef(function Transition(props, ref) {
     return <Slide direction="up" ref={ref} {...props} />;
 });
@@ -76,16 +73,19 @@ function Sign(props) {
     const handleMouseDownPassword = event => {
         event.preventDefault();
     };
+
     const changeAuthLogin = (e) => {
         let newLoginData = loginData;
         newLoginData = { ...newLoginData, email: e.target.value };
         setLoginData(newLoginData);
     };
+
     const changeAuthPassword = (e) => {
         let newLoginData = loginData;
         newLoginData = { ...newLoginData, password: e.target.value };
         setLoginData(newLoginData);
     };
+
     const changeRegistLogin = (e) => {
         let newRegFieldErrors = regFieldErrors;
         newRegFieldErrors = { ...newRegFieldErrors, emailErr: false };
@@ -96,6 +96,7 @@ function Sign(props) {
         newRegistData = { ...newRegistData, email: e.target.value };
         setRegistData(newRegistData);
     };
+
     const changeRegistNickname = (e) => {
         let newRegFieldErrors = regFieldErrors;
         newRegFieldErrors = { ...newRegFieldErrors, nicknameErr: false };
@@ -106,6 +107,7 @@ function Sign(props) {
         newRegistData = { ...newRegistData, nickname: e.target.value };
         setRegistData(newRegistData);
     };
+
     const changeRegistPassword = (e) => {
         let newRegFieldErrors = regFieldErrors;
         newRegFieldErrors = { ...newRegFieldErrors, passwordErr: false };
@@ -118,6 +120,7 @@ function Sign(props) {
         newRegistData = { ...newRegistData, password: e.target.value };
         setRegistData(newRegistData);
     };
+
     const changeRegistPassword2 = (e) => {
         let newRegFieldErrors = regFieldErrors;
         newRegFieldErrors = { ...newRegFieldErrors, passwordErr: false };
@@ -129,6 +132,7 @@ function Sign(props) {
         newRegistData = { ...newRegistData, password2: e.target.value };
         setRegistData(newRegistData);
     };
+
     const singIn = () => {
         instance
             .post("/actions/users/login", loginData)
@@ -167,6 +171,7 @@ function Sign(props) {
                 setIsLoading(false);
             });
     };
+
     const singUp = () => {
         let isErr = false;
         let newRegFieldErrors = regFieldErrors;
@@ -247,6 +252,7 @@ function Sign(props) {
                 });
         }
     };
+
     const click = (action) => {
         let newPages = page;
         switch (action) {
@@ -298,6 +304,7 @@ function Sign(props) {
                 break;
         }
     };
+
     const changeLanguage = (language) => {
         if (language === 'Ru') {
             setCurrLang(RuDict);
@@ -305,244 +312,220 @@ function Sign(props) {
         else {
             setCurrLang(EnDict);
         }
-    }
+    };
 
     return (
         <MuiThemeProvider theme={muiTheme}>
             <CssBaseline />
-
-            <div className={classes.root} id='rootDiv'>
-
+            <Dialog keepMounted
+                open={openLogin}
+                TransitionComponent={Transition}
+                aria-labelledby="alert-dialog-slide-title"
+                aria-describedby="alert-dialog-slide-description"
+            >
+                <DialogTitle id="alert-dialog-slide-title">
+                    {lang.currLang.buttons.signIn}
+                </DialogTitle>
+                <DialogContent>
+                    <Grid className={`${classes.menuDivButton}`} align="center">
+                        <TextField
+                            className={classes.textField}
+                            id="email-field"
+                            type="email"
+                            label="Email"
+                            onBlur={(e) => { changeAuthLogin(e) }} />
+                    </Grid>
+                    <Grid className={`${classes.menuDivButton}`} align="center">
+                        <TextField
+                            id="password-field"
+                            className={classes.textField}
+                            type={showPassword ? 'text' : 'password'}
+                            label={lang.currLang.texts.password}
+                            onBlur={(e) => { changeAuthPassword(e) }}
+                            InputProps={{
+                                endAdornment: (
+                                    <InputAdornment position="end">
+                                        <IconButton
+                                            tabIndex="-1"
+                                            edge="end"
+                                            aria-label="toggle password visibility"
+                                            onClick={() => { showPassword ? setShowPassword(false) : setShowPassword(true) }}
+                                            onMouseDown={handleMouseDownPassword} >
+                                            {showPassword ? <VisibilityOff /> : <Visibility />}
+                                        </IconButton>
+                                    </InputAdornment>
+                                ),
+                            }} />
+                    </Grid>
+                    {isLoading
+                        ? <LinearProgress /> :
+                        ''
+                    }
+                </DialogContent>
+                {!isLoading
+                    ? <DialogActions>
+                        <Button onClick={() => { click('closeLogin') }}
+                            color="secondary"
+                            disabled={isLoading}>
+                            {lang.currLang.buttons.cancel}
+                        </Button>
+                        <Button onClick={() => { click('signIn') }}
+                            color="primary"
+                            disabled={isLoading}>
+                            {lang.currLang.buttons.signIn}
+                        </Button>
+                    </DialogActions>
+                    : ''}
+            </Dialog>
+            <Dialog keepMounted
+                open={openRegist}
+                TransitionComponent={Transition}
+                aria-labelledby="alert-dialog-slide-title"
+                aria-describedby="alert-dialog-slide-description"
+            >
+                <DialogTitle id="alert-dialog-slide-title">
+                    {lang.currLang.buttons.signUp}
+                </DialogTitle>
+                <DialogContent>
+                    <Grid className={`${classes.menuDivButton}`} align="center">
+                        <TextField id="reg-email-field"
+                            error={regFieldErrors.emailErr}
+                            helperText={regFieldErrors.emailErrText}
+                            className={classes.textField}
+                            type="email"
+                            label="Email"
+                            onBlur={(e) => { changeRegistLogin(e) }} />
+                    </Grid>
+                    <Grid className={`${classes.menuDivButton}`} align="center">
+                        <TextField id="reg-nickname-field"
+                            error={regFieldErrors.nicknameErr}
+                            helperText={regFieldErrors.nicknameErrText}
+                            className={classes.textField}
+                            type="text"
+                            label={lang.currLang.texts.nickname}
+                            onBlur={(e) => { changeRegistNickname(e) }} />
+                    </Grid>
+                    <Grid className={`${classes.menuDivButton}`} align="center">
+                        <TextField id="reg-password-field"
+                            error={regFieldErrors.passwordErr}
+                            helperText={regFieldErrors.passwordErrText}
+                            className={classes.textField}
+                            type={showPassword ? 'text' : 'password'}
+                            label={lang.currLang.texts.password}
+                            onBlur={(e) => { changeRegistPassword(e) }}
+                            InputProps={{
+                                endAdornment: (
+                                    <InputAdornment position="end">
+                                        <IconButton
+                                            tabIndex="-1"
+                                            edge="end"
+                                            aria-label="toggle password visibility"
+                                            onClick={() => { showPassword ? setShowPassword(false) : setShowPassword(true) }}
+                                            onMouseDown={handleMouseDownPassword} >
+                                            {showPassword ? <VisibilityOff /> : <Visibility />}
+                                        </IconButton>
+                                    </InputAdornment>
+                                ),
+                            }} />
+                    </Grid>
+                    <Grid className={`${classes.menuDivButton}`} align="center">
+                        <TextField id="reg-password2-field"
+                            error={regFieldErrors.password2Err}
+                            helperText={regFieldErrors.password2ErrText}
+                            className={classes.textField}
+                            type={showPassword ? 'text' : 'password'}
+                            label={lang.currLang.texts.passwordAgain}
+                            onBlur={(e) => { changeRegistPassword2(e) }}
+                            InputProps={{
+                                endAdornment: (
+                                    <InputAdornment position="end">
+                                        <IconButton
+                                            tabIndex="-1"
+                                            edge="end"
+                                            aria-label="toggle password visibility"
+                                            onClick={() => { showPassword ? setShowPassword(false) : setShowPassword(true) }}
+                                            onMouseDown={handleMouseDownPassword} >
+                                            {showPassword ? <VisibilityOff /> : <Visibility />}
+                                        </IconButton>
+                                    </InputAdornment>
+                                ),
+                            }} />
+                    </Grid>
+                    {isLoading
+                        ? <LinearProgress />
+                        : ''
+                    }
+                </DialogContent>
+                {!isLoading
+                    ? <DialogActions>
+                        <Button onClick={() => { click('closeRegist') }}
+                            color="secondary"
+                            disabled={isLoading}>
+                            {lang.currLang.buttons.cancel}
+                        </Button>
+                        <Button onClick={() => { click('signUp') }}
+                            color="primary"
+                            disabled={isLoading}>
+                            {lang.currLang.buttons.signUp}
+                        </Button>
+                    </DialogActions>
+                    : ''}
+            </Dialog>
+            <div className={classes.root}>
                 <div className={classes.mainPage}
                     style={
                         page.mainPage === true
                             ? { transform: 'translateY(0%)' }
                             : { transform: 'translateY(-100%)' }
-                    } >
-                    <Grid className={classes.mainGridContainer}
-                        container
+                    }
+                >
+                    <Grid container
+                        className={`${classes.height12}`}
                         direction="column"
                         justify="center"
                         alignItems="stretch"
                     >
-                        <Grid item xs={11} className={classes.mainGridBodyItem} >
-                            <Grid className={classes.menuButtonContainer}
-                                container
+                        <Grid item className={`${classes.mainGridBodyItem} ${classes.height11}`}>
+                            <Grid container
+                                className={`${classes.height12}`}
                                 direction="column"
                                 justify="center"
-                                alignItems="stretch" >
-                                <Grid item xs={3} />
-                                <Grid item xs={6} className={classes.menuButtonContainerItem}>
-                                    <Dialog
-                                        open={openLogin}
-                                        TransitionComponent={Transition}
-                                        keepMounted
-                                        aria-labelledby="alert-dialog-slide-title"
-                                        aria-describedby="alert-dialog-slide-description"
-                                    >
-                                        <DialogTitle id="alert-dialog-slide-title">
-                                            {lang.currLang.buttons.signIn}
-                                        </DialogTitle>
-                                        <DialogContent>
-                                            <Grid item xs={12} className={classes.menuButtonContainerItem}>
-                                                <Grid item xs={2} className={classes.menuDivButton} align="center">
-                                                    <TextField
-                                                        className={classes.textField}
-                                                        id="email-field"
-                                                        type="email"
-                                                        label="Email"
-                                                        onBlur={(e) => { changeAuthLogin(e) }} />
-                                                </Grid>
-                                                <Grid item xs={2} className={classes.menuDivButton} align="center">
-                                                    <TextField
-                                                        id="password-field"
-                                                        className={classes.textField}
-                                                        type={showPassword ? 'text' : 'password'}
-                                                        label={lang.currLang.texts.password}
-                                                        onBlur={(e) => { changeAuthPassword(e) }}
-                                                        InputProps={{
-                                                            endAdornment: (
-                                                                <InputAdornment position="end">
-                                                                    <IconButton
-                                                                        tabIndex="-1"
-                                                                        edge="end"
-                                                                        aria-label="toggle password visibility"
-                                                                        onClick={() => { showPassword ? setShowPassword(false) : setShowPassword(true) }}
-                                                                        onMouseDown={handleMouseDownPassword} >
-                                                                        {showPassword ? <VisibilityOff /> : <Visibility />}
-                                                                    </IconButton>
-                                                                </InputAdornment>
-                                                            ),
-                                                        }} />
-                                                </Grid>
-                                                <Grid item xs={2} className={classes.menuDivButton}
-                                                    align="center"
-                                                >
-                                                    <Typography>
-                                                        {lang.currLang.texts.or}
-                                                    </Typography>
-                                                </Grid>
-                                                <Grid item xs={2} className={classes.menuDivButton}
-                                                    align="center"
-                                                >
-                                                    <IconButton className={classes.button}
-                                                        onClick={() => { click('useVk') }}
-                                                        disabled={isLoading}>
-                                                        <Icon path={mdiVk} size={2} color={themeMode.palette.type === 'light' ? 'rgba(0, 0, 0, 0.54)' : 'rgba(255, 255, 255, 1)'} />
-                                                    </IconButton>
-                                                </Grid>
-                                            </Grid>
-                                            {isLoading
-                                                ? <LinearProgress /> :
-                                                ''}
-                                        </DialogContent>
-                                        {!isLoading
-                                            ?
-                                            <DialogActions>
-                                                <Button onClick={() => { click('closeLogin') }}
-                                                    color="secondary"
-                                                    disabled={isLoading}>
-                                                    {lang.currLang.buttons.cancel}
-                                                </Button>
-                                                <Button onClick={() => { click('signIn') }}
-                                                    color="primary"
-                                                    disabled={isLoading}>
-                                                    {lang.currLang.buttons.signIn}
-                                                </Button>
-                                            </DialogActions>
-                                            : ''}
-                                    </Dialog>
-                                    <Dialog
-                                        open={openRegist}
-                                        TransitionComponent={Transition}
-                                        keepMounted
-                                        aria-labelledby="alert-dialog-slide-title"
-                                        aria-describedby="alert-dialog-slide-description"
-                                    >
-                                        <DialogTitle id="alert-dialog-slide-title">
-                                            {lang.currLang.buttons.signUp}
-                                        </DialogTitle>
-                                        <DialogContent>
-                                            <Grid item xs={12} className={classes.menuButtonContainerItem}>
-                                                <Grid item xs={2} className={classes.menuDivButton} align="center">
-                                                    <TextField
-                                                        error={regFieldErrors.emailErr}
-                                                        helperText={regFieldErrors.emailErrText}
-                                                        className={classes.textField}
-                                                        id="reg-email-field"
-                                                        type="email"
-                                                        label="Email"
-                                                        onBlur={(e) => { changeRegistLogin(e) }} />
-                                                </Grid>
-                                                <Grid item xs={2} className={classes.menuDivButton} align="center">
-                                                    <TextField
-                                                        error={regFieldErrors.nicknameErr}
-                                                        helperText={regFieldErrors.nicknameErrText}
-                                                        className={classes.textField}
-                                                        id="reg-nickname-field"
-                                                        type="text"
-                                                        label={lang.currLang.texts.nickname}
-                                                        onBlur={(e) => { changeRegistNickname(e) }} />
-                                                </Grid>
-                                                <Grid item xs={2} className={classes.menuDivButton} align="center">
-                                                    <TextField
-                                                        error={regFieldErrors.passwordErr}
-                                                        helperText={regFieldErrors.passwordErrText}
-                                                        id="reg-password-field"
-                                                        className={classes.textField}
-                                                        type={showPassword ? 'text' : 'password'}
-                                                        label={lang.currLang.texts.password}
-                                                        onBlur={(e) => { changeRegistPassword(e) }}
-                                                        InputProps={{
-                                                            endAdornment: (
-                                                                <InputAdornment position="end">
-                                                                    <IconButton
-                                                                        tabIndex="-1"
-                                                                        edge="end"
-                                                                        aria-label="toggle password visibility"
-                                                                        onClick={() => { showPassword ? setShowPassword(false) : setShowPassword(true) }}
-                                                                        onMouseDown={handleMouseDownPassword} >
-                                                                        {showPassword ? <VisibilityOff /> : <Visibility />}
-                                                                    </IconButton>
-                                                                </InputAdornment>
-                                                            ),
-                                                        }} />
-                                                </Grid>
-                                                <Grid item xs={2} className={classes.menuDivButton} align="center">
-                                                    <TextField
-                                                        error={regFieldErrors.password2Err}
-                                                        helperText={regFieldErrors.password2ErrText}
-                                                        id="reg-password2-field"
-                                                        className={classes.textField}
-                                                        type={showPassword ? 'text' : 'password'}
-                                                        label={lang.currLang.texts.passwordAgain}
-                                                        onBlur={(e) => { changeRegistPassword2(e) }}
-                                                        InputProps={{
-                                                            endAdornment: (
-                                                                <InputAdornment position="end">
-                                                                    <IconButton
-                                                                        tabIndex="-1"
-                                                                        edge="end"
-                                                                        aria-label="toggle password visibility"
-                                                                        onClick={() => { showPassword ? setShowPassword(false) : setShowPassword(true) }}
-                                                                        onMouseDown={handleMouseDownPassword} >
-                                                                        {showPassword ? <VisibilityOff /> : <Visibility />}
-                                                                    </IconButton>
-                                                                </InputAdornment>
-                                                            ),
-                                                        }} />
-                                                </Grid>
-                                            </Grid>
-                                            {isLoading
-                                                ? <LinearProgress />
-                                                : ''}
-
-                                        </DialogContent>
-                                        {!isLoading
-                                            ?
-                                            <DialogActions>
-                                                <Button onClick={() => { click('closeRegist') }}
-                                                    color="secondary"
-                                                    disabled={isLoading}>
-                                                    {lang.currLang.buttons.cancel}
-                                                </Button>
-                                                <Button onClick={() => { click('signUp') }}
-                                                    color="primary"
-                                                    disabled={isLoading}>
-                                                    {lang.currLang.buttons.signUp}
-                                                </Button>
-                                            </DialogActions>
-                                            : ''}
-                                    </Dialog>
-                                    <Grid item xs={2} className={classes.menuDivButton} align="center">
-                                        <Button variant="contained" color="primary" className={classes.menuButton} onClick={() => { click('openLogin') }}>
+                                alignItems="stretch"
+                            >
+                                <Grid item className={`${classes.height3}`} />
+                                <Grid item className={`${classes.height6} ${classes.menuDivButton}`}>
+                                    <Grid item className={`${classes.menuDivButton} ${classes.height2}`} align="center">
+                                        <Button variant="contained" color="primary"
+                                            className={`${classes.menuButton} ${classes.centerButton}`}
+                                            onClick={() => { click('openLogin') }}>
                                             {lang.currLang.buttons.signIn}
                                         </Button>
                                     </Grid>
-                                    <Grid item xs={2} className={classes.menuDivButton} align="center">
-                                        <Button variant="contained" color="primary" className={classes.menuButton} onClick={() => { click('openRegist') }}>
+                                    <Grid item className={`${classes.menuDivButton} ${classes.height2}`} align="center">
+                                        <Button variant="contained" color="primary"
+                                            className={`${classes.menuButton} ${classes.centerButton}`}
+                                            onClick={() => { click('openRegist') }}>
                                             {lang.currLang.buttons.signUp}
                                         </Button>
                                     </Grid>
-                                    <Grid item xs={2} className={classes.menuDivButton} align="center" />
-                                    <Grid item xs={2} className={classes.menuDivButton} align="center">
-                                        <Button variant="contained"
-                                            color="primary"
-                                            className={classes.menuButton}
+                                    <Grid item className={`${classes.menuDivButton} ${classes.height2}`} align="center" />
+                                    <Grid item className={`${classes.menuDivButton} ${classes.height2}`} align="center">
+                                        <Button variant="contained" color="primary"
+                                            className={`${classes.menuButton} ${classes.centerButton}`}
                                             onClick={() => (click('openAboutPage'))} >
                                             {lang.currLang.buttons.about}
                                         </Button>
                                     </Grid>
                                 </Grid>
-                                <Grid item xs={3} />
+                                <Grid item className={`${classes.height3}`} />
                             </Grid>
                         </Grid>
-                        <Grid item xs={1} className={classes.mainGridFooterItem} >
-                            <Grid className={classes.menuButtonContainerFooterLanguageButtons}
-                                container
+                        <Grid item className={`${classes.mainGridBodyItem} ${classes.height1}`}>
+                            <Grid container
                                 direction="row"
                                 justify="center"
-                                alignItems="center" >
+                                alignItems="center"
+                            >
                                 <Grid item>
                                     <Button onClick={() => { changeLanguage('Ru') }}>
                                         RU
@@ -557,7 +540,6 @@ function Sign(props) {
                         </Grid>
                     </Grid>
                 </div >
-
                 <div className={classes.aboutPage}
                     style={page.aboutPage === true
                         ? { transform: 'translateY(-100%)' }

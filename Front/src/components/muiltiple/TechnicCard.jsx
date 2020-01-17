@@ -29,6 +29,7 @@ function TechnicCard(props) {
         commit: '',
         action: '',
     });
+
     const actions = (action) => {
         switch (action) {
             case 'edit':
@@ -61,7 +62,7 @@ function TechnicCard(props) {
     };
 
     return (
-        <Grid item xs={12} className={classes.dreamCardDiv} >
+        <Grid item className={classes.dreamCardDiv} >
             <Dialog open={openAlert}
                 onClose={() => actions('closeAlert')}
                 aria-labelledby="alert-dialog-title"

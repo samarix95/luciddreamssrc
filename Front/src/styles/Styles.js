@@ -144,7 +144,7 @@ export const useStyles = makeStyles(theme => ({
         height: '100%',
         opacity: 0.9,
     },
-    mainGridDreamsBodyItem: {
+    hiddenOverflow: {
         overflow: 'hidden',
     },
     mainGridDreamsContainer: {
@@ -178,7 +178,7 @@ export const useStyles = makeStyles(theme => ({
         flexGrow: 1,
         position: 'relative',
         width: '100%',
-        height: window.innerHeight - 1,
+        height: window.innerHeight - 0.1,
         overflow: 'hidden',
     },
     mainPage: {
@@ -348,30 +348,31 @@ export const useStyles = makeStyles(theme => ({
         transition: 'filter 0.5s linear',
     },
     mainGridContainer: {
-        height: '100%',
-    },
-    mainGridHeadItem: {
-        maxWidth: '100% !Important',
+        height: '100% !Important',
+        position: 'relative',
     },
     mainGridBodyItem: {
         maxWidth: '100% !Important',
         position: 'relative',
     },
-    menuButtonContainerItem: {
-        maxWidth: '100% !Important',
-    },
     menuButtonContainer: {
         height: '100% !Important',
-    },
-    menuButtonGrid: {
+        position: 'relative',
     },
     menuDivButton: {
         maxWidth: '100% !Important',
-        padding: '10px',
+        position: 'relative',
+    },
+    centerButton: {
+        position: 'absolute',
+        top: '50%',
+        left: '50%',
+        transform: 'translate(-50%, -50%)',
     },
     menuButton: {
         minWidth: '55vw',
         maxWidth: '55vw',
+        height: '75%',
     },
     actionButton: {
         minWidth: '40vw',
@@ -380,11 +381,6 @@ export const useStyles = makeStyles(theme => ({
     poppupButton: {
         minWidth: '90%',
         maxWidth: '90%',
-    },
-    mainGridFooterItem: {
-        maxWidth: '100% !Important',
-    },
-    menuButtonContainerFooterLanguageButtons: {
     },
     aboutGridContainer: {
         width: '100%',
@@ -414,10 +410,6 @@ export const useStyles = makeStyles(theme => ({
         transform: 'translate(-50%, -50%)',
         opacity: 1,
     },
-    chips: {
-        display: "flex",
-        flexWrap: "wrap",
-    },
     noWrap: {
         flexWrap: 'nowrap',
     },
@@ -427,29 +419,12 @@ export const useStyles = makeStyles(theme => ({
     aboutGridItem: {
         width: '100%',
     },
-    mainPaperGridBodyItem: {
-        maxWidth: '100% !Important',
-    },
     paper: {
-        height: '90%',
-        margin: theme.spacing(3, 2),
+        height: '91%',
+        marginTop: theme.spacing(3),
+        marginLeft: theme.spacing(2),
+        marginRight: theme.spacing(2),
         opacity: 0.9,
-    },
-    minMargin: {
-        margin: theme.spacing(0.5),
-    },
-    VKLoginDiv: {
-        position: 'absolute',
-        width: '15vw',
-        height: '15vw',
-    },
-    VKLoginButton: {
-        background: 'url(https://dressirovka70.ru/wp-content/uploads/2019/10/1200px-VK.com-logo.svg1_-1024x1024.png)',
-        boxShadow: '0px 3px 1px -2px rgba(0,0,0,0.2), 0px 2px 2px 0px rgba(0,0,0,0.14), 0px 1px 5px 0px rgba(0,0,0,0.12)',
-        backgroundSize: 'cover',
-        borderRadius: '25%',
-        width: '100%',
-        height: '100%',
     },
     "@keyframes shine": {
         "0%": {
@@ -516,5 +491,44 @@ export const useStyles = makeStyles(theme => ({
         '100%': {
             transform: 'rotate(0)',
         },
-    }
+    },
+    height12: {
+        height: 100 / 12 * 12 + "%",
+    },
+    height11: {
+        height: 100 / 12 * 11 - 0.1 + "%",
+    },
+    height10: {
+        height: 100 / 12 * 10 - 0.1 + "%",
+    },
+    height9: {
+        height: 100 / 12 * 9 - 0.1 + "%",
+    },
+    height8: {
+        height: 100 / 12 * 8 - 0.1 + "%",
+    },
+    height7: {
+        height: 100 / 12 * 7 - 0.1 + "%",
+    },
+    height6: {
+        height: 100 / 12 * 6 - 0.1 + "%",
+    },
+    height5: {
+        height: 100 / 12 * 5 - 0.1 + "%",
+    },
+    height4: {
+        height: 100 / 12 * 4 - 0.1 + "%",
+    },
+    height3: {
+        height: 100 / 12 * 3 - 0.1 + "%",
+    },
+    height2: {
+        height: 100 / 12 * 2 - 0.1 + "%",
+    },
+    height1: {
+        height: 100 / 12 * 1 - 0.1 + "%",
+    },
+    height0: {
+        height: 100 / 12 * 0 + "%",
+    },
 }));

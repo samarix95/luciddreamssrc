@@ -97,11 +97,8 @@ function MapCell(props) {
                     }}
                 />
                 : <Skeleton variant="circle" width={cellHeight} height={cellWidth} />
-
             }
-
-            <Popover
-                id={popoverId}
+            <Popover id={popoverId}
                 open={open}
                 anchorEl={anchorEl}
                 anchorOrigin={{
@@ -113,29 +110,27 @@ function MapCell(props) {
                     horizontal: "center"
                 }}
             >
-                <Grid className={classes.mainGridContainer}
-                    container
+                <Grid container
+                    className={`${classes.height12}`}
                     direction="column"
                     justify="center"
                     alignItems="stretch"
                 >
-                    <Grid item
-                        xs={11}
-                        className={classes.mainGridBodyItem}
+                    <Grid item className={`${classes.mainGridBodyItem} ${classes.height11}`}
                         style={{
                             padding: '16px'
                         }}
                     >
                         {locations.length
-                            ? <Grid className={classes.mainGridContainer}
-                                container
+                            ? <Grid container
+                                className={`${classes.height12}`}
                                 direction="column"
                                 justify="center"
                                 alignItems="stretch"
                             >
                                 <Grid item>
-                                    <Grid className={classes.mainGridContainer}
-                                        container
+                                    <Grid container
+                                        className={`${classes.height12}`}
                                         direction="row"
                                         justify="center"
                                         alignItems="stretch"
@@ -214,7 +209,7 @@ function MapCell(props) {
                             : ''
                         }
                     </Grid>
-                    <Grid item xs={1} className={classes.mainGridBodyItem}>
+                    <Grid item className={`${classes.mainGridBodyItem} ${classes.height1}`}>
                         <Grid className={classes.menuDivButton}
                             container
                             direction="row"

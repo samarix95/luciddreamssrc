@@ -45,21 +45,21 @@ function Technics(props) {
         <MuiThemeProvider theme={muiTheme}>
             <CssBaseline />
             <div className={classes.root}>
-                <Grid className={classes.mainGridContainer}
-                    container
+                <Grid container
+                    className={`${classes.height12}`}
                     direction="column"
                     justify="center"
                     alignItems="stretch"
                 >
-                    <Grid item xs={11} zeroMinWidth className={classes.mainGridDreamsBodyItem}>
+                    <Grid item className={`${classes.hiddenOverflow} ${classes.height11}`}>
                         {isLoading
                             ? <div className={classes.centerCircularProgress}>
                                 <CircularProgress disableShrink />
                             </div>
                             : <Container className={classes.mainGridDreamsBodyItemContainer}>
                                 <Paper className={classes.mainGridDreamsBodyItemContainerPaper}>
-                                    <Grid className={classes.mainGridDreamsContainer}
-                                        container
+                                    <Grid container
+                                        className={classes.mainGridDreamsContainer}
                                         direction="column"
                                         justify="center"
                                         alignItems="stretch"
@@ -76,15 +76,14 @@ function Technics(props) {
                             </Container>
                         }
                     </Grid>
-                    <Grid item xs={1} zeroMinWidth className={classes.mainGridBodyItem}>
+                    <Grid item className={`${classes.mainGridBodyItem} ${classes.height1}`}>
                         <Grid container
                             direction="row"
                             justify="space-evenly"
                             alignItems="center"
                         >
                             <Grid item>
-                                <Button
-                                    variant="contained"
+                                <Button variant="contained"
                                     color="secondary"
                                     className={classes.actionButton}
                                     onClick={() => { history.push("/luciddreams") }}
@@ -93,9 +92,8 @@ function Technics(props) {
                                 </Button>
                             </Grid>
                             {auth.user.roles < 2 //0 - admin; 1 - moderator
-                                ? <Grid item>
-                                    <Button
-                                        variant="contained"
+                                ? <Grid item align="center">
+                                    <Button variant="contained"
                                         color="primary"
                                         className={classes.actionButton}
                                         onClick={() => {

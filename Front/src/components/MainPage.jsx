@@ -118,8 +118,8 @@ function MainPage(props) {
             id: userid,
             nickname: usernickname,
         };
-        //Проверка на таймаут
-        let check = CheckTimeOut();
+
+        const check = CheckTimeOut();
         if (check) {
             instance
                 .post('/actions/users/updateuserdata', newUserData)
@@ -189,17 +189,17 @@ function MainPage(props) {
     return (
         <MuiThemeProvider theme={muiTheme}>
             <CssBaseline />
-
-            <Snackbar
-                anchorOrigin={{ vertical: "top", horizontal: "center" }}
+            <Snackbar open={openLangSnakbar}
+                anchorOrigin={{
+                    vertical: "top",
+                    horizontal: "center"
+                }}
                 key={"top, center"}
-                open={openLangSnakbar}
                 TransitionComponent={transition}
             >
-                <SnackbarContent
-                    aria-describedby="lang-snackbar"
+                <SnackbarContent aria-describedby="lang-snackbar"
                     message={
-                        <Typography className={classes.mainGridContainer}
+                        <Typography className={`${classes.height12}`}
                             align='center'
                             id="lang-snackbar"
                             variant='body2'>
@@ -208,16 +208,14 @@ function MainPage(props) {
                     }
                     action={[
                         <div key={"lang-snackbar-buttons"}>
-                            <IconButton
-                                key="save"
+                            <IconButton key="save"
                                 aria-label="save"
                                 color="inherit"
                                 onClick={handleSaveLangSnakbar}
                             >
                                 <SaveIcon />
                             </IconButton>
-                            <IconButton
-                                key="close"
+                            <IconButton key="close"
                                 aria-label="close"
                                 color="inherit"
                                 onClick={handleCloseLangSnakbar}
@@ -228,168 +226,158 @@ function MainPage(props) {
                     ]}
                 />
             </Snackbar>
-
             <div className={classes.root}>
-                <div className={classes.mainPage}>
-                    <Grid className={classes.mainGridContainer}
-                        container
-                        direction="column"
-                        justify="center"
-                        alignItems="stretch"
-                    >
-                        <Grid item xs={4} className={classes.mainGridHeadItem} >
-                            <Grid container className={classes.mainGridContainer}
-                                direction="row"
-                                justify="space-around"
-                                alignItems="stretch"
-                            >
-                                <Grid item xs={4} >
-                                    <ButtonBase className={classes.AstronautButton}
-                                        type='button'
-                                        focusRipple
-                                        onClick={onAstronautClick}>
-                                        <div className={classes.AstronautDiv}>
-                                            <div className={classes.AstronautImg} style={themeMode.palette.type === "light" ? { filter: 'invert(0)', } : { filter: 'invert(1)', }} />
-                                        </div>
-                                    </ButtonBase>
-                                </Grid>
-                                <Grid item xs={4} >
-                                    <ButtonBase className={classes.image}
-                                        type='button'
-                                        focusRipple
-                                        onClick={switchMode}>
-                                        <div className={classes.SkyDiv}>
-                                            <div className={classes.SunSrc} style={themeMode.palette.type === "dark" ? { transform: 'translateY(36vw)' } : { transform: 'translateY(0)' }} />
-                                            <div className={classes.MoonSrc} style={themeMode.palette.type === "dark" ? { transform: 'translateY(0)' } : { transform: 'translateY(-36vw)' }} />
-                                        </div>
-                                    </ButtonBase>
-                                </Grid>
-                                <Grid item xs={4} >
-                                    <ButtonBase className={classes.MapButton}
-                                        type='button'
-                                        focusRipple
-                                        onClick={onMapClick}>
-                                        <div className={classes.MapDiv}>
-                                            <div className={classes.MapImg} style={themeMode.palette.type === "light" ? { filter: 'invert(0)', } : { filter: 'invert(1)', }} />
-                                        </div>
-                                    </ButtonBase>
-                                </Grid>
+                <Grid container
+                    className={`${classes.height12}`}
+                    direction="column"
+                    justify="center"
+                    alignItems="stretch"
+                >
+                    <Grid item className={`${classes.mainGridBodyItem} ${classes.height4}`}>
+                        <Grid container
+                            className={classes.mainGridContainer}
+                            direction="row"
+                            justify="space-around"
+                            alignItems="stretch"
+                        >
+                            <Grid item xs={4} >
+                                <ButtonBase className={classes.AstronautButton}
+                                    type='button'
+                                    focusRipple
+                                    onClick={onAstronautClick}>
+                                    <div className={classes.AstronautDiv}>
+                                        <div className={classes.AstronautImg} style={themeMode.palette.type === "light" ? { filter: 'invert(0)', } : { filter: 'invert(1)', }} />
+                                    </div>
+                                </ButtonBase>
                             </Grid>
-                        </Grid>
-                        <Grid item xs={1} className={classes.mainGridHeadItem} >
-                            <Grid className={classes.mainGridContainer}
-                                container
-                                direction="column"
-                                justify="center"
-                                alignItems="stretch" >
-                                <Grid item xs={12} className={classes.menuButtonContainerItem} >
-                                    <Typography className={classes.mainGridContainer}
-                                        align='center'
-                                        variant='h6'>
-                                        {lang.currLang.texts.hello + auth.user.nickname}
-                                    </Typography>
-                                </Grid>
+                            <Grid item xs={4} >
+                                <ButtonBase className={classes.image}
+                                    type='button'
+                                    focusRipple
+                                    onClick={switchMode}>
+                                    <div className={classes.SkyDiv}>
+                                        <div className={classes.SunSrc} style={themeMode.palette.type === "dark" ? { transform: 'translateY(36vw)' } : { transform: 'translateY(0)' }} />
+                                        <div className={classes.MoonSrc} style={themeMode.palette.type === "dark" ? { transform: 'translateY(0)' } : { transform: 'translateY(-36vw)' }} />
+                                    </div>
+                                </ButtonBase>
                             </Grid>
-                        </Grid>
-                        <Grid item xs={6} className={classes.mainGridBodyItem} >
-                            <Grid className={classes.mainGridContainer}
-                                container
-                                direction="column"
-                                justify="center"
-                                alignItems="stretch"
-                            >
-                                <Grid className={classes.menuButtonContainer}
-                                    container
-                                    direction="column"
-                                    justify="center"
-                                    alignItems="stretch"
-                                >
-                                    <Grid item xs={12} className={classes.menuButtonContainerItem} >
-                                        <Grid item xs={2} className={classes.menuDivButton} align="center">
-                                            <Button
-                                                variant="contained"
-                                                color="primary"
-                                                className={classes.menuButton}
-                                                onClick={() => {
-                                                    let check = CheckTimeOut();
-                                                    if (check) history.push("/dreams");
-                                                    else history.push("/");
-                                                }}
-                                            >
-                                                {lang.currLang.buttons.dreamJoirnal}
-                                            </Button>
-                                        </Grid>
-                                        <Grid item xs={2} className={classes.menuDivButton} align="center">
-                                            <Button
-                                                variant="contained"
-                                                color="primary"
-                                                className={classes.menuButton}
-                                                onClick={() => {
-                                                    let check = CheckTimeOut();
-                                                    if (check) history.push("/addregulardream");
-                                                    else history.push("/");
-                                                }}
-                                            >
-                                                {lang.currLang.buttons.addDream}
-                                            </Button>
-                                        </Grid>
-                                        <Grid item xs={2} className={classes.menuDivButton} align="center">
-                                            <Button
-                                                variant="contained"
-                                                color="primary"
-                                                className={classes.menuButton}
-                                                onClick={() => {
-                                                    let check = CheckTimeOut();
-                                                    if (check) history.push("/addcdream");
-                                                    else history.push("/");
-                                                }}
-                                            >
-                                                {lang.currLang.buttons.addCDream}
-                                            </Button>
-                                        </Grid>
-                                        <Grid item xs={2} className={classes.menuDivButton} align="center">
-                                            <Button
-                                                variant="contained"
-                                                color="primary"
-                                                className={classes.menuButton}
-                                                onClick={() => {
-                                                    let check = CheckTimeOut();
-                                                    if (check) history.push("/technics");
-                                                    else history.push("/");
-                                                }}
-                                            >
-                                                {lang.currLang.buttons.techniques}
-                                            </Button>
-                                        </Grid>
-                                        <Grid item xs={2} className={classes.menuDivButton} align="center">
-                                            <Button variant="contained" color="primary" className={classes.menuButton}>
-                                                {lang.currLang.buttons.adventures}
-                                            </Button>
-                                        </Grid>
-                                    </Grid>
-                                </Grid>
-                            </Grid>
-                        </Grid>
-                        <Grid item xs={1} className={classes.mainGridFooterItem} >
-                            <Grid className={classes.menuButtonContainerFooterLanguageButtons}
-                                container
-                                direction="row"
-                                justify="center"
-                                alignItems="center" >
-                                <Grid item>
-                                    <Button onClick={() => { changeLanguage('Ru') }}>
-                                        RU
-                                    </Button>
-                                </Grid>
-                                <Grid item>
-                                    <Button onClick={() => { changeLanguage('En') }}>
-                                        EN
-                                    </Button>
-                                </Grid>
+                            <Grid item xs={4} >
+                                <ButtonBase className={classes.MapButton}
+                                    type='button'
+                                    focusRipple
+                                    onClick={onMapClick}>
+                                    <div className={classes.MapDiv}>
+                                        <div className={classes.MapImg} style={themeMode.palette.type === "light" ? { filter: 'invert(0)', } : { filter: 'invert(1)', }} />
+                                    </div>
+                                </ButtonBase>
                             </Grid>
                         </Grid>
                     </Grid>
-                </div>
+                    <Grid item className={`${classes.mainGridBodyItem} ${classes.height1}`}>
+                        <Grid container
+                            className={`${classes.height12}`}
+                            direction="column"
+                            justify="center"
+                            alignItems="stretch"
+                        >
+                            <Grid item className={`${classes.mainGridBodyItem} ${classes.height12}`}>
+                                <Typography className={classes.mainGridContainer}
+                                    align='center'
+                                    variant='h6'
+                                >
+                                    {lang.currLang.texts.hello + auth.user.nickname}
+                                </Typography>
+                            </Grid>
+                        </Grid>
+                    </Grid>
+                    <Grid item className={`${classes.mainGridBodyItem} ${classes.height6}`}>
+                        <Grid container
+                            className={`${classes.menuButtonContainer} ${classes.height12}`}
+                            direction="column"
+                            justify="center"
+                            alignItems="stretch"
+                        >
+                            <Grid item className={`${classes.menuDivButton} ${classes.height2}`} align="center">
+                                <Button variant="contained"
+                                    color="primary"
+                                    className={`${classes.menuButton} ${classes.centerButton}`}
+                                    onClick={() => {
+                                        let check = CheckTimeOut();
+                                        if (check) history.push("/dreams");
+                                        else history.push("/");
+                                    }}
+                                >
+                                    {lang.currLang.buttons.dreamJoirnal}
+                                </Button>
+                            </Grid>
+                            <Grid item className={`${classes.menuDivButton} ${classes.height2}`} align="center">
+                                <Button variant="contained"
+                                    color="primary"
+                                    className={`${classes.menuButton} ${classes.centerButton}`}
+                                    onClick={() => {
+                                        let check = CheckTimeOut();
+                                        if (check) history.push("/addregulardream");
+                                        else history.push("/");
+                                    }}
+                                >
+                                    {lang.currLang.buttons.addDream}
+                                </Button>
+                            </Grid>
+                            <Grid item className={`${classes.menuDivButton} ${classes.height2}`} align="center">
+                                <Button variant="contained"
+                                    color="primary"
+                                    className={`${classes.menuButton} ${classes.centerButton}`}
+                                    onClick={() => {
+                                        let check = CheckTimeOut();
+                                        if (check) history.push("/addcdream");
+                                        else history.push("/");
+                                    }}
+                                >
+                                    {lang.currLang.buttons.addCDream}
+                                </Button>
+                            </Grid>
+                            <Grid item className={`${classes.menuDivButton} ${classes.height2}`} align="center">
+                                <Button variant="contained"
+                                    color="primary"
+                                    className={`${classes.menuButton} ${classes.centerButton}`}
+                                    onClick={() => {
+                                        let check = CheckTimeOut();
+                                        if (check) history.push("/technics");
+                                        else history.push("/");
+                                    }}
+                                >
+                                    {lang.currLang.buttons.techniques}
+                                </Button>
+                            </Grid>
+                            <Grid item className={`${classes.menuDivButton} ${classes.height2}`} align="center">
+                                <Button variant="contained"
+                                    color="primary"
+                                    className={`${classes.menuButton} ${classes.centerButton}`}
+                                >
+                                    {lang.currLang.buttons.adventures}
+                                </Button>
+                            </Grid>
+                        </Grid>
+                    </Grid>
+                    <Grid item className={`${classes.mainGridBodyItem} ${classes.height1}`}>
+                        <Grid container
+                            direction="row"
+                            justify="center"
+                            alignItems="center"
+                        >
+                            <Grid item>
+                                <Button onClick={() => { changeLanguage('Ru') }}>
+                                    RU
+                                </Button>
+                            </Grid>
+                            <Grid item>
+                                <Button onClick={() => { changeLanguage('En') }}>
+                                    EN
+                                </Button>
+                            </Grid>
+                        </Grid>
+                    </Grid>
+                </Grid>
             </div>
         </MuiThemeProvider>
     );

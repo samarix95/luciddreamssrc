@@ -492,16 +492,17 @@ function DreamMap(props) {
         <MuiThemeProvider theme={muiTheme}>
             <CssBaseline />
             <div className={classes.root}>
-                <Grid className={classes.mainGridContainer}
-                    container
+                <Grid container
+                    className={`${classes.height12}`}
                     direction="column"
                     justify="center"
-                    alignItems="stretch" >
-                    <Grid item xs={10} zeroMinWidth className={classes.mainGridDreamsBodyItem}>
+                    alignItems="stretch"
+                >
+                    <Grid item className={`${classes.hiddenOverflow} ${classes.height9}`}>
                         <Container
                             style={{
                                 paddingTop: '16px',
-                                height: '83%',
+                                height: '75%',
                                 width: '100%',
                                 position: 'absolute',
                             }}
@@ -538,14 +539,13 @@ function DreamMap(props) {
                             </div>
                         </Container>
                     </Grid>
-                    <Grid item xs={1} zeroMinWidth className={classes.mainGridBodyItem}>
-                        <Grid
-                            container
+                    <Grid item className={`${classes.mainGridBodyItem} ${classes.height2}`}>
+                        <Grid container
+                            className={classes.mainGridContainer}
                             direction="row"
                             justify="space-evenly"
-                            alignItems="center"
-                        >
-                            <Grid item xs={1} align="center"></Grid>
+                            alignItems="center" >
+                            <Grid item xs={1} align="center" />
                             <Grid item xs={2} align="center">
                                 <Fab size="small"
                                     color="secondary"
@@ -569,12 +569,11 @@ function DreamMap(props) {
                                     <AddIcon />
                                 </Fab>
                             </Grid>
-                            <Grid item xs={1} align="center"></Grid>
+                            <Grid item xs={1} align="center" />
                         </Grid>
                     </Grid>
-                    <Grid item xs={1} zeroMinWidth className={classes.mainGridBodyItem}>
-                        <Grid
-                            container
+                    <Grid item className={`${classes.mainGridBodyItem} ${classes.height1}`}>
+                        <Grid container
                             direction="row"
                             justify="space-evenly"
                             alignItems="center"

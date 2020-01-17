@@ -228,28 +228,28 @@ function AddLocation(props) {
             }
         }
     }, [props.location.defaultData]);
-    
+
     return (
         <MuiThemeProvider theme={muiTheme}>
             <CssBaseline />
             <div className={classes.root}>
-                <Grid className={classes.mainGridContainer}
-                    container
+                <Grid container
+                    className={`${classes.height12}`}
                     direction="column"
                     justify="center"
-                    alignItems="stretch" >
-                    <Grid item xs={11} className={classes.mainGridBodyItem}>
+                    alignItems="stretch"
+                >
+                    <Grid item className={`${classes.mainGridBodyItem} ${classes.height11}`}>
                         <Paper className={classes.paper}>
-                            <Grid className={classes.mainGridContainer}
+                            <Grid className={`${classes.height12}`}
                                 container
                                 direction="column"
                                 justify="center"
                                 alignItems="stretch"
                             >
-                                <Grid item xs={6} className={classes.mainGridBodyItem} >
+                                <Grid item className={`${classes.mainGridBodyItem} ${classes.height6}`} >
                                     <Paper >
-                                        <Tabs
-                                            centered
+                                        <Tabs centered
                                             value={value}
                                             onChange={handleChange}
                                             indicatorColor="primary"
@@ -266,7 +266,7 @@ function AddLocation(props) {
                                         onChangeIndex={handleChangeIndex}
                                     >
                                         <Grid container
-                                            className={classes.mainGridContainer}
+                                            className={`${classes.height12}`}
                                             direction="column"
                                             justify="center"
                                             alignItems="center"
@@ -288,7 +288,7 @@ function AddLocation(props) {
                                             </Grid>
                                         </Grid>
                                         <Grid container
-                                            className={classes.mainGridContainer}
+                                            className={`${classes.height12}`}
                                             direction="column"
                                             justify="center"
                                             alignItems="center"
@@ -312,7 +312,7 @@ function AddLocation(props) {
                                         </Grid>
                                     </SwipeableViews>
                                 </Grid>
-                                <Grid item xs={2} className={classes.mainGridBodyItem} >
+                                <Grid item className={`${classes.mainGridBodyItem} ${classes.height2}`} >
                                     <div className={classes.formControl}>
                                         {!isIconsLoading
                                             ? <FormControl
@@ -357,7 +357,7 @@ function AddLocation(props) {
                                         }
                                     </div>
                                 </Grid>
-                                <Grid item xs={4} className={classes.mainGridBodyItem}>
+                                <Grid item className={`${classes.mainGridBodyItem} ${classes.height4}`}>
                                     <SliderPicker className={classes.inputDiv}
                                         color={iconColor}
                                         onChangeComplete={setColor}
@@ -366,9 +366,8 @@ function AddLocation(props) {
                             </Grid>
                         </Paper>
                     </Grid>
-                    <Grid item xs={1} className={classes.mainGridBodyItem} >
-                        <Grid
-                            container
+                    <Grid item className={`${classes.mainGridBodyItem} ${classes.height1}`}>
+                        <Grid container
                             direction="row"
                             justify="space-evenly"
                             alignItems="center"

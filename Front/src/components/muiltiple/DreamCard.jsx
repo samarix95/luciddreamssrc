@@ -60,7 +60,6 @@ function DreamCard(props) {
         commit: '',
         action: '',
     });
-
     const dateOfDream = new Date(dream_date).getDate() + '.' + (new Date(dream_date).getMonth() + 1) + '.' + new Date(dream_date).getFullYear() + ' ' + new Date(dream_date).getHours() + ':' + ("0" + new Date(dream_date).getMinutes()).slice(-2);
     const srcContent = post_content.toString();
     const jsonPparse = JSON.parse(srcContent);
@@ -240,7 +239,7 @@ function DreamCard(props) {
     };
 
     return (
-        <Grid item xs={12} className={classes.dreamCardDiv}>
+        <Grid item className={classes.dreamCardDiv}>
             <Dialog open={openAlert}
                 onClose={() => clickMenu('closeAlert')}
                 aria-labelledby="alert-dialog-title"
@@ -269,8 +268,8 @@ function DreamCard(props) {
                 anchorEl={anchorEl}
                 keepMounted
                 open={Boolean(anchorEl)}
-                onClose={closeMenu}>
-
+                onClose={closeMenu}
+            >
                 <MenuItem >
                     <ListItemIcon>
                         <FormControlLabel
@@ -286,24 +285,20 @@ function DreamCard(props) {
                     </ListItemIcon>
                     {lang.currLang.texts.Public}
                 </MenuItem>
-
                 <MenuItem onClick={() => clickMenu('edit')}>
                     <ListItemIcon>
                         <EditIcon fontSize="small" />
                     </ListItemIcon>
                     {lang.currLang.buttons.Edit}
                 </MenuItem>
-
                 <MenuItem onClick={() => clickMenu('delete')}>
                     <ListItemIcon>
                         <DeleteIcon fontSize="small" />
                     </ListItemIcon>
                     {lang.currLang.buttons.Delete}
                 </MenuItem>
-
             </Menu>
-            <Card raised={true}
-                className={classes.card}>
+            <Card raised={true} className={classes.card}>
                 <CardHeader
                     style={{
                         paddingBottom: '0px',
@@ -365,7 +360,6 @@ function DreamCard(props) {
                             : text_content
                         }
                     </Typography>
-
                     <IconButton
                         className={clsx(classes.expand, {
                             [classes.expandOpen]: expanded
@@ -444,14 +438,14 @@ function DreamCard(props) {
                         </Paper>
                         {post_type === 0
                             ? ''
-                            :
-                            <Grid container
+                            : <Grid container
+                                direction="row"
+                                justify="center"
+                                alignItems="stretch"
                                 style={{
                                     paddingTop: '10px',
                                 }}
-                                direction="row"
-                                justify="center"
-                                alignItems="stretch" >
+                            >
                                 <Grid item xs={6}>
                                     <Typography component="legend" variant='body2'>
                                         {lang.currLang.texts.rating}:

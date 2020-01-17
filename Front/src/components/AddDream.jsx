@@ -117,6 +117,7 @@ function AddDream(props) {
     };
 
     const handleDateChange = date => {
+        saveToLocalStorage();
         setSelectedDate(date);
     };
 
@@ -125,6 +126,7 @@ function AddDream(props) {
         const convert = convertToRaw(currCont);
         const content = JSON.stringify(convert);
         if (prevContentText !== content) {
+            saveToLocalStorage();
             setPrevContentText(content);
         }
     };
@@ -239,7 +241,7 @@ function AddDream(props) {
                                     message: lang.currLang.texts.success,
                                 },
                             });
-                            window.localStorage.removeItem('postData');
+                            window.localStorage.removeItem("postDreamData");
                             history.push("/dreams")
                         })
                         .catch(err => {
@@ -281,7 +283,7 @@ function AddDream(props) {
                                 message: lang.currLang.texts.success,
                             },
                         });
-                        window.localStorage.removeItem('postData');
+                        window.localStorage.removeItem("postDreamData");
                         history.push("/luciddreams")
                     })
                     .catch(err => {
@@ -292,20 +294,39 @@ function AddDream(props) {
     };
 
     const saveToLocalStorage = () => {
-        let data = {
-            titleText: titleText,
-            selectedDate: selectedDate,
-            contentText: contentText,
-            selectedLocations: selectedLocations,
-        };
-        window.localStorage.setItem("postData", JSON.stringify(data));
+        let data = {};
+        if (window.localStorage.getItem("postDreamData")) {
+            data = JSON.parse(window.localStorage.getItem("postDreamData"));
+        }
+        data.selectedDate = selectedDate;
+        if (titleText.length !== 0) {
+            data.titleText = titleText;
+        }
+        if (typeof prevContentText !== 'undefined')
+            if (prevContentText.length !== 0) {
+                data.contentText = prevContentText;
+            }
+        window.localStorage.setItem("postDreamData", JSON.stringify(data));
+    };
+
+    const loadFromLocalStorage = () => {
+        const { selectedDate, titleText, contentText } = JSON.parse(window.localStorage.getItem("postDreamData"));
+        if (typeof selectedDate !== 'undefined') {
+            setSelectedDate(new Date(selectedDate));
+        }
+        if (typeof titleText !== 'undefined') {
+            setTitleText(titleText);
+        }
+        if (typeof contentText !== 'undefined') {
+            setContentText(contentText);
+            setPrevContentText(contentText);
+        }
     };
 
     React.useEffect(() => {
-        if (window.localStorage.getItem("postData"))
-            console.log(JSON.parse(window.localStorage.getItem("postData")));
-        else
-            console.log('Local storage clear');
+        if (window.localStorage.getItem("postDreamData"))
+            loadFromLocalStorage();
+
         defaultTags = [];
         instance.get("/gettags")
             .then(res => {
@@ -340,20 +361,21 @@ function AddDream(props) {
         <MuiThemeProvider theme={muiTheme}>
             <CssBaseline />
             <div className={classes.root} >
-                <Grid className={classes.mainGridContainer}
-                    container
+                <Grid container
+                    className={`${classes.height12}`}
                     direction="column"
                     justify="center"
-                    alignItems="stretch" >
-                    <Grid item xs={11} className={classes.mainGridBodyItem}>
+                    alignItems="stretch"
+                >
+                    <Grid item className={`${classes.mainGridBodyItem} ${classes.height11}`}>
                         <Paper className={classes.paper}>
                             <Grid container
-                                className={classes.mainGridContainer}
+                                className={`${classes.height12}`}
                                 direction="column"
                                 justify="center"
-                                alignItems="center"
+                                alignItems="stretch"
                             >
-                                <Grid item xs={2} className={classes.fullMinWidth} >
+                                <Grid item className={`${classes.fullMinWidth} ${classes.height2}`}>
                                     <TextField className={classes.inputDiv}
                                         required
                                         id="outlined-required"
@@ -361,19 +383,21 @@ function AddDream(props) {
                                         label={lang.currLang.texts.title}
                                         variant="outlined"
                                         onChange={(e) => { changeTitle(e) }}
+                                        onBlur={saveToLocalStorage}
                                     />
                                 </Grid>
-                                <Grid item xs={2} className={classes.fullMinWidth} >
+                                <Grid item className={`${classes.fullMinWidth} ${classes.height2}`}>
                                     <MuiPickersUtilsProvider utils={DateFnsUtils}
                                         locale={lang.currLang.current === "Ru"
                                             ? ruLocale
                                             : enLocale}
                                     >
-                                        <Grid className={classes.pickerGridContainer}
-                                            container
+                                        <Grid container
+                                            className={classes.pickerGridContainer}
                                             direction="row"
                                             justify="center"
-                                            alignItems="stretch" >
+                                            alignItems="stretch"
+                                        >
                                             <Grid item xs={7} >
                                                 <KeyboardDatePicker className={classes.pickers}
                                                     id="date-picker-dialog"
@@ -401,10 +425,8 @@ function AddDream(props) {
                                         </Grid>
                                     </MuiPickersUtilsProvider>
                                 </Grid>
-                                <Grid item xs={5} className={classes.fullMinWidth} >
-
+                                <Grid item className={`${classes.fullMinWidth} ${classes.height5}`}>
                                     <div className={classes.inputScrollableDiv}>
-
                                         <MUIRichTextEditor
                                             value={contentText}
                                             onChange={changeContent}
@@ -431,14 +453,13 @@ function AddDream(props) {
                                         />
 
                                     </div>
-
                                 </Grid>
-                                <Grid item xs={3} className={classes.fullMinWidth} >
+                                <Grid item className={`${classes.fullMinWidth} ${classes.height3}`}>
                                     <Grid container
-                                        className={classes.mainGridContainer}
+                                        className={`${classes.height12}`}
                                         direction="row"
                                         justify="center"
-                                        alignItems="center"
+                                        alignItems="stretch"
                                     >
                                         <Grid item xs={10} style={{ position: 'relative' }}>
                                             {locations.length
@@ -482,8 +503,8 @@ function AddDream(props) {
                                                 </div>
                                             }
                                         </Grid>
-                                        <Grid item xs={2}>
-                                            <IconButton onClick={addLocation}>
+                                        <Grid item xs={2} style={{ position: 'relative' }}>
+                                            <IconButton onClick={addLocation} className={`${classes.centerButton}`}>
                                                 <AddIcon fontSize="small" />
                                             </IconButton>
                                         </Grid>
@@ -492,7 +513,7 @@ function AddDream(props) {
                             </Grid>
                         </Paper>
                     </Grid>
-                    <Grid item xs={1} className={classes.mainGridBodyItem} >
+                    <Grid item className={`${classes.mainGridBodyItem} ${classes.height1}`}>
                         {isLoading
                             ? <LinearProgress />
                             : <Grid
@@ -509,7 +530,8 @@ function AddDream(props) {
                                         onClick={() => {
                                             isEditMode
                                                 ? history.push("/dreams")
-                                                : history.push("/luciddreams")
+                                                : history.push("/luciddreams");
+                                            window.localStorage.removeItem("postDreamData");
                                         }}
                                     >
                                         {lang.currLang.buttons.close}
