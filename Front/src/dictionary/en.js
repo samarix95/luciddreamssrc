@@ -19,7 +19,7 @@ const words = {
     },
     texts: {
         about: 'About us About us About us About us About us About us About us About us About us About us ',
-        or: 'OR',
+        Nothink: 'Nothink',
         nickname: 'Nickname',
         password: 'Password',
         passwordAgain: 'Password again',
@@ -74,6 +74,8 @@ const words = {
         EmptyDream: 'Dream must not be empty',
         NoChanges: 'No changes',
         CantDeletePost: 'Error deleting dream',
+        CantAddLocation: 'Error add location',
+        CantUpdateLocation: 'Error update location',
         IconNotChange: 'Change icon',
         ColorNotChange: 'Change color',
     },

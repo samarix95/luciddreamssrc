@@ -53,8 +53,8 @@ function Technics(props) {
                 >
                     <Grid item className={`${classes.hiddenOverflow} ${classes.height11}`}>
                         {isLoading
-                            ? <div className={classes.centerCircularProgress}>
-                                <CircularProgress disableShrink />
+                            ? <div className={classes.formControl}>
+                                <CircularProgress />
                             </div>
                             : <Container className={classes.mainGridDreamsBodyItemContainer}>
                                 <Paper className={classes.mainGridDreamsBodyItemContainerPaper}>

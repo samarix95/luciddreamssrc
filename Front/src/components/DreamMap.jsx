@@ -20,7 +20,7 @@ import { useStyles } from '../styles/Styles';
 const JSONtable = {
     0: {
         0: {
-            id: 5,
+            id: null,
         },
         1: {
             id: 3,
@@ -476,7 +476,10 @@ function DreamMap(props) {
     const loadMap = () => {
         instance.get("/gettags")
             .then(res => {
-                setLocations(res.data);
+                const nothink = [{
+                    id: null,
+                }];
+                setLocations(nothink.concat(res.data));
             })
             .catch(err => {
                 console.log(err)

@@ -56,6 +56,15 @@ function AddLocation(props) {
         setNameEn(e.target.value)
     };
 
+    const changeSearchName = (e) => {
+        let name = e.target.value;
+        const reg = /[а-яА-ЯёЁ]/g;
+        if (name.search(reg) !== -1) {
+            name = name.replace(reg, '');
+        }
+        setSearchName(name);
+    };
+
     const changeIcon = (e) => {
         setSelectedIcon(e.target.value);
     };
@@ -127,21 +136,27 @@ function AddLocation(props) {
                 instance
                     .post('/actions/users/createlocation', postData)
                     .then(res => {
-                        if (res.data.length === 0) {
-                            setSnackbar({
-                                type: SET_SNACKBAR_MODE,
-                                snackbar: {
-                                    open: true,
-                                    variant: 'success',
-                                    message: lang.currLang.texts.success,
-                                },
-                            });
-                            prevUrl.length === 0
-                                ? history.push("/dreammap")
-                                : history.push(prevUrl);
-                        }
-                        else {
-                        }
+                        setSnackbar({
+                            type: SET_SNACKBAR_MODE,
+                            snackbar: {
+                                open: true,
+                                variant: 'success',
+                                message: lang.currLang.texts.success,
+                            },
+                        });
+                        prevUrl.length === 0
+                            ? history.push("/dreammap")
+                            : history.push(prevUrl);
+                    })
+                    .catch(err => {
+                        setSnackbar({
+                            type: SET_SNACKBAR_MODE,
+                            snackbar: {
+                                open: true,
+                                variant: 'error',
+                                message: lang.currLang.errors.CantAddLocation,
+                            },
+                        });
                     });
             }
         }
@@ -172,11 +187,27 @@ function AddLocation(props) {
                 instance
                     .post('/actions/users/updatelocation', postData)
                     .then(res => {
-                        if (res.data.length === 0) {
-
-                        }
-                        else {
-                        }
+                        setSnackbar({
+                            type: SET_SNACKBAR_MODE,
+                            snackbar: {
+                                open: true,
+                                variant: 'success',
+                                message: lang.currLang.texts.success,
+                            },
+                        });
+                        prevUrl.length === 0
+                            ? history.push("/dreammap")
+                            : history.push(prevUrl);
+                    })
+                    .catch(err => {
+                        setSnackbar({
+                            type: SET_SNACKBAR_MODE,
+                            snackbar: {
+                                open: true,
+                                variant: 'error',
+                                message: lang.currLang.errors.CantUpdateLocation,
+                            },
+                        });
                     });
             }
             else {
@@ -282,7 +313,7 @@ function AddLocation(props) {
                                                         : true
                                                     }
                                                     required
-                                                    id="outlined-required"
+                                                    id="input-ru"
                                                     value={nameRu}
                                                     label={lang.currLang.texts.Name}
                                                     variant="outlined"
@@ -304,7 +335,7 @@ function AddLocation(props) {
                                                         : true
                                                     }
                                                     required
-                                                    id="outlined-required"
+                                                    id="input-en"
                                                     value={nameEn}
                                                     label={lang.currLang.texts.Name}
                                                     variant="outlined"
@@ -328,10 +359,10 @@ function AddLocation(props) {
                                                     : true
                                                 }
                                                 value={searchName}
-                                                id="outlined-required"
+                                                id="input-search"
                                                 label={lang.currLang.texts.FindIcon}
                                                 variant="outlined"
-                                                onChange={(event) => setSearchName(event.target.value)}
+                                                onChange={changeSearchName}
                                                 onBlur={loadIconsList}
                                             />
                                         </Grid>
@@ -404,7 +435,7 @@ function AddLocation(props) {
                                     onClick={() => {
                                         prevUrl.length === 0
                                             ? history.push("/dreammap")
-                                            : history.push(prevUrl)
+                                            : history.push(prevUrl);
                                     }}
                                 >
                                     {lang.currLang.buttons.close}

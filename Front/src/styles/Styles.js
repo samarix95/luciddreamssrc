@@ -127,11 +127,6 @@ export const useStyles = makeStyles(theme => ({
     smallChip: {
         margin: theme.spacing(0.5),
     },
-    centerCircularProgress: {
-        position: 'relative',
-        top: '50%',
-        left: '50%',
-    },
     mainGridDreamsBodyItemContainer: {
         paddingTop: '16px',
         position: 'absolute',

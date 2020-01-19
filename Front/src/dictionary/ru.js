@@ -19,7 +19,7 @@ const words = {
     },
     texts: {
         about: 'О нас О нас О нас О нас О нас О нас О нас О нас О нас О нас О нас О нас',
-        or: 'ИЛИ',
+        Nothink: 'Ничего',
         nickname: 'Отображаемое имя',
         password: 'Пароль',
         passwordAgain: 'Поторите пароль',
@@ -54,7 +54,7 @@ const words = {
         DeleteText: "После удаления запись не получится восстановить.",
         Name: "Наименование",
         ChangeIcon: "Иконка",
-        FindIcon: "Поиск иконки по названию",
+        FindIcon: "Поиск иконки (English only)",
     },
     errors: {
         emailLenght: 'Введите email',
@@ -74,6 +74,8 @@ const words = {
         EmptyDream: 'Пустое поле сна',
         NoChanges: 'Нет изменений',
         CantDeletePost: 'Ошибка удаления сна',
+        CantAddLocation: 'Ошибка добавления локации',
+        CantUpdateLocation: 'Ошибка обновления локации',
         IconNotChange: 'Выберите иконку',
         ColorNotChange: 'Выберите цвет',
     },

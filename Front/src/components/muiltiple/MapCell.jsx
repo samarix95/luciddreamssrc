@@ -25,9 +25,11 @@ function MapCell(props) {
     const { i, j, cellHeight, cellWidth, id, locations, palette, lang, loadMap, history } = props;
     const [anchorEl, setAnchorEl] = React.useState(null);
     const [tagId, setTagId] = React.useState(id);
+    const open = Boolean(anchorEl);
+    const popoverId = open ? "simple-popover" : undefined;
     const disabledSave = tagId === id ? true : false;
 
-    const handleClick = event => {
+    const handleClick = (event) => {
         setAnchorEl(event.currentTarget);
     };
 
@@ -36,7 +38,7 @@ function MapCell(props) {
         setAnchorEl(null);
     };
 
-    const changeTagId = event => {
+    const changeTagId = (event) => {
         setTagId(event.target.value);
     };
 
@@ -66,9 +68,6 @@ function MapCell(props) {
         loadMap();
     };
 
-    const open = Boolean(anchorEl);
-    const popoverId = open ? "simple-popover" : undefined;
-
     return (
         <td
             style={{
@@ -83,18 +82,26 @@ function MapCell(props) {
             {locations.length
                 ? <div className={classes.aboutGridContainer}
                     onClick={handleClick}
-                    style={{
-                        backgroundImage: 'url(' + locations.find(loc => loc.id === tagId).img_url + ')',
-                        backgroundSize: 'contain',
-                        backgroundColor: locations.find(loc => loc.id === tagId).color,
-                        overflow: 'hidden',
-                        //position: 'absolute',
-                        // width: cellWidth,
-                        // height: cellHeight,
-                        // transform: 'rotateZ(45deg) rotateY(0deg) rotateX(-60deg)',
-                        // transformOrigin: 'bottom center',
-                        // borderRadius: '40%',
-                    }}
+                    style={
+                        typeof tagId === 'number'
+                            ? {
+                                backgroundImage: 'url(' + locations.find(loc => loc.id === tagId).img_url + ')',
+                                backgroundSize: 'contain',
+                                backgroundColor: locations.find(loc => loc.id === tagId).color,
+                                overflow: 'hidden',
+                                //position: 'absolute',
+                                // width: cellWidth,
+                                // height: cellHeight,
+                                // transform: 'rotateZ(45deg) rotateY(0deg) rotateX(-60deg)',
+                                // transformOrigin: 'bottom center',
+                                // borderRadius: '40%',
+                            }
+                            : {
+                                backgroundSize: 'contain',
+                                backgroundColor: 'rgb(196, 188, 78, 0.6)',
+                                overflow: 'hidden',
+                            }
+                    }
                 />
                 : <Skeleton variant="circle" width={cellHeight} height={cellWidth} />
             }
@@ -128,7 +135,7 @@ function MapCell(props) {
                                 justify="center"
                                 alignItems="stretch"
                             >
-                                <Grid item>
+                                <Grid item className={`${classes.height6}`}>
                                     <Grid container
                                         className={`${classes.height12}`}
                                         direction="row"
@@ -149,20 +156,28 @@ function MapCell(props) {
                                                     transform: 'translate(-50%, -50%)',
                                                 }}
                                             >
-                                                {lang.currLang.current === "Ru"
-                                                    ? locations.find(loc => loc.id === tagId).name_rus
-                                                    : locations.find(loc => loc.id === tagId).name_eng
+                                                {typeof tagId === 'number'
+                                                    ? lang.currLang.current === "Ru"
+                                                        ? locations.find(loc => loc.id === tagId).name_rus
+                                                        : locations.find(loc => loc.id === tagId).name_eng
+                                                    : lang.currLang.texts.Nothink
                                                 }
                                             </Typography>
                                         </Grid>
                                         <Grid item xs={2}>
-                                            <IconButton onClick={editLocation}>
+                                            <IconButton onClick={editLocation}
+                                                disabled={
+                                                    typeof tagId === 'number'
+                                                        ? false
+                                                        : true
+                                                }
+                                            >
                                                 <EditIcon fontSize="small" />
                                             </IconButton >
                                         </Grid>
                                     </Grid>
                                 </Grid>
-                                <Grid item>
+                                <Grid item className={`${classes.height6}`}>
                                     <Grid
                                         container
                                         direction="row"
@@ -171,7 +186,12 @@ function MapCell(props) {
                                     >
                                         <Grid item>
                                             <FormControl>
-                                                <Select value={tagId}
+                                                <Select
+                                                    value={
+                                                        typeof tagId === 'number'
+                                                            ? tagId
+                                                            : ''
+                                                    }
                                                     onChange={changeTagId}
                                                     MenuProps={{
                                                         PaperProps: {
