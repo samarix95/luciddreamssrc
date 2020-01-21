@@ -151,7 +151,7 @@ function AddTechnics(props) {
                                 message: lang.currLang.texts.success,
                             },
                         });
-                        history.push("/addtechnics")
+                        history.push("/technics")
                     })
                     .catch(err => {
                         console.log(err);
@@ -195,7 +195,7 @@ function AddTechnics(props) {
                                 message: lang.currLang.texts.success,
                             },
                         });
-                        history.push("/addtechnics")
+                        history.push("/technics")
                     })
                     .catch(err => {
                         console.log(err);
