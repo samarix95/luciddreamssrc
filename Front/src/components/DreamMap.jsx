@@ -17,412 +17,14 @@ import { MuiThemeProvider, createMuiTheme } from '@material-ui/core/styles';
 import MapCell from './muiltiple/MapCell';
 import { useStyles } from '../styles/Styles';
 
-const JSONtable = {
-    0: {
-        0: {
-            id: null,
-        },
-        1: {
-            id: 3,
-        },
-        2: {
-            id: 4,
-        },
-        3: {
-            id: 4,
-        },
-        4: {
-            id: 4,
-        },
-        5: {
-            id: 4,
-
-        },
-        6: {
-            id: 4,
-
-        },
-        7: {
-            id: 4,
-
-        },
-        8: {
-            id: 4,
-
-        },
-        9: {
-            id: 4,
-
-        },
-    },
-    1: {
-        0: {
-            id: 5,
-        },
-        1: {
-            id: 6,
-        },
-        2: {
-            id: 4,
-
-        },
-        3: {
-            id: 4,
-
-        },
-        4: {
-            id: 4,
-
-        },
-        5: {
-            id: 4,
-
-        },
-        6: {
-            id: 4,
-
-        },
-        7: {
-            id: 4,
-
-        },
-        8: {
-            id: 4,
-
-        },
-        9: {
-            id: 4,
-
-        },
-    },
-    2: {
-        0: {
-            id: 5,
-        },
-        1: {
-            id: 5,
-        },
-        2: {
-            id: 4,
-
-        },
-        3: {
-            id: 4,
-
-        },
-        4: {
-            id: 4,
-
-        },
-        5: {
-            id: 4,
-
-        },
-        6: {
-            id: 4,
-
-        },
-        7: {
-            id: 4,
-
-        },
-        8: {
-            id: 4,
-
-        },
-        9: {
-            id: 4,
-
-        },
-    },
-    3: {
-        0: {
-            id: 5,
-        },
-        1: {
-            id: 5,
-        },
-        2: {
-            id: 4,
-
-        },
-        3: {
-            id: 4,
-
-        },
-        4: {
-            id: 4,
-
-        },
-        5: {
-            id: 4,
-
-        },
-        6: {
-            id: 4,
-
-        },
-        7: {
-            id: 4,
-
-        },
-        8: {
-            id: 4,
-
-        },
-        9: {
-            id: 4,
-
-        },
-    },
-    4: {
-        0: {
-            id: 5,
-        },
-        1: {
-            id: 5,
-        },
-        2: {
-            id: 4,
-
-        },
-        3: {
-            id: 4,
-
-        },
-        4: {
-            id: 4,
-
-        },
-        5: {
-            id: 4,
-
-        },
-        6: {
-            id: 4,
-
-        },
-        7: {
-            id: 4,
-
-        },
-        8: {
-            id: 4,
-
-        },
-        9: {
-            id: 4,
-
-        },
-    },
-    5: {
-        0: {
-            id: 5,
-        },
-        1: {
-            id: 5,
-        },
-        2: {
-            id: 4,
-
-        },
-        3: {
-            id: 4,
-
-        },
-        4: {
-            id: 4,
-
-        },
-        5: {
-            id: 4,
-
-        },
-        6: {
-            id: 4,
-
-        },
-        7: {
-            id: 4,
-
-        },
-        8: {
-            id: 4,
-
-        },
-        9: {
-            id: 4,
-
-        },
-    },
-    6: {
-        0: {
-            id: 5,
-        },
-        1: {
-            id: 5,
-        },
-        2: {
-            id: 4,
-
-        },
-        3: {
-            id: 4,
-
-        },
-        4: {
-            id: 4,
-
-        },
-        5: {
-            id: 4,
-
-        },
-        6: {
-            id: 4,
-
-        },
-        7: {
-            id: 4,
-
-        },
-        8: {
-            id: 6,
-        },
-        9: {
-            id: 4,
-
-        },
-    },
-    7: {
-        0: {
-            id: 5,
-        },
-        1: {
-            id: 5,
-        },
-        2: {
-            id: 4,
-
-        },
-        3: {
-            id: 4,
-
-        },
-        4: {
-            id: 4,
-
-        },
-        5: {
-            id: 4,
-
-        },
-        6: {
-            id: 4,
-
-        },
-        7: {
-            id: 4,
-
-        },
-        8: {
-            id: 4,
-
-        },
-        9: {
-            id: 4,
-
-        },
-    },
-    8: {
-        0: {
-            id: 5,
-        },
-        1: {
-            id: 5,
-        },
-        2: {
-            id: 4,
-
-        },
-        3: {
-            id: 4,
-
-        },
-        4: {
-            id: 4,
-
-        },
-        5: {
-            id: 4,
-
-        },
-        6: {
-            id: 4,
-
-        },
-        7: {
-            id: 4,
-
-        },
-        8: {
-            id: 4,
-
-        },
-        9: {
-            id: 4,
-
-        },
-    },
-    9: {
-        0: {
-            id: 5,
-        },
-        1: {
-            id: 5,
-        },
-        2: {
-            id: 4,
-
-        },
-        3: {
-            id: 4,
-
-        },
-        4: {
-            id: 4,
-
-        },
-        5: {
-            id: 4,
-
-        },
-        6: {
-            id: 4,
-
-        },
-        7: {
-            id: 4,
-
-        },
-        8: {
-            id: 4,
-
-        },
-        9: {
-            id: 4,
-
-        },
-    },
-};
-
 function DreamMap(props) {
-    const { lang, themeMode, history } = props;
+    const { lang, themeMode, history, user_id } = props;
     const classes = useStyles();
     const muiTheme = createMuiTheme(themeMode);
     const [cellSize, setCellSize] = React.useState(50);
     const [locations, setLocations] = React.useState({});
     const [dreamMap, setDreamMap] = React.useState(null);
+    const [posts, setPosts] = React.useState(null);
 
     const changeCellSize = (event, newValue) => {
         setCellSize(newValue);
@@ -457,6 +59,8 @@ function DreamMap(props) {
                         locations={locations}
                         loadMap={loadMap}
                         history={history}
+                        user_id={user_id}
+                        posts={posts}
                     />
                 );
                 i++;
@@ -471,9 +75,9 @@ function DreamMap(props) {
         });
 
         return table;
-    }
+    };
 
-    const loadMap = () => {
+    const loadMap = React.useCallback(() => {
         instance.get("/gettags")
             .then(res => {
                 const nothink = [{
@@ -484,12 +88,28 @@ function DreamMap(props) {
             .catch(err => {
                 console.log(err)
             });
-        setDreamMap(JSONtable);
-    };
+        instance.post("/actions/users/getusermap", { user_id: user_id })
+            .then(res => {
+                setDreamMap(JSON.parse(res.data.result));
+            })
+            .catch(err => {
+                console.log(err);
+            });
+    }, [user_id]);
+
+    const getPosts = React.useCallback(() => {
+        instance.post("/actions/users/getuserposts", { id: user_id })
+            .then(res => {
+                setPosts(res.data);
+            })
+            .catch(err => {
+            });
+    }, [user_id]);
 
     React.useEffect(() => {
         loadMap();
-    }, []);
+        getPosts();
+    }, [loadMap, getPosts]);
 
     return (
         <MuiThemeProvider theme={muiTheme}>
@@ -524,10 +144,7 @@ function DreamMap(props) {
                                         // transformStyle: 'preserve-3d',
                                         position: 'relative',
                                         margin: 'auto',
-                                        backgroundColor: 'rgb(196, 188, 78, 0.6)',
-                                        borderRadius: '4px',
                                         borderCollapse: 'collapse',
-
                                     }}
                                 >
                                     <tbody>
@@ -550,10 +167,7 @@ function DreamMap(props) {
                             alignItems="center" >
                             <Grid item xs={1} align="center" />
                             <Grid item xs={2} align="center">
-                                <Fab size="small"
-                                    color="secondary"
-                                    onClick={sizeDown}
-                                >
+                                <Fab size="small" color="secondary" onClick={sizeDown}>
                                     <RemoveIcon />
                                 </Fab>
                             </Grid>
@@ -565,10 +179,7 @@ function DreamMap(props) {
                                 />
                             </Grid>
                             <Grid item xs={2} align="center">
-                                <Fab size="small"
-                                    color="primary"
-                                    onClick={sizeUp}
-                                >
+                                <Fab size="small" color="primary" onClick={sizeUp} >
                                     <AddIcon />
                                 </Fab>
                             </Grid>
@@ -610,12 +221,14 @@ function DreamMap(props) {
 DreamMap.propTypes = {
     themeMode: PropTypes.object.isRequired,
     lang: PropTypes.object.isRequired,
+    user_id: PropTypes.number.isRequired,
 };
 
 const mapStateToProps = store => {
     return {
         themeMode: store.themeMode,
         lang: store.lang,
+        user_id: store.auth.user.id,
     }
 };
 

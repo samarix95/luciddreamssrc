@@ -3,6 +3,7 @@ import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import SwipeableViews from "react-swipeable-views";
 
+import LinearProgress from '@material-ui/core/LinearProgress';
 import CssBaseline from '@material-ui/core/CssBaseline';
 import TextField from "@material-ui/core/TextField";
 import Button from '@material-ui/core/Button';
@@ -16,11 +17,13 @@ import { MuiThemeProvider, createMuiTheme } from '@material-ui/core/styles';
 import { useStyles } from '../styles/Styles';
 import { setSnackbar } from '../actions/Actions';
 import { SET_SNACKBAR_MODE } from "../actions/types";
+import { instance } from './Config';
 
 function AddTechnics(props) {
     const classes = useStyles();
     const { lang, themeMode, history, setSnackbar } = props;
     const muiTheme = createMuiTheme(themeMode);
+    const [isLoading, setIsLoading] = React.useState(false);
     const [isEditMode, setIsEditMode] = React.useState(false);
     const [value, setValue] = React.useState(0);
     const [technicsData, setTechnicsData] = React.useState({
@@ -39,6 +42,8 @@ function AddTechnics(props) {
     const changeData = (event, field) => {
         let newTechnicsData = technicsData;
         let newFileldsErr = fileldsErr;
+        let name = event.target.value;
+        const ruReg = /[а-яА-ЯёЁ]/g;
         switch (field) {
             case 'title-ru':
                 newTechnicsData = { ...newTechnicsData, titleRu: event.target.value };
@@ -48,7 +53,11 @@ function AddTechnics(props) {
                 }
                 break;
             case 'title-en':
-                newTechnicsData = { ...newTechnicsData, titleEn: event.target.value };
+                
+                if (name.search(ruReg) !== -1) {
+                    name = name.replace(ruReg, '');
+                }
+                newTechnicsData = { ...newTechnicsData, titleEn: name };
                 if (newFileldsErr.titleEn) {
                     newFileldsErr = { ...newFileldsErr, titleEn: false };
                     setFileldsErr(newFileldsErr);
@@ -62,7 +71,10 @@ function AddTechnics(props) {
                 }
                 break;
             case 'description-en':
-                newTechnicsData = { ...newTechnicsData, descriptionEn: event.target.value };
+                if (name.search(ruReg) !== -1) {
+                    name = name.replace(ruReg, '');
+                }
+                newTechnicsData = { ...newTechnicsData, descriptionEn: name };
                 if (newFileldsErr.descriptionEn) {
                     newFileldsErr = { ...newFileldsErr, descriptionEn: false };
                     setFileldsErr(newFileldsErr);
@@ -83,57 +95,143 @@ function AddTechnics(props) {
     };
 
     const save = () => {
-        let isError = false;
-        let errorMessage = '';
-        let newFileldsErr = fileldsErr;
-        if (technicsData.titleRu.length === 0) {
-            isError = true;
-            errorMessage = lang.currLang.errors.EmptyTitle;
-            newFileldsErr = { ...newFileldsErr, titleRu: true };
-            setValue(0);
-        }
-        if (technicsData.titleEn.length === 0 && !isError) {
-            isError = true;
-            errorMessage = lang.currLang.errors.EmptyTitle;
-            newFileldsErr = { ...newFileldsErr, titleEn: true };
-            setValue(1);
-        }
-        if (technicsData.descriptionRu.length === 0 && !isError) {
-            isError = true;
-            errorMessage = lang.currLang.errors.EmptyDescription;
-            newFileldsErr = { ...newFileldsErr, descriptionRu: true };
-            setValue(0);
-        }
-        if (technicsData.descriptionEn.length === 0 && !isError) {
-            isError = true;
-            errorMessage = lang.currLang.errors.EmptyDescription;
-            newFileldsErr = { ...newFileldsErr, descriptionEn: true };
-            setValue(1);
-        }
+        setIsLoading(true);
+        if (!isEditMode) {
+            let isError = false;
+            let errorMessage = '';
+            let newFileldsErr = fileldsErr;
 
-        if (isError) {
-            setFileldsErr(newFileldsErr);
-            setSnackbar({
-                type: SET_SNACKBAR_MODE,
-                snackbar: {
-                    open: true,
-                    variant: 'error',
-                    message: errorMessage,
-                },
-            });
+            if (technicsData.titleRu.length === 0) {
+                isError = true;
+                errorMessage = lang.currLang.errors.EmptyTitle;
+                newFileldsErr = { ...newFileldsErr, titleRu: true };
+                setValue(0);
+            }
+            if (technicsData.titleEn.length === 0 && !isError) {
+                isError = true;
+                errorMessage = lang.currLang.errors.EmptyTitle;
+                newFileldsErr = { ...newFileldsErr, titleEn: true };
+                setValue(1);
+            }
+            if (technicsData.descriptionRu.length === 0 && !isError) {
+                isError = true;
+                errorMessage = lang.currLang.errors.EmptyDescription;
+                newFileldsErr = { ...newFileldsErr, descriptionRu: true };
+                setValue(0);
+            }
+            if (technicsData.descriptionEn.length === 0 && !isError) {
+                isError = true;
+                errorMessage = lang.currLang.errors.EmptyDescription;
+                newFileldsErr = { ...newFileldsErr, descriptionEn: true };
+                setValue(1);
+            }
+
+            if (isError) {
+                setFileldsErr(newFileldsErr);
+                setSnackbar({
+                    type: SET_SNACKBAR_MODE,
+                    snackbar: {
+                        open: true,
+                        variant: 'error',
+                        message: errorMessage,
+                    },
+                });
+                setIsLoading(false);
+            }
+            else {
+                instance
+                    .post('/actions/users/createtechnic', technicsData)
+                    .then(res => {
+                        setIsLoading(false);
+                        setSnackbar({
+                            type: SET_SNACKBAR_MODE,
+                            snackbar: {
+                                open: true,
+                                variant: 'success',
+                                message: lang.currLang.texts.success,
+                            },
+                        });
+                        history.push("/addtechnics")
+                    })
+                    .catch(err => {
+                        console.log(err);
+                        setIsLoading(false);
+                    });
+            }
         }
         else {
-            console.log(technicsData);
+            let haveChanges = false;
+            let postData = {
+                id: props.location.defaultData.item.id,
+            };
+
+            if (technicsData.titleRu !== props.location.defaultData.item.name_rus) {
+                postData.name_rus = technicsData.titleRu;
+                haveChanges = true;
+            }
+            if (technicsData.descriptionRu !== props.location.defaultData.item.description_rus) {
+                postData.description_rus = technicsData.descriptionRu;
+                haveChanges = true;
+            }
+            if (technicsData.titleEn !== props.location.defaultData.item.name_eng) {
+                postData.name_eng = technicsData.titleEn;
+                haveChanges = true;
+            }
+            if (technicsData.descriptionEn !== props.location.defaultData.item.description_eng) {
+                postData.description_eng = technicsData.descriptionEn;
+                haveChanges = true;
+            }
+
+            if (haveChanges) {
+                instance
+                    .post('/actions/users/updatetechnic', postData)
+                    .then(res => {
+                        setIsLoading(false);
+                        setSnackbar({
+                            type: SET_SNACKBAR_MODE,
+                            snackbar: {
+                                open: true,
+                                variant: 'success',
+                                message: lang.currLang.texts.success,
+                            },
+                        });
+                        history.push("/addtechnics")
+                    })
+                    .catch(err => {
+                        console.log(err);
+                        setIsLoading(false);
+                    });
+                setIsLoading(false);
+            }
+            else {
+                setSnackbar({
+                    type: SET_SNACKBAR_MODE,
+                    snackbar: {
+                        open: true,
+                        variant: 'error',
+                        message: lang.currLang.errors.NoChanges,
+                    },
+                });
+                setIsLoading(false);
+            }
         }
     };
 
     React.useEffect(() => {
         if (typeof (props.location.defaultData) !== 'undefined') {
             setIsEditMode(true);
-            const { name_rus, name_eng } = props.location.defaultData.item;
+            const { name_rus, name_eng, description_rus, description_eng } = props.location.defaultData.item;
             let newTechnicsData = {};
             newTechnicsData = { ...newTechnicsData, titleRu: name_rus };
             newTechnicsData = { ...newTechnicsData, titleEn: name_eng };
+            if (description_rus)
+                newTechnicsData = { ...newTechnicsData, descriptionRu: description_rus };
+            else
+                newTechnicsData = { ...newTechnicsData, descriptionRu: 'description_rus' };
+            if (description_eng)
+                newTechnicsData = { ...newTechnicsData, descriptionEn: description_eng };
+            else
+                newTechnicsData = { ...newTechnicsData, descriptionEn: 'description_eng' };
             setTechnicsData(newTechnicsData);
         }
     }, [props.location.defaultData]);
@@ -241,35 +339,38 @@ function AddTechnics(props) {
                         </Paper>
                     </Grid>
                     <Grid item className={`${classes.mainGridBodyItem} ${classes.height1}`}>
-                        <Grid container
-                            direction="row"
-                            justify="space-evenly"
-                            alignItems="center"
-                        >
-                            <Grid item>
-                                <Button
-                                    variant="contained"
-                                    color="secondary"
-                                    className={classes.actionButton}
-                                    onClick={() => { history.push("/technics") }}
-                                >
-                                    {lang.currLang.buttons.close}
-                                </Button>
+                        {isLoading
+                            ? <LinearProgress />
+                            : <Grid container
+                                direction="row"
+                                justify="space-evenly"
+                                alignItems="center"
+                            >
+                                <Grid item>
+                                    <Button
+                                        variant="contained"
+                                        color="secondary"
+                                        className={classes.actionButton}
+                                        onClick={() => { history.push("/technics") }}
+                                    >
+                                        {lang.currLang.buttons.close}
+                                    </Button>
+                                </Grid>
+                                <Grid item>
+                                    <Button
+                                        variant="contained"
+                                        color="primary"
+                                        className={classes.actionButton}
+                                        onClick={() => save()}
+                                    >
+                                        {isEditMode
+                                            ? lang.currLang.buttons.Save
+                                            : lang.currLang.buttons.add
+                                        }
+                                    </Button>
+                                </Grid>
                             </Grid>
-                            <Grid item>
-                                <Button
-                                    variant="contained"
-                                    color="primary"
-                                    className={classes.actionButton}
-                                    onClick={() => save()}
-                                >
-                                    {isEditMode
-                                        ? lang.currLang.buttons.Save
-                                        : lang.currLang.buttons.add
-                                    }
-                                </Button>
-                            </Grid>
-                        </Grid>
+                        }
                     </Grid>
                 </Grid>
             </div>

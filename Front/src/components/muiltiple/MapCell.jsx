@@ -12,25 +12,36 @@ import Button from "@material-ui/core/Button";
 import Avatar from "@material-ui/core/Avatar";
 import Grid from "@material-ui/core/Grid";
 
-import Skeleton from '@material-ui/lab/Skeleton';
-
 import EditIcon from '@material-ui/icons/Edit';
 
 import { useStyles } from '../../styles/Styles';
-//import { SET_SNACKBAR_MODE } from "../../actions/types";
-import { setSnackbar } from '../../actions/Actions';
+import { instance } from '../Config';
 
 function MapCell(props) {
     const classes = useStyles();
-    const { i, j, cellHeight, cellWidth, id, locations, palette, lang, loadMap, history } = props;
+    const { i, j, cellHeight, cellWidth, id, locations, palette, lang, loadMap, history, user_id, posts } = props;
     const [anchorEl, setAnchorEl] = React.useState(null);
-    const [tagId, setTagId] = React.useState(id);
+    const [tagId, setTagId] = React.useState(null);
+    const [countDreams, setCountDreams] = React.useState(0);
     const open = Boolean(anchorEl);
     const popoverId = open ? "simple-popover" : undefined;
     const disabledSave = tagId === id ? true : false;
 
+    const calculateCount = (tagId) => {
+        let count = 0;
+        posts.map(post =>
+            post.tags.map(tag =>
+                parseInt(tag[0]) === tagId
+                    ? count++
+                    : count += 0
+            )
+        );
+        setCountDreams(count);
+    };
+
     const handleClick = (event) => {
         setAnchorEl(event.currentTarget);
+        calculateCount(tagId);
     };
 
     const handleClose = () => {
@@ -40,6 +51,7 @@ function MapCell(props) {
 
     const changeTagId = (event) => {
         setTagId(event.target.value);
+        calculateCount(event.target.value);
     };
 
     const editLocation = () => {
@@ -58,15 +70,26 @@ function MapCell(props) {
 
     const saveCellLoc = () => {
         let newCell = {
+            "user_id": user_id,
             "i": i,
             "j": j,
         };
         newCell.oldLoc = id;
         newCell.newLoc = tagId;
-        console.log(newCell);
+        instance.post("/actions/users/updateusermap", newCell)
+            .then(res => {
+            })
+            .catch(err => {
+                console.log(err);
+            });
         setAnchorEl(null);
         loadMap();
     };
+
+    React.useEffect(() => {
+        if (id)
+            setTagId(id);
+    }, [id]);
 
     return (
         <td
@@ -77,6 +100,7 @@ function MapCell(props) {
                 padding: 0,
                 margin: 0,
                 transition: "all 0.1s",
+                border: '1px rgb(128,128,128,0.8) solid',
             }}
         >
             {locations.length
@@ -98,12 +122,12 @@ function MapCell(props) {
                             }
                             : {
                                 backgroundSize: 'contain',
-                                backgroundColor: 'rgb(196, 188, 78, 0.6)',
+                                backgroundColor: 'rgb(192,192,192,0.6)',
                                 overflow: 'hidden',
                             }
                     }
                 />
-                : <Skeleton variant="circle" width={cellHeight} height={cellWidth} />
+                : ''
             }
             <Popover id={popoverId}
                 open={open}
@@ -123,11 +147,7 @@ function MapCell(props) {
                     justify="center"
                     alignItems="stretch"
                 >
-                    <Grid item className={`${classes.mainGridBodyItem} ${classes.height11}`}
-                        style={{
-                            padding: '16px'
-                        }}
-                    >
+                    <Grid item className={`${classes.mainGridBodyItem} ${classes.height11}`} style={{ padding: '16px' }} >
                         {locations.length
                             ? <Grid container
                                 className={`${classes.height12}`}
@@ -178,8 +198,7 @@ function MapCell(props) {
                                     </Grid>
                                 </Grid>
                                 <Grid item className={`${classes.height6}`}>
-                                    <Grid
-                                        container
+                                    <Grid container
                                         direction="row"
                                         justify="space-around"
                                         alignItems="center"
@@ -205,7 +224,11 @@ function MapCell(props) {
                                                     {locations.map((item, key) => (
                                                         <MenuItem key={key} value={item.id}>
                                                             <Avatar className={classes.smallAvatar}
-                                                                src={item.img_url}
+                                                                src={
+                                                                    item.id
+                                                                        ? item.img_url
+                                                                        : 'https://static.thenounproject.com/png/1446402-200.png'
+                                                                }
                                                                 style={palette.type === 'dark'
                                                                     ? {
                                                                         filter: 'invert(1)',
@@ -219,9 +242,9 @@ function MapCell(props) {
                                             </FormControl>
                                         </Grid>
                                         <Grid item>
-                                            <Typography component='div' variant='body2'>
-                                                {lang.currLang.texts.dreams}:
-                                            </Typography>
+                                            <Button disabled={countDreams !== 0 ? false : true} onClick={() => { alert('Посмотреть') }}>
+                                                {lang.currLang.texts.dreams}: {countDreams}
+                                            </Button>
                                         </Grid>
                                     </Grid>
                                 </Grid>
@@ -267,23 +290,21 @@ function MapCell(props) {
 }
 
 MapCell.propTypes = {
-    setSnackbar: PropTypes.func.isRequired,
     lang: PropTypes.object.isRequired,
     palette: PropTypes.object.isRequired,
-}
+};
 
 const mapStateToProps = store => {
     return {
         lang: store.lang,
         palette: store.themeMode.palette,
     }
-}
+};
 
 const mapDispatchToProps = (dispatch) => {
     return {
-        setSnackbar: snackbar => dispatch(setSnackbar(snackbar)),
     }
-}
+};
 
 export default connect(
     mapStateToProps,

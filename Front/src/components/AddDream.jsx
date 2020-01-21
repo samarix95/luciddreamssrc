@@ -516,8 +516,7 @@ function AddDream(props) {
                     <Grid item className={`${classes.mainGridBodyItem} ${classes.height1}`}>
                         {isLoading
                             ? <LinearProgress />
-                            : <Grid
-                                container
+                            : <Grid container
                                 direction="row"
                                 justify="space-evenly"
                                 alignItems="center"

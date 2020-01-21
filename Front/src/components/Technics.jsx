@@ -132,7 +132,7 @@ const mapStateToProps = store => {
 const mapDispatchToProps = (dispatch) => {
     return {
     }
-}
+};
 
 export default connect(
     mapStateToProps,
