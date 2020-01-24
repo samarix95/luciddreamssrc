@@ -12,9 +12,9 @@ import Grid from '@material-ui/core/Grid';
 
 import { MuiThemeProvider, createMuiTheme } from '@material-ui/core/styles';
 
-import DreamCard from './muiltiple/DreamCard';
-import { useStyles } from '../styles/Styles';
-import { instance } from './Config';
+import DreamCard from './muiltiple/DreamCard.jsx';
+import { useStyles } from '../styles/Styles.js';
+import { instance } from './Config.js';
 
 function ViewDreams(props) {
     const { lang, themeMode, history, auth } = props;

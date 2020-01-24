@@ -1,7 +1,6 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
-import SwipeableViews from "react-swipeable-views";
 import { SliderPicker } from 'react-color';
 
 import CircularProgress from '@material-ui/core/CircularProgress';
@@ -15,22 +14,19 @@ import Avatar from '@material-ui/core/Avatar';
 import Select from "@material-ui/core/Select";
 import Paper from '@material-ui/core/Paper';
 import Grid from '@material-ui/core/Grid';
-import Tabs from "@material-ui/core/Tabs";
-import Tab from "@material-ui/core/Tab";
-
-import { setSnackbar } from '../actions/Actions';
-import { SET_SNACKBAR_MODE } from "../actions/types";
 
 import { MuiThemeProvider, createMuiTheme } from '@material-ui/core/styles';
-import { instance } from './Config';
-import { useStyles } from '../styles/Styles';
+
+import { setSnackbar } from '../actions/Actions.js';
+import { SET_SNACKBAR_MODE } from "../actions/types.js";
+import { instance } from './Config.js';
+import { useStyles } from '../styles/Styles.js';
 
 function AddLocation(props) {
     const { lang, themeMode, history, palette, setSnackbar } = props;
     const classes = useStyles();
     const muiTheme = createMuiTheme(themeMode);
     const [isEditMode, setIsEditMode] = React.useState(false);
-    const [value, setValue] = React.useState(0);
     const [prevUrl, setPrevUrl] = React.useState('');
     const [isIconsLoading, setIsIconsLoading] = React.useState(false);
     const [locationIcons, setLocationIcons] = React.useState([]);
@@ -40,20 +36,17 @@ function AddLocation(props) {
     const [selectedIcon, setSelectedIcon] = React.useState('');
     const [iconColor, setIconColor] = React.useState('');
 
-    const handleChange = (event, newValue) => {
-        setValue(newValue);
-    };
-
-    const handleChangeIndex = index => {
-        setValue(index);
-    };
-
     const changeNameRu = (e) => {
         setNameRu(e.target.value)
     };
 
     const changeNameEn = (e) => {
-        setNameEn(e.target.value)
+        let name = e.target.value;
+        const reg = /[а-яА-ЯёЁ]/g;
+        if (name.search(reg) !== -1) {
+            name = name.replace(reg, '');
+        }
+        setNameEn(name);
     };
 
     const changeSearchName = (e) => {
@@ -108,12 +101,10 @@ function AddLocation(props) {
             if (nameRu.length === 0) {
                 errorMessage = lang.currLang.errors.EmptyName;
                 error = true;
-                setValue(0);
             }
             if (nameEn.length === 0) {
                 errorMessage = lang.currLang.errors.EmptyName;
                 error = true;
-                setValue(1);
             }
 
             if (error) {
@@ -282,68 +273,50 @@ function AddLocation(props) {
                                 alignItems="stretch"
                             >
                                 <Grid item className={`${classes.mainGridBodyItem} ${classes.height5}`}>
-                                    <Paper>
-                                        <Tabs centered
-                                            value={value}
-                                            onChange={handleChange}
-                                            indicatorColor="primary"
-                                            textColor="primary"
-                                        >
-                                            <Tab label="RU" />
-                                            <Tab label="EN" />
-                                        </Tabs>
-                                    </Paper>
-                                    <SwipeableViews className={classes.SwipeableViews}
-                                        animateHeight
-                                        axis={muiTheme.direction === "rtl" ? "x-reverse" : "x"}
-                                        index={value}
-                                        onChangeIndex={handleChangeIndex}
+
+                                    <Grid container
+                                        className={`${classes.height6}`}
+                                        direction="column"
+                                        justify="center"
+                                        alignItems="center"
                                     >
-                                        <Grid container
-                                            className={`${classes.height12}`}
-                                            direction="column"
-                                            justify="center"
-                                            alignItems="center"
-                                            role="tabpanel"
-                                        >
-                                            <Grid item className={classes.fullMinWidth} >
-                                                <TextField className={classes.inputDiv}
-                                                    disabled={!isIconsLoading
-                                                        ? false
-                                                        : true
-                                                    }
-                                                    required
-                                                    id="input-ru"
-                                                    value={nameRu}
-                                                    label={lang.currLang.texts.Name}
-                                                    variant="outlined"
-                                                    onChange={changeNameRu}
-                                                />
-                                            </Grid>
+                                        <Grid item className={classes.fullMinWidth} >
+                                            <TextField className={classes.inputDiv}
+                                                disabled={!isIconsLoading
+                                                    ? false
+                                                    : true
+                                                }
+                                                required
+                                                id="input-ru"
+                                                value={nameRu}
+                                                label={lang.currLang.texts.Name + ' Ru'}
+                                                variant="outlined"
+                                                onChange={changeNameRu}
+                                            />
                                         </Grid>
-                                        <Grid container
-                                            className={`${classes.height12}`}
-                                            direction="column"
-                                            justify="center"
-                                            alignItems="center"
-                                            role="tabpanel"
-                                        >
-                                            <Grid item className={classes.fullMinWidth} >
-                                                <TextField className={classes.inputDiv}
-                                                    disabled={!isIconsLoading
-                                                        ? false
-                                                        : true
-                                                    }
-                                                    required
-                                                    id="input-en"
-                                                    value={nameEn}
-                                                    label={lang.currLang.texts.Name}
-                                                    variant="outlined"
-                                                    onChange={changeNameEn}
-                                                />
-                                            </Grid>
+                                    </Grid>
+                                    <Grid container
+                                        className={`${classes.height6}`}
+                                        direction="column"
+                                        justify="center"
+                                        alignItems="center"
+                                    >
+                                        <Grid item className={classes.fullMinWidth} >
+                                            <TextField className={classes.inputDiv}
+                                                disabled={!isIconsLoading
+                                                    ? false
+                                                    : true
+                                                }
+                                                required
+                                                id="input-en"
+                                                value={nameEn}
+                                                label={lang.currLang.texts.Name + ' En'}
+                                                variant="outlined"
+                                                onChange={changeNameEn}
+                                            />
                                         </Grid>
-                                    </SwipeableViews>
+                                    </Grid>
+
                                 </Grid>
                                 <Grid item className={`${classes.mainGridBodyItem} ${classes.height3}`}>
                                     <Grid className={`${classes.height12}`}
@@ -459,8 +432,8 @@ function AddLocation(props) {
                 </Grid>
             </div>
         </MuiThemeProvider >
-    )
-}
+    );
+};
 
 AddLocation.propTypes = {
     setSnackbar: PropTypes.func.isRequired,

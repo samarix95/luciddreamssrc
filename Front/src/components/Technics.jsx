@@ -13,7 +13,7 @@ import CssBaseline from '@material-ui/core/CssBaseline';
 import { MuiThemeProvider, createMuiTheme } from '@material-ui/core/styles';
 
 import { CheckTimeOut } from '../utils/CheckLoginTimeOut';
-import TechnicCard from './muiltiple/TechnicCard';
+import TechnicCard from './muiltiple/TechnicCard.jsx';
 import { useStyles } from '../styles/Styles';
 import { instance } from './Config';
 

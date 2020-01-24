@@ -39,12 +39,12 @@ import MoreVertIcon from "@material-ui/icons/MoreVert";
 import EditIcon from "@material-ui/icons/Edit";
 import DeleteIcon from "@material-ui/icons/Delete";
 
-import { useStyles } from '../../styles/Styles';
+import { useStyles } from '../../styles/Styles.js';
 
-import { instance } from '../Config';
+import { instance } from '../Config.js';
 
-import { SET_SNACKBAR_MODE } from "../../actions/types";
-import { setSnackbar } from '../../actions/Actions';
+import { SET_SNACKBAR_MODE } from "../../actions/types.js";
+import { setSnackbar } from '../../actions/Actions.js';
 
 function DreamCard(props) {
     const classes = useStyles();

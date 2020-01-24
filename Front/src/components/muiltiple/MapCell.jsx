@@ -19,9 +19,9 @@ import { instance } from '../Config';
 
 function MapCell(props) {
     const classes = useStyles();
-    const { i, j, cellHeight, cellWidth, id, locations, palette, lang, loadMap, history, user_id, posts } = props;
+    const { i, j, cellWidth, id, locations, palette, lang, history, user_id, posts } = props;
     const [anchorEl, setAnchorEl] = React.useState(null);
-    const [tagId, setTagId] = React.useState(null);
+    const [tagId, setTagId] = React.useState(id ? id : null);
     const [countDreams, setCountDreams] = React.useState(0);
     const open = Boolean(anchorEl);
     const popoverId = open ? "simple-popover" : undefined;
@@ -83,29 +83,23 @@ function MapCell(props) {
                 console.log(err);
             });
         setAnchorEl(null);
-        loadMap();
+        //loadMap();
     };
-
-    React.useEffect(() => {
-        if (id)
-            setTagId(id);
-    }, [id]);
 
     return (
         <td
             style={{
-                height: cellHeight + 'px',
+                height: cellWidth + 'px',
                 minWidth: cellWidth + 'px',
                 maxWidth: cellWidth + 'px',
                 padding: 0,
                 margin: 0,
-                transition: "all 0.1s",
                 border: '1px rgb(128,128,128,0.8) solid',
             }}
         >
             {locations.length
                 ? <div className={classes.aboutGridContainer}
-                    onClick={handleClick}
+                    onClick={e => { handleClick(e) }}
                     style={
                         typeof tagId === 'number'
                             ? {
@@ -113,12 +107,6 @@ function MapCell(props) {
                                 backgroundSize: 'contain',
                                 backgroundColor: locations.find(loc => loc.id === tagId).color,
                                 overflow: 'hidden',
-                                //position: 'absolute',
-                                // width: cellWidth,
-                                // height: cellHeight,
-                                // transform: 'rotateZ(45deg) rotateY(0deg) rotateX(-60deg)',
-                                // transformOrigin: 'bottom center',
-                                // borderRadius: '40%',
                             }
                             : {
                                 backgroundSize: 'contain',

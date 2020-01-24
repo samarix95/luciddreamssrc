@@ -4,23 +4,6 @@ import PropTypes from 'prop-types';
 import clsx from 'clsx';
 import { Route, Switch } from "react-router-dom";
 
-import { SET_SNACKBAR_MODE } from "./actions/types";
-import { setSnackbar } from './actions/Actions';
-
-import PrivateRoute from "./components/PrivateRoute";
-
-import DreamMap from './components/DreamMap';
-import AddLocation from './components/AddLocation';
-import AddDream from './components/AddDream';
-import AddCDream from './components/AddCDream';
-import AddTechnics from './components/AddTechnics';
-import ViewDreams from './components/ViewDreams';
-import MainPage from "./components/MainPage";
-import Sign from './components/Sign';
-import Technics from './components/Technics';
-
-import { useStyles, variantIcon } from './styles/Styles';
-
 import SnackbarContent from '@material-ui/core/SnackbarContent';
 import Typography from '@material-ui/core/Typography';
 import IconButton from '@material-ui/core/IconButton';
@@ -28,6 +11,24 @@ import Snackbar from '@material-ui/core/Snackbar';
 import { makeStyles } from '@material-ui/core/styles';
 import { amber, green } from '@material-ui/core/colors';
 import CloseIcon from '@material-ui/icons/Close';
+
+import { SET_SNACKBAR_MODE } from "./actions/types.js";
+import { setSnackbar } from './actions/Actions.js';
+
+import PrivateRoute from "./components/PrivateRoute.js";
+
+import DreamMap from './components/DreamMap.jsx';
+import AddLocation from './components/AddLocation.jsx';
+import AddDream from './components/AddDream.jsx';
+import AddCDream from './components/AddCDream.jsx';
+import AddTechnics from './components/AddTechnics.jsx';
+import ViewDreams from './components/ViewDreams.jsx';
+import MainPage from "./components/MainPage.jsx";
+import Sign from './components/Sign.js';
+import Technics from './components/Technics.jsx';
+
+import { useStyles, variantIcon } from './styles/Styles.js';
+
 
 const useStyles1 = makeStyles(theme => ({
     success: {
@@ -128,14 +129,14 @@ function Routes(props) {
             </Snackbar>
             <Route exact path="/" component={Sign} />
             <Switch>
-                <PrivateRoute exact path="/dreammap" component={DreamMap} />
-                <PrivateRoute exact path="/addlocation" component={AddLocation} />
-                <PrivateRoute exact path="/luciddreams" component={MainPage} />
-                <PrivateRoute exact path="/dreams" component={ViewDreams} />
-                <PrivateRoute exact path="/addregulardream" component={AddDream} />
-                <PrivateRoute exact path="/addcdream" component={AddCDream} />
-                <PrivateRoute exact path="/technics" component={Technics} />
-                <PrivateRoute exact path="/addtechnics" component={AddTechnics} />
+                <PrivateRoute path="/dreammap" component={DreamMap} />
+                <PrivateRoute path="/addlocation" component={AddLocation} />
+                <PrivateRoute path="/luciddreams" component={MainPage} />
+                <PrivateRoute path="/dreams" component={ViewDreams} />
+                <PrivateRoute path="/addregulardream" component={AddDream} />
+                <PrivateRoute path="/addcdream" component={AddCDream} />
+                <PrivateRoute path="/technics" component={Technics} />
+                <PrivateRoute path="/addtechnics" component={AddTechnics} />
             </Switch>
         </div>
     );

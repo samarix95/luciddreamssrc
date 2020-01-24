@@ -1,16 +1,13 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
-import SwipeableViews from "react-swipeable-views";
 
 import LinearProgress from '@material-ui/core/LinearProgress';
 import CssBaseline from '@material-ui/core/CssBaseline';
 import TextField from "@material-ui/core/TextField";
 import Button from '@material-ui/core/Button';
 import Paper from "@material-ui/core/Paper";
-import Tabs from "@material-ui/core/Tabs";
 import Grid from '@material-ui/core/Grid';
-import Tab from "@material-ui/core/Tab";
 
 import { MuiThemeProvider, createMuiTheme } from '@material-ui/core/styles';
 
@@ -25,7 +22,6 @@ function AddTechnics(props) {
     const muiTheme = createMuiTheme(themeMode);
     const [isLoading, setIsLoading] = React.useState(false);
     const [isEditMode, setIsEditMode] = React.useState(false);
-    const [value, setValue] = React.useState(0);
     const [technicsData, setTechnicsData] = React.useState({
         titleRu: '',
         titleEn: '',
@@ -53,7 +49,7 @@ function AddTechnics(props) {
                 }
                 break;
             case 'title-en':
-                
+
                 if (name.search(ruReg) !== -1) {
                     name = name.replace(ruReg, '');
                 }
@@ -86,14 +82,6 @@ function AddTechnics(props) {
         setTechnicsData(newTechnicsData);
     };
 
-    const handleChange = (event, newValue) => {
-        setValue(newValue);
-    };
-
-    const handleChangeIndex = index => {
-        setValue(index);
-    };
-
     const save = () => {
         setIsLoading(true);
         if (!isEditMode) {
@@ -105,25 +93,21 @@ function AddTechnics(props) {
                 isError = true;
                 errorMessage = lang.currLang.errors.EmptyTitle;
                 newFileldsErr = { ...newFileldsErr, titleRu: true };
-                setValue(0);
             }
             if (technicsData.titleEn.length === 0 && !isError) {
                 isError = true;
                 errorMessage = lang.currLang.errors.EmptyTitle;
                 newFileldsErr = { ...newFileldsErr, titleEn: true };
-                setValue(1);
             }
             if (technicsData.descriptionRu.length === 0 && !isError) {
                 isError = true;
                 errorMessage = lang.currLang.errors.EmptyDescription;
                 newFileldsErr = { ...newFileldsErr, descriptionRu: true };
-                setValue(0);
             }
             if (technicsData.descriptionEn.length === 0 && !isError) {
                 isError = true;
                 errorMessage = lang.currLang.errors.EmptyDescription;
                 newFileldsErr = { ...newFileldsErr, descriptionEn: true };
-                setValue(1);
             }
 
             if (isError) {
@@ -247,95 +231,68 @@ function AddTechnics(props) {
                     alignItems="stretch" >
                     <Grid item className={`${classes.mainGridBodyItem} ${classes.height11}`}>
                         <Paper className={classes.paper}>
-                            <Paper style={{
-                                position: 'relative',
-                                height: '10%',
-                            }}>
-                                <Tabs centered
-                                    value={value}
-                                    onChange={handleChange}
-                                    indicatorColor="primary"
-                                    textColor="primary"
-                                >
-                                    <Tab label="RU" />
-                                    <Tab label="EN" />
-                                </Tabs>
-                            </Paper>
-                            <SwipeableViews className={classes.SwipeableViews}
-                                animateHeight
-                                axis={
-                                    muiTheme.direction === "rtl"
-                                        ? "x-reverse"
-                                        : "x"
-                                }
-                                index={value}
-                                onChangeIndex={handleChangeIndex}
+                            <Grid container
+                                className={`${classes.height6}`}
+                                direction="column"
+                                justify="center"
+                                alignItems="stretch"
                             >
-                                <Grid container
-                                    className={`${classes.height12}`}
-                                    direction="column"
-                                    justify="center"
-                                    alignItems="stretch"
-                                    role="tabpanel"
-                                >
-                                    <Grid item className={`${classes.mainGridBodyItem} ${classes.height2}`}>
-                                        <TextField className={classes.inputDiv}
-                                            error={fileldsErr.titleRu}
-                                            required
-                                            id="title-ru"
-                                            value={technicsData.titleRu}
-                                            label={lang.currLang.texts.title}
-                                            variant="outlined"
-                                            onChange={(e) => { changeData(e, 'title-ru') }}
-                                        />
-                                    </Grid>
-                                    <Grid item className={`${classes.mainGridBodyItem} ${classes.height10}`}>
-                                        <TextField className={classes.inputDiv}
-                                            error={fileldsErr.descriptionRu}
-                                            required
-                                            id="description-ru"
-                                            multiline
-                                            rows="5"
-                                            value={technicsData.descriptionRu}
-                                            label={lang.currLang.texts.description}
-                                            variant="outlined"
-                                            onChange={(e) => { changeData(e, 'description-ru') }}
-                                        />
-                                    </Grid>
+                                <Grid item className={`${classes.mainGridBodyItem} ${classes.height4}`}>
+                                    <TextField className={classes.inputDiv}
+                                        error={fileldsErr.titleRu}
+                                        required
+                                        id="title-ru"
+                                        value={technicsData.titleRu}
+                                        label={lang.currLang.texts.title + ' Ru'}
+                                        variant="outlined"
+                                        onChange={(e) => { changeData(e, 'title-ru') }}
+                                    />
                                 </Grid>
-                                <Grid container
-                                    className={`${classes.height12}`}
-                                    direction="column"
-                                    justify="center"
-                                    alignItems="stretch"
-                                    role="tabpanel"
-                                >
-                                    <Grid item className={`${classes.mainGridBodyItem} ${classes.height2}`}>
-                                        <TextField className={classes.inputDiv}
-                                            error={fileldsErr.titleEn}
-                                            required
-                                            id="title-en"
-                                            value={technicsData.titleEn}
-                                            label={lang.currLang.texts.title}
-                                            variant="outlined"
-                                            onChange={(e) => { changeData(e, 'title-en') }}
-                                        />
-                                    </Grid>
-                                    <Grid item className={`${classes.mainGridBodyItem} ${classes.height10}`}>
-                                        <TextField className={classes.inputDiv}
-                                            error={fileldsErr.descriptionEn}
-                                            required
-                                            id="description-en"
-                                            multiline
-                                            rows="5"
-                                            value={technicsData.descriptionEn}
-                                            label={lang.currLang.texts.description}
-                                            variant="outlined"
-                                            onChange={(e) => { changeData(e, 'description-en') }}
-                                        />
-                                    </Grid>
+                                <Grid item className={`${classes.mainGridBodyItem} ${classes.height8}`}>
+                                    <TextField className={classes.inputDiv}
+                                        error={fileldsErr.descriptionRu}
+                                        required
+                                        id="description-ru"
+                                        multiline
+                                        rows="4"
+                                        value={technicsData.descriptionRu}
+                                        label={lang.currLang.texts.description}
+                                        variant="outlined"
+                                        onChange={(e) => { changeData(e, 'description-ru') }}
+                                    />
                                 </Grid>
-                            </SwipeableViews>
+                            </Grid>
+                            <Grid container
+                                className={`${classes.height6}`}
+                                direction="column"
+                                justify="center"
+                                alignItems="stretch"
+                            >
+                                <Grid item className={`${classes.mainGridBodyItem} ${classes.height4}`}>
+                                    <TextField className={classes.inputDiv}
+                                        error={fileldsErr.titleEn}
+                                        required
+                                        id="title-en"
+                                        value={technicsData.titleEn}
+                                        label={lang.currLang.texts.title + ' En'}
+                                        variant="outlined"
+                                        onChange={(e) => { changeData(e, 'title-en') }}
+                                    />
+                                </Grid>
+                                <Grid item className={`${classes.mainGridBodyItem} ${classes.height8}`}>
+                                    <TextField className={classes.inputDiv}
+                                        error={fileldsErr.descriptionEn}
+                                        required
+                                        id="description-en"
+                                        multiline
+                                        rows="4"
+                                        value={technicsData.descriptionEn}
+                                        label={lang.currLang.texts.description}
+                                        variant="outlined"
+                                        onChange={(e) => { changeData(e, 'description-en') }}
+                                    />
+                                </Grid>
+                            </Grid>
                         </Paper>
                     </Grid>
                     <Grid item className={`${classes.mainGridBodyItem} ${classes.height1}`}>

@@ -27,13 +27,11 @@ import { MuiPickersUtilsProvider, KeyboardTimePicker, KeyboardDatePicker } from 
 import FormatColorFillIcon from '@material-ui/icons/FormatColorFill';
 import AddIcon from '@material-ui/icons/Add';
 
-import { useStyles } from '../styles/Styles';
-import { setSnackbar } from '../actions/Actions';
-import { SET_SNACKBAR_MODE } from "../actions/types";
-
-import { instance } from './Config';
-
-import { compare } from '../functions';
+import { useStyles } from '../styles/Styles.js';
+import { setSnackbar } from '../actions/Actions.js';
+import { SET_SNACKBAR_MODE } from "../actions/types.js";
+import { instance } from './Config.js';
+import { compare } from '../functions.js';
 
 let defaultTags = [];
 

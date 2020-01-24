@@ -4,15 +4,15 @@ import PropTypes from 'prop-types';
 import { Router } from "react-router-dom";
 import './App.css';
 
-import history from '../history';
-import { store } from "../store";
-import { CheckTimeOut } from '../utils/CheckLoginTimeOut';
-import setAuthToken from "../utils/setAuthToken";
-import { SET_CURRENT_USER, SET_THEME_MODE } from "../actions/types";
+import history from '../history.js';
+import { store } from "../store.js";
+import { CheckTimeOut } from '../utils/CheckLoginTimeOut.js';
+import setAuthToken from "../utils/setAuthToken.js";
+import { SET_CURRENT_USER, SET_THEME_MODE } from "../actions/types.js";
 
-import Routes from '../Routes';
+import Routes from '../Routes.js';
 
-import { useStyles, params, randomBetween } from '../styles/Styles';
+import { useStyles, params, randomBetween } from '../styles/Styles.js';
 
 let check = CheckTimeOut();
 let stars = [];

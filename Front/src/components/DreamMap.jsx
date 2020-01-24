@@ -2,42 +2,44 @@ import React from 'react';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 
+import ReactPinchZoomPan from '../../node_modules/react-pinch-zoom-pan/lib/ReactPinchZoomPan.js';
+
 import CssBaseline from '@material-ui/core/CssBaseline';
-import Container from '@material-ui/core/Container';
 import Button from '@material-ui/core/Button';
-import Slider from '@material-ui/core/Slider';
 import Grid from '@material-ui/core/Grid';
 import Fab from '@material-ui/core/Fab';
 
-import RemoveIcon from '@material-ui/icons/Remove';
-import AddIcon from '@material-ui/icons/Add';
+import ZoomOutMapIcon from '@material-ui/icons/ZoomOutMap';
+import ZoomOutIcon from '@material-ui/icons/ZoomOut';
+import ZoomInIcon from '@material-ui/icons/ZoomIn';
 
-import { instance } from './Config';
+import { instance } from './Config.js';
 import { MuiThemeProvider, createMuiTheme } from '@material-ui/core/styles';
-import MapCell from './muiltiple/MapCell';
-import { useStyles } from '../styles/Styles';
+import MapCell from './muiltiple/MapCell.jsx';
+import { useStyles } from '../styles/Styles.js';
+
+const ratio = ((window.innerHeight * 0.01 * (100 / 12 * 9 - 0.1)) / (window.innerWidth)) * 100;
+const cellWidth = Math.round(window.innerWidth / 20 * 1.5 * 0.6);
 
 function DreamMap(props) {
     const { lang, themeMode, history, user_id } = props;
     const classes = useStyles();
     const muiTheme = createMuiTheme(themeMode);
-    const [cellSize, setCellSize] = React.useState(50);
     const [locations, setLocations] = React.useState({});
     const [dreamMap, setDreamMap] = React.useState(null);
     const [posts, setPosts] = React.useState(null);
-
-    const changeCellSize = (event, newValue) => {
-        setCellSize(newValue);
-    };
+    const [initialScale, setScale] = React.useState(1);
 
     const sizeUp = () => {
-        const newcellSize = cellSize + 5;
-        setCellSize(newcellSize);
+        if (initialScale + 0.25 < 2.5) {
+            setScale(initialScale + 0.25);
+        }
     };
 
     const sizeDown = () => {
-        const newcellSize = cellSize - 5;
-        setCellSize(newcellSize);
+        if (initialScale - 0.25 > 0.5) {
+            setScale(initialScale - 0.25);
+        }
     };
 
     const createTable = () => {
@@ -52,12 +54,11 @@ function DreamMap(props) {
                     <MapCell key={'cell' + i + j}
                         i={i}
                         j={j}
-                        cellHeight={cellSize * 0.6}
-                        cellWidth={cellSize * 0.6}
+                        cellWidth={cellWidth}
                         dreamMap={dreamMap}
                         id={dreamMap[row][col].id}
                         locations={locations}
-                        loadMap={loadMap}
+                        //loadMap={loadMap}
                         history={history}
                         user_id={user_id}
                         posts={posts}
@@ -122,42 +123,51 @@ function DreamMap(props) {
                     alignItems="stretch"
                 >
                     <Grid item className={`${classes.hiddenOverflow} ${classes.height9}`}>
-                        <Container
-                            style={{
-                                paddingTop: '16px',
-                                height: '75%',
-                                width: '100%',
-                                position: 'absolute',
-                            }}
-                        >
-                            <div
-                                style={{
-                                    position: 'relative',
-                                    height: '100%',
-                                    width: '100%',
-                                    overflow: 'auto',
-                                }}
-                            >
-                                <table
+                        <ReactPinchZoomPan initialScale={initialScale} maxScale={2.5} render={obj => {
+                            return (
+                                <div
                                     style={{
-                                        // transform: 'rotateX(60deg) rotateY(0deg) rotateZ(-45deg)',
-                                        // transformStyle: 'preserve-3d',
-                                        position: 'relative',
-                                        margin: 'auto',
-                                        borderCollapse: 'collapse',
+                                        paddingTop: ratio.toFixed(2) + '%',
+                                        overflow: 'hidden',
+                                        height: '100%',
+                                        width: '100%',
+                                        position: 'relative'
                                     }}
                                 >
-                                    <tbody>
-                                        {dreamMap !== null
-                                            ? createTable()
-                                            : <tr>
-                                                <td />
-                                            </tr>
-                                        }
-                                    </tbody>
-                                </table>
-                            </div>
-                        </Container>
+                                    <div
+                                        style={{
+                                            position: 'absolute',
+                                            top: '50%',
+                                            left: '50%',
+                                            transform: 'translate(-50%, -50%)',
+                                        }}
+                                    >
+                                        <table
+                                            style={{
+                                                // transform: 'rotateX(60deg) rotateY(0deg) rotateZ(-45deg)',
+                                                // transformStyle: 'preserve-3d',
+                                                width: '100%',
+                                                height: 'auto',
+                                                transform: `scale(${obj.scale}) translateY(${obj.y}px) translateX(${obj.x}px)`,
+                                                transition: 'transform .1s',
+                                                position: 'relative',
+                                                margin: 'auto',
+                                                borderCollapse: 'collapse',
+                                            }}
+                                        >
+                                            <tbody>
+                                                {dreamMap !== null
+                                                    ? createTable()
+                                                    : <tr>
+                                                        <td />
+                                                    </tr>
+                                                }
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            )
+                        }} />
                     </Grid>
                     <Grid item className={`${classes.mainGridBodyItem} ${classes.height2}`}>
                         <Grid container
@@ -165,25 +175,23 @@ function DreamMap(props) {
                             direction="row"
                             justify="space-evenly"
                             alignItems="center" >
-                            <Grid item xs={1} align="center" />
+                            <Grid item xs={2} align="center" />
                             <Grid item xs={2} align="center">
-                                <Fab size="small" color="secondary" onClick={sizeDown}>
-                                    <RemoveIcon />
+                                <Fab size="small" onClick={sizeDown}>
+                                    <ZoomOutIcon />
                                 </Fab>
                             </Grid>
-                            <Grid item xs={6} align="center">
-                                <Slider
-                                    min={6}
-                                    value={typeof cellSize === 'number' ? cellSize : 0}
-                                    onChange={changeCellSize}
-                                />
-                            </Grid>
-                            <Grid item xs={2} align="center">
-                                <Fab size="small" color="primary" onClick={sizeUp} >
-                                    <AddIcon />
+                            <Grid item xs={4} align="center" >
+                                <Fab size="small" onClick={() => setScale(1)} >
+                                    <ZoomOutMapIcon />
                                 </Fab>
                             </Grid>
-                            <Grid item xs={1} align="center" />
+                            <Grid item xs={2} align="center">
+                                <Fab size="small" onClick={sizeUp} >
+                                    <ZoomInIcon />
+                                </Fab>
+                            </Grid>
+                            <Grid item xs={2} align="center" />
                         </Grid>
                     </Grid>
                     <Grid item className={`${classes.mainGridBodyItem} ${classes.height1}`}>
