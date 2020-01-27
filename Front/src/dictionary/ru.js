@@ -2,6 +2,7 @@ const words = {
     current: 'Ru',
     buttons: {
         signIn: 'Вход',
+        signOut: 'Выход',
         signUp: 'Регистрация',
         dreamJoirnal: 'Дневник снов',
         addDream: 'Добавить сон',
@@ -55,6 +56,7 @@ const words = {
         Name: "Наименование",
         ChangeIcon: "Иконка",
         FindIcon: "Поиск иконки (English only)",
+        LogOutQuestion: "Вы точно хотите выйти?",
     },
     errors: {
         emailLenght: 'Введите email',

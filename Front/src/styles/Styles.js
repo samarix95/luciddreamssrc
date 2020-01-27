@@ -287,10 +287,11 @@ export const useStyles = makeStyles(theme => ({
         position: 'relative',
         left: '50%',
         top: '50%',
-        transform: 'translate(-50%, -50%)',
+        //transform: 'translate(-50%, -50%)',
         width: '25vw !important',
         height: '25vw',
         borderRadius: '50%',
+        animation: '$swinging 3s infinite linear',
     },
     AstronautDiv: {
         position: 'absolute',
@@ -300,7 +301,6 @@ export const useStyles = makeStyles(theme => ({
         width: '100%',
         height: '100%',
         overflow: 'hidden',
-        animation: '$swinging 30s infinite linear',
     },
     AstronautImg: {
         backgroundSize: 'cover',
@@ -317,10 +317,11 @@ export const useStyles = makeStyles(theme => ({
         position: 'relative',
         left: '50%',
         top: '50%',
-        transform: 'translate(-50%, -50%)',
+        //transform: 'translate(-50%, -50%)',
         width: '25vw !important',
         height: '25vw',
         borderRadius: '10%',
+        animation: '$swinging 4s infinite linear',
     },
     MapDiv: {
         position: 'absolute',
@@ -329,7 +330,6 @@ export const useStyles = makeStyles(theme => ({
         width: '100%',
         height: '100%',
         overflow: 'hidden',
-        animation: '$swinging 30s infinite linear',
     },
     MapImg: {
         backgroundSize: 'cover',
@@ -454,37 +454,13 @@ export const useStyles = makeStyles(theme => ({
     },
     "@keyframes swinging": {
         '0%': {
-            transform: 'rotate(0)',
-        },
-        '10%': {
-            transform: 'rotate(12deg)',
-        },
-        '20%': {
-            transform: 'rotate(-10deg)',
-        },
-        '30%': {
-            transform: 'rotate(9deg)',
-        },
-        '40%': {
-            transform: 'rotate(-8deg)',
+            transform: 'rotate(0) translate(-50%, -50%)',
         },
         '50%': {
-            transform: 'rotate(7deg)',
-        },
-        '60%': {
-            transform: 'rotate(-6deg)',
-        },
-        '70%': {
-            transform: 'rotate(5deg)',
-        },
-        '80%': {
-            transform: 'rotate(-4deg)',
-        },
-        '90%': {
-            transform: 'rotate(3deg)',
+            transform: 'rotate(7deg) translate(-50%, -50%)',
         },
         '100%': {
-            transform: 'rotate(0)',
+            transform: 'rotate(0) translate(-50%, -50%)',
         },
     },
     height12: {

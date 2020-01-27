@@ -2,6 +2,7 @@ const words = {
     current: 'En',
     buttons: {
         signIn: 'Sign in',
+        signOut: 'Sign out',
         signUp: 'Sign up',
         dreamJoirnal: 'Dream joirnal',
         addDream: 'Add dream',
@@ -55,6 +56,7 @@ const words = {
         Name: "Name",
         ChangeIcon: "Icon",
         FindIcon: "Search icon",
+        LogOutQuestion: "Do you want to logout?",
     },
     errors: {
         emailLenght: 'Email must not be empty',

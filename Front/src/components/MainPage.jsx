@@ -2,21 +2,27 @@ import React from "react";
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 
+import DialogContentText from "@material-ui/core/DialogContentText";
 import SnackbarContent from "@material-ui/core/SnackbarContent";
+import DialogContent from "@material-ui/core/DialogContent";
+import DialogActions from "@material-ui/core/DialogActions";
+import DialogTitle from "@material-ui/core/DialogTitle";
 import ButtonBase from '@material-ui/core/ButtonBase';
 import IconButton from "@material-ui/core/IconButton";
 import Typography from '@material-ui/core/Typography';
 import Snackbar from "@material-ui/core/Snackbar";
+import Dialog from '@material-ui/core/Dialog';
 import Button from '@material-ui/core/Button';
 import Slide from "@material-ui/core/Slide";
 import Grid from '@material-ui/core/Grid';
 
-import { SET_THEME_MODE, SET_SNACKBAR_MODE } from "../actions/types";
+import { SET_THEME_MODE, SET_CURRENT_USER, SET_SNACKBAR_MODE } from "../actions/types";
 
-import { setCurrLang, setTheme, setSnackbar } from '../actions/Actions';
+import { setUserState, setCurrLang, setTheme, setSnackbar } from '../actions/Actions';
 import { useStyles } from '../styles/Styles';
 import { instance } from './Config';
 import { CheckTimeOut } from '../utils/CheckLoginTimeOut';
+import setAuthToken from "../utils/setAuthToken.js";
 
 import { MuiThemeProvider, createMuiTheme } from '@material-ui/core/styles';
 import CssBaseline from '@material-ui/core/CssBaseline';
@@ -39,6 +45,15 @@ function MainPage(props) {
     const [openLangSnakbar, setOpenLangSnakbar] = React.useState(false);
     const [langSnakbarMessage, setLangSnakbarMessage] = React.useState('');
     const [transition, setTransition] = React.useState(undefined);
+    const [openDialog, setOpenDialog] = React.useState(false);
+
+    const closeDialogAction = () => {
+        setOpenDialog(false);
+    };
+
+    const openDialogAction = () => {
+        setOpenDialog(true);
+    };
 
     const switchMode = () => {
         let newPaletteType = themeMode.palette.type === "light" ? "dark" : "light";
@@ -152,6 +167,16 @@ function MainPage(props) {
         }
     };
 
+    const logOut = () => {
+        setAuthToken(false);
+        localStorage.removeItem("jwtToken");
+        setUserState({
+            type: SET_CURRENT_USER,
+            payload: null
+        });
+        history.push("/");
+    };
+
     React.useEffect(() => {
         let id = {
             id: auth.user.id,
@@ -189,43 +214,76 @@ function MainPage(props) {
     return (
         <MuiThemeProvider theme={muiTheme}>
             <CssBaseline />
-            <Snackbar open={openLangSnakbar}
-                anchorOrigin={{
-                    vertical: "top",
-                    horizontal: "center"
-                }}
-                key={"top, center"}
+            <Snackbar key={"top, center"}
+                open={openLangSnakbar}
+                anchorOrigin={
+                    {
+                        vertical: "top",
+                        horizontal: "center"
+                    }
+                }
                 TransitionComponent={transition}
             >
                 <SnackbarContent aria-describedby="lang-snackbar"
                     message={
-                        <Typography className={`${classes.height12}`}
+                        <Typography id="lang-snackbar"
+                            className={`${classes.height12}`}
                             align='center'
-                            id="lang-snackbar"
                             variant='body2'>
                             {lang.currLang.texts.changleLanguage + langSnakbarMessage + ' ?'}
                         </Typography>
                     }
-                    action={[
-                        <div key={"lang-snackbar-buttons"}>
-                            <IconButton key="save"
-                                aria-label="save"
-                                color="inherit"
-                                onClick={handleSaveLangSnakbar}
-                            >
-                                <SaveIcon />
-                            </IconButton>
-                            <IconButton key="close"
-                                aria-label="close"
-                                color="inherit"
-                                onClick={handleCloseLangSnakbar}
-                            >
-                                <CloseIcon />
-                            </IconButton>
-                        </div>
-                    ]}
+                    action={
+                        [
+                            <div key={"lang-snackbar-buttons"}>
+                                <IconButton key="save"
+                                    aria-label="save"
+                                    color="inherit"
+                                    onClick={handleSaveLangSnakbar}
+                                >
+                                    <SaveIcon />
+                                </IconButton>
+                                <IconButton key="close"
+                                    aria-label="close"
+                                    color="inherit"
+                                    onClick={handleCloseLangSnakbar}
+                                >
+                                    <CloseIcon />
+                                </IconButton>
+                            </div>
+                        ]
+                    }
                 />
             </Snackbar>
+
+            <Dialog open={openDialog}
+                onClose={closeDialogAction}
+                aria-labelledby="alert-dialog-title"
+                aria-describedby="alert-dialog-description"
+            >
+                <DialogTitle id="alert-dialog-title">
+                    {lang.currLang.buttons.signOut}
+                </DialogTitle>
+                <DialogContent>
+                    <DialogContentText id="alert-dialog-description">
+                        {lang.currLang.texts.LogOutQuestion}
+                    </DialogContentText>
+                </DialogContent>
+                <DialogActions>
+                    <Button color="secondary"
+                        onClick={closeDialogAction}
+                    >
+                        {lang.currLang.texts.cancel}
+                    </Button>
+                    <Button color="primary"
+                        onClick={logOut}
+                        autoFocus
+                    >
+                        {lang.currLang.buttons.signOut}
+                    </Button>
+                </DialogActions>
+            </Dialog>
+
             <div className={classes.root}>
                 <Grid container
                     className={`${classes.height12}`}
@@ -246,7 +304,13 @@ function MainPage(props) {
                                     focusRipple
                                     onClick={onAstronautClick}>
                                     <div className={classes.AstronautDiv}>
-                                        <div className={classes.AstronautImg} style={themeMode.palette.type === "light" ? { filter: 'invert(0)', } : { filter: 'invert(1)', }} />
+                                        <div className={classes.AstronautImg}
+                                            style={
+                                                themeMode.palette.type === "light"
+                                                    ? { filter: 'invert(0)', }
+                                                    : { filter: 'invert(1)', }
+                                            }
+                                        />
                                     </div>
                                 </ButtonBase>
                             </Grid>
@@ -275,7 +339,7 @@ function MainPage(props) {
                     </Grid>
                     <Grid item className={`${classes.mainGridBodyItem} ${classes.height1}`}>
                         <Grid container
-                            className={`${classes.height12}`}
+                            className={`${classes.menuButtonContainer}`}
                             direction="column"
                             justify="center"
                             alignItems="stretch"
@@ -357,10 +421,20 @@ function MainPage(props) {
                                     {lang.currLang.buttons.adventures}
                                 </Button>
                             </Grid>
+                            <Grid item className={`${classes.menuDivButton} ${classes.height2}`} align="center">
+                                <Button variant="contained"
+                                    color="primary"
+                                    className={`${classes.menuButton} ${classes.centerButton}`}
+                                    onClick={openDialogAction}
+                                >
+                                    {lang.currLang.buttons.signOut}
+                                </Button>
+                            </Grid>
                         </Grid>
                     </Grid>
                     <Grid item className={`${classes.mainGridBodyItem} ${classes.height1}`}>
                         <Grid container
+                            className={`${classes.menuButtonContainer}`}
                             direction="row"
                             justify="center"
                             alignItems="center"
@@ -387,6 +461,7 @@ MainPage.propTypes = {
     setCurrLangAction: PropTypes.func.isRequired,
     setTheme: PropTypes.func.isRequired,
     setSnackbar: PropTypes.func.isRequired,
+    setUserState: PropTypes.func.isRequired,
     lang: PropTypes.object.isRequired,
     themeMode: PropTypes.object.isRequired,
     auth: PropTypes.object.isRequired,
@@ -405,6 +480,7 @@ const mapDispatchToProps = (dispatch) => {
         setCurrLangAction: currLangState => dispatch(setCurrLang(currLangState)),
         setTheme: palette => dispatch(setTheme(palette)),
         setSnackbar: snackbar => dispatch(setSnackbar(snackbar)),
+        setUserState: State => dispatch(setUserState(State)),
     }
 }
 
