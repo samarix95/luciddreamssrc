@@ -5,6 +5,9 @@ import WarningIcon from '@material-ui/icons/Warning';
 import ErrorIcon from '@material-ui/icons/Error';
 import InfoIcon from '@material-ui/icons/Info';
 
+import amber from '@material-ui/core/colors/amber';
+import green from '@material-ui/core/colors/green';
+
 import MapImg from '../img/map.png';
 import SunImg from '../img/sun.png';
 import MoonImg from '../img/moon.png';
@@ -236,6 +239,15 @@ export const useStyles = makeStyles(theme => ({
         animation: '$shine infinite alternate',
         zIndex: -1,
     },
+    AppComet: {
+        borderRadius: '100%',
+        position: 'absolute',
+        background: 'radial-gradient(ellipse at center, rgba(177, 198, 219, 1) 2%, rgba(5, 63, 118, 1) 100%)',
+        filter: 'blur(1px)',
+        animation: '$comet infinite linear',
+        transformOrigin: '100vw 0vh',
+        zIndex: -1,
+    },
     AppCloud: {
         position: 'absolute',
         backgroundRepeat: 'no-repeat',
@@ -364,6 +376,9 @@ export const useStyles = makeStyles(theme => ({
         left: '50%',
         transform: 'translate(-50%, -50%)',
     },
+    relativePosition: {
+        position: 'relative',
+    },
     menuButton: {
         minWidth: '55vw',
         maxWidth: '55vw',
@@ -447,6 +462,11 @@ export const useStyles = makeStyles(theme => ({
             opacity: '.9',
         },
     },
+    "@keyframes comet": {
+        "100%": {
+            transform: 'rotate(360deg)',
+        },
+    },
     "@keyframes moveclouds": {
         '100%': {
             left: '-100%',
@@ -501,5 +521,31 @@ export const useStyles = makeStyles(theme => ({
     },
     height0: {
         height: 100 / 12 * 0 + "%",
+    },
+}));
+
+export const snackStyles = makeStyles(theme => ({
+    success: {
+        backgroundColor: green[600] + '!Important',
+    },
+    error: {
+        backgroundColor: theme.palette.error.dark + '!Important',
+    },
+    info: {
+        backgroundColor: theme.palette.primary.main + '!Important',
+    },
+    warning: {
+        backgroundColor: amber[700] + '!Important',
+    },
+    icon: {
+        fontSize: 20 + '!Important',
+    },
+    iconVariant: {
+        opacity: 0.9 + '!Important',
+        marginRight: theme.spacing(1) + '!Important',
+    },
+    message: {
+        display: 'flex' + ' !Important',
+        alignItems: 'center' + ' !Important',
     },
 }));

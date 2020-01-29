@@ -1,8 +1,8 @@
+import './App.css';
 import React from 'react';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import { Router } from "react-router-dom";
-import './App.css';
 
 import history from '../history.js';
 import { store } from "../store.js";
@@ -104,26 +104,23 @@ function App(props) {
     return (
         <Router history={history}>
             <div className={classes.AppDivDark}>
-                <div className={classes.AppDivLight}
-                    style={type === "light"
-                        ? { opacity: 1, }
-                        : { opacity: 0, }}
-                />
+                <div className={classes.AppDivLight} style={type === "light" ? { opacity: 1, } : { opacity: 0, }} />
                 {type === "light"
-                    ?
-                    <div className={classes.AppCloudsDiv}
-                        style={type === "light"
-                            ? { opacity: 1, }
-                            : { opacity: 0, }}
-                    >
+                    ? <div className={classes.AppCloudsDiv} style={type === "light" ? { opacity: 1, } : { opacity: 0, }}>
                         {clouds}
                     </div>
-                    :
-                    <div className={classes.AppStarsDiv}
-                        style={type === "light"
-                            ? { opacity: 0, }
-                            : { opacity: 1, }}
-                    >
+                    : <div className={classes.AppStarsDiv} style={type === "light" ? { opacity: 0, } : { opacity: 1, }}>
+                        <div className={classes.AppComet}
+                            style={{
+                                position: 'absolute',
+                                left: 0 + "%",
+                                top: 100 + "%",
+                                width: 10 + "px",
+                                height: 10 + "px",
+                                boxShadow: "0 0 " + 20 + "px " + 20 / 2 + "px #043668",
+                                animationDuration: 180 + "s",
+                            }}
+                        />
                         {stars}
                     </div>
                 }

@@ -19,7 +19,7 @@ import Grid from '@material-ui/core/Grid';
 import { SET_THEME_MODE, SET_CURRENT_USER, SET_SNACKBAR_MODE } from "../actions/types";
 
 import { setUserState, setCurrLang, setTheme, setSnackbar } from '../actions/Actions';
-import { useStyles } from '../styles/Styles';
+import { useStyles } from '../styles/Styles.js';
 import { instance } from './Config';
 import { CheckTimeOut } from '../utils/CheckLoginTimeOut';
 import setAuthToken from "../utils/setAuthToken.js";
@@ -184,12 +184,9 @@ function MainPage(props) {
         instance
             .post('/actions/users/getuserdata', id)
             .then(res => {
-                res.data.language === 0 ? setCurrLangAction(EnDict) : setCurrLangAction(RuDict);
-            })
-            .catch(err => {
-                auth.user.language === 0 ? setCurrLangAction(EnDict) : setCurrLangAction(RuDict);
+                res.data.result.language === 0 ? setCurrLangAction(EnDict) : setCurrLangAction(RuDict);
             });
-        // if (auth.user.times_mode === 0) {
+        // if (auth.user.result.times_mode === 0) {
         //     setTheme({
         //         type: SET_THEME_MODE,
         //         palette: {
@@ -209,7 +206,7 @@ function MainPage(props) {
         //         }
         //     });
         // }
-    }, [classes, setTheme, setCurrLangAction, auth.user.language, auth.user.times_mode, auth.user.id]);
+    }, [classes, setTheme, setCurrLangAction, auth.user.id]);
 
     return (
         <MuiThemeProvider theme={muiTheme}>
@@ -255,7 +252,6 @@ function MainPage(props) {
                     }
                 />
             </Snackbar>
-
             <Dialog open={openDialog}
                 onClose={closeDialogAction}
                 aria-labelledby="alert-dialog-title"
@@ -283,7 +279,6 @@ function MainPage(props) {
                     </Button>
                 </DialogActions>
             </Dialog>
-
             <div className={classes.root}>
                 <Grid container
                     className={`${classes.height12}`}

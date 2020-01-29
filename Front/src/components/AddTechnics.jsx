@@ -9,12 +9,13 @@ import Button from '@material-ui/core/Button';
 import Paper from "@material-ui/core/Paper";
 import Grid from '@material-ui/core/Grid';
 
-import { MuiThemeProvider, createMuiTheme } from '@material-ui/core/styles';
+import { ThemeProvider as MuiThemeProvider }  from '@material-ui/core/styles';
+import createMuiTheme from '@material-ui/core/styles/createMuiTheme';
 
-import { useStyles } from '../styles/Styles';
-import { setSnackbar } from '../actions/Actions';
-import { SET_SNACKBAR_MODE } from "../actions/types";
-import { instance } from './Config';
+import { useStyles } from '../styles/Styles.js';
+import { setSnackbar } from '../actions/Actions.js';
+import { SET_SNACKBAR_MODE } from "../actions/types.js";
+import { instance } from './Config.js';
 
 function AddTechnics(props) {
     const classes = useStyles();
@@ -228,69 +229,81 @@ function AddTechnics(props) {
                     className={`${classes.height12}`}
                     direction="column"
                     justify="center"
-                    alignItems="stretch" >
+                    alignItems="stretch"
+                >
                     <Grid item className={`${classes.mainGridBodyItem} ${classes.height11}`}>
                         <Paper className={classes.paper}>
                             <Grid container
-                                className={`${classes.height6}`}
+                                className={`${classes.height12}`}
                                 direction="column"
                                 justify="center"
                                 alignItems="stretch"
                             >
-                                <Grid item className={`${classes.mainGridBodyItem} ${classes.height4}`}>
-                                    <TextField className={classes.inputDiv}
-                                        error={fileldsErr.titleRu}
-                                        required
-                                        id="title-ru"
-                                        value={technicsData.titleRu}
-                                        label={lang.currLang.texts.title + ' Ru'}
-                                        variant="outlined"
-                                        onChange={(e) => { changeData(e, 'title-ru') }}
-                                    />
+                                <Grid item className={`${classes.mainGridBodyItem} ${classes.height6}`}>
+                                    <Grid container
+                                        className={`${classes.height12}`}
+                                        direction="column"
+                                        justify="center"
+                                        alignItems="stretch"
+                                    >
+                                        <Grid item className={`${classes.mainGridBodyItem} ${classes.height4}`}>
+                                            <TextField className={classes.inputDiv}
+                                                error={fileldsErr.titleRu}
+                                                required
+                                                id="title-ru"
+                                                value={technicsData.titleRu}
+                                                label={lang.currLang.texts.title + ' Ru'}
+                                                variant="outlined"
+                                                onChange={(e) => { changeData(e, 'title-ru') }}
+                                            />
+                                        </Grid>
+                                        <Grid item className={`${classes.mainGridBodyItem} ${classes.height8}`}>
+                                            <TextField className={classes.inputDiv}
+                                                error={fileldsErr.descriptionRu}
+                                                required
+                                                id="description-ru"
+                                                multiline
+                                                rows="4"
+                                                value={technicsData.descriptionRu}
+                                                label={lang.currLang.texts.description}
+                                                variant="outlined"
+                                                onChange={(e) => { changeData(e, 'description-ru') }}
+                                            />
+                                        </Grid>
+                                    </Grid>
                                 </Grid>
-                                <Grid item className={`${classes.mainGridBodyItem} ${classes.height8}`}>
-                                    <TextField className={classes.inputDiv}
-                                        error={fileldsErr.descriptionRu}
-                                        required
-                                        id="description-ru"
-                                        multiline
-                                        rows="4"
-                                        value={technicsData.descriptionRu}
-                                        label={lang.currLang.texts.description}
-                                        variant="outlined"
-                                        onChange={(e) => { changeData(e, 'description-ru') }}
-                                    />
-                                </Grid>
-                            </Grid>
-                            <Grid container
-                                className={`${classes.height6}`}
-                                direction="column"
-                                justify="center"
-                                alignItems="stretch"
-                            >
-                                <Grid item className={`${classes.mainGridBodyItem} ${classes.height4}`}>
-                                    <TextField className={classes.inputDiv}
-                                        error={fileldsErr.titleEn}
-                                        required
-                                        id="title-en"
-                                        value={technicsData.titleEn}
-                                        label={lang.currLang.texts.title + ' En'}
-                                        variant="outlined"
-                                        onChange={(e) => { changeData(e, 'title-en') }}
-                                    />
-                                </Grid>
-                                <Grid item className={`${classes.mainGridBodyItem} ${classes.height8}`}>
-                                    <TextField className={classes.inputDiv}
-                                        error={fileldsErr.descriptionEn}
-                                        required
-                                        id="description-en"
-                                        multiline
-                                        rows="4"
-                                        value={technicsData.descriptionEn}
-                                        label={lang.currLang.texts.description}
-                                        variant="outlined"
-                                        onChange={(e) => { changeData(e, 'description-en') }}
-                                    />
+                                <Grid item className={`${classes.mainGridBodyItem} ${classes.height6}`}>
+                                    <Grid container
+                                        className={`${classes.height12}`}
+                                        direction="column"
+                                        justify="center"
+                                        alignItems="stretch"
+                                    >
+                                        <Grid item className={`${classes.mainGridBodyItem} ${classes.height4}`}>
+                                            <TextField className={classes.inputDiv}
+                                                error={fileldsErr.titleEn}
+                                                required
+                                                id="title-en"
+                                                value={technicsData.titleEn}
+                                                label={lang.currLang.texts.title + ' En'}
+                                                variant="outlined"
+                                                onChange={(e) => { changeData(e, 'title-en') }}
+                                            />
+                                        </Grid>
+                                        <Grid item className={`${classes.mainGridBodyItem} ${classes.height8}`}>
+                                            <TextField className={classes.inputDiv}
+                                                error={fileldsErr.descriptionEn}
+                                                required
+                                                id="description-en"
+                                                multiline
+                                                rows="4"
+                                                value={technicsData.descriptionEn}
+                                                label={lang.currLang.texts.description}
+                                                variant="outlined"
+                                                onChange={(e) => { changeData(e, 'description-en') }}
+                                            />
+                                        </Grid>
+                                    </Grid>
                                 </Grid>
                             </Grid>
                         </Paper>
@@ -332,7 +345,7 @@ function AddTechnics(props) {
                 </Grid>
             </div>
         </MuiThemeProvider>
-    )
+    );
 }
 
 AddTechnics.propTypes = {
@@ -341,7 +354,7 @@ AddTechnics.propTypes = {
     lang: PropTypes.object.isRequired,
 };
 
-const mapStateToProps = store => {
+const mapStateToProps = (store) => {
     return {
         themeMode: store.themeMode,
         lang: store.lang,

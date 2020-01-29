@@ -4,84 +4,59 @@ import PropTypes from 'prop-types';
 import clsx from 'clsx';
 import { Route, Switch } from "react-router-dom";
 
+import { SET_SNACKBAR_MODE } from "./actions/types.js";
+import { setSnackbar } from './actions/Actions.js';
+
 import SnackbarContent from '@material-ui/core/SnackbarContent';
 import Typography from '@material-ui/core/Typography';
 import IconButton from '@material-ui/core/IconButton';
 import Snackbar from '@material-ui/core/Snackbar';
-import { makeStyles } from '@material-ui/core/styles';
-import { amber, green } from '@material-ui/core/colors';
-import CloseIcon from '@material-ui/icons/Close';
 
-import { SET_SNACKBAR_MODE } from "./actions/types.js";
-import { setSnackbar } from './actions/Actions.js';
+import AddTechnics from './components/AddTechnics.jsx';
+//const AddTechnics = React.lazy(() => import('./components/AddTechnics.jsx'));
+//import Technics from './components/Technics.jsx';
+const Technics = React.lazy(() => import('./components/Technics.jsx'));
+//import AddLocation from './components/AddLocation.jsx';
+const AddLocation = React.lazy(() => import('./components/AddLocation.jsx'));
+//import AddCDream from './components/AddCDream.jsx';
+const AddCDream = React.lazy(() => import('./components/AddCDream.jsx'));
+//import AddDream from './components/AddDream.jsx';
+const AddDream = React.lazy(() => import('./components/AddDream.jsx'));
+//import ViewDreams from './components/ViewDreams.jsx';
+const ViewDreams = React.lazy(() => import('./components/ViewDreams.jsx'));
+//import DreamMap from './components/DreamMap.jsx';
+const DreamMap = React.lazy(() => import('./components/DreamMap.jsx'));
+//import MainPage from './components/MainPage.jsx';
+const MainPage = React.lazy(() => import('./components/MainPage.jsx'));
+//import Sign from './components/Sign.js';
+const Sign = React.lazy(() => import('./components/Sign.js'));
+
+import CloseIcon from '@material-ui/icons/Close';
 
 import PrivateRoute from "./components/PrivateRoute.js";
 
-import DreamMap from './components/DreamMap.jsx';
-import AddLocation from './components/AddLocation.jsx';
-import AddDream from './components/AddDream.jsx';
-import AddCDream from './components/AddCDream.jsx';
-import AddTechnics from './components/AddTechnics.jsx';
-import ViewDreams from './components/ViewDreams.jsx';
-import MainPage from "./components/MainPage.jsx";
-import Sign from './components/Sign.js';
-import Technics from './components/Technics.jsx';
-
-import { useStyles, variantIcon } from './styles/Styles.js';
-
-
-const useStyles1 = makeStyles(theme => ({
-    success: {
-        backgroundColor: green[600],
-    },
-    error: {
-        backgroundColor: theme.palette.error.dark,
-    },
-    info: {
-        backgroundColor: theme.palette.primary.main,
-    },
-    warning: {
-        backgroundColor: amber[700],
-    },
-    icon: {
-        fontSize: 20,
-    },
-    iconVariant: {
-        opacity: 0.9,
-        marginRight: theme.spacing(1),
-    },
-    message: {
-        display: 'flex',
-        alignItems: 'center',
-    },
-}));
+import { snackStyles, useStyles, variantIcon } from './styles/Styles.js';
 
 function MySnackbarContentWrapper(props) {
-    const classes = useStyles1();
+    const snackClasses = snackStyles();
     const { className, message, onClose, variant } = props;
     const Icon = variantIcon[variant];
     return (
         <SnackbarContent
-            className={clsx(classes[variant], className)}
+            className={clsx(snackClasses[variant], className)}
             aria-describedby="client-snackbar"
             message={
-                <span id="client-snackbar" className={classes.message}>
-                    <Icon className={clsx(classes.icon, classes.iconVariant)} />
-                    <Typography className={classes.mainGridContainer}
-                        align='center'
-                        variant='body2'>
+                <span id="client-snackbar" className={snackClasses.message}>
+                    <Icon className={clsx(snackClasses.icon, snackClasses.iconVariant)} />
+                    <Typography align='center' variant='body2'>
                         {message}
                     </Typography>
                 </span>
             }
             action={[
-                <IconButton key="close"
-                    aria-label="close"
-                    color="inherit"
-                    onClick={onClose}
-                >
-                    <CloseIcon className={classes.icon} />
-                </IconButton>,
+                <IconButton key="close" aria-label="close" color="inherit" onClick={onClose}>
+                    <CloseIcon className={snackClasses.icon} />
+                </IconButton>
             ]}
         />
     );
@@ -115,11 +90,13 @@ function Routes(props) {
     }, [open, variant, message]);
 
     return (
-        <div>
-            <Snackbar
-                open={openSnackbar}
+        <React.Suspense fallback={
+            <p>Loading...</p>
+        }>
+            <Snackbar open={openSnackbar}
                 onClose={handleCloseSnackbar}
-                autoHideDuration={3000}>
+                autoHideDuration={3000}
+            >
                 <MySnackbarContentWrapper
                     className={classes.margin}
                     onClose={handleCloseSnackbar}
@@ -129,18 +106,17 @@ function Routes(props) {
             </Snackbar>
             <Route exact path="/" component={Sign} />
             <Switch>
-                <PrivateRoute path="/dreammap" component={DreamMap} />
-                <PrivateRoute path="/addlocation" component={AddLocation} />
                 <PrivateRoute path="/luciddreams" component={MainPage} />
+                <PrivateRoute path="/dreammap" component={DreamMap} />
                 <PrivateRoute path="/dreams" component={ViewDreams} />
                 <PrivateRoute path="/addregulardream" component={AddDream} />
                 <PrivateRoute path="/addcdream" component={AddCDream} />
+                <PrivateRoute path="/addlocation" component={AddLocation} />
                 <PrivateRoute path="/technics" component={Technics} />
                 <PrivateRoute path="/addtechnics" component={AddTechnics} />
             </Switch>
-        </div>
+        </React.Suspense>
     );
-
 }
 
 Routes.propTypes = {

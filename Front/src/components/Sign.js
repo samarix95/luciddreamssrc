@@ -3,15 +3,6 @@ import { connect } from 'react-redux';
 import jwt_decode from "jwt-decode";
 import PropTypes from 'prop-types';
 
-import { GET_ERRORS, SET_CURRENT_USER, SET_SNACKBAR_MODE } from "../actions/types";
-import { setCurrLang, setUserState, setSnackbar } from '../actions/Actions';
-import { useStyles } from '../styles/Styles';
-import setAuthToken from "../utils/setAuthToken";
-import { instance } from './Config';
-
-import RuDict from '../dictionary/ru';
-import EnDict from '../dictionary/en';
-
 import InputAdornment from '@material-ui/core/InputAdornment';
 import LinearProgress from '@material-ui/core/LinearProgress';
 import DialogActions from '@material-ui/core/DialogActions';
@@ -20,6 +11,7 @@ import DialogTitle from '@material-ui/core/DialogTitle';
 import IconButton from '@material-ui/core/IconButton';
 import Typography from '@material-ui/core/Typography';
 import TextField from '@material-ui/core/TextField';
+import Container from "@material-ui/core/Container";
 import Button from '@material-ui/core/Button';
 import Dialog from '@material-ui/core/Dialog';
 import Paper from '@material-ui/core/Paper';
@@ -32,6 +24,15 @@ import Visibility from '@material-ui/icons/Visibility';
 import { MuiThemeProvider, createMuiTheme } from '@material-ui/core/styles';
 
 import CssBaseline from '@material-ui/core/CssBaseline';
+
+import { GET_ERRORS, SET_CURRENT_USER, SET_SNACKBAR_MODE } from "../actions/types";
+import { setCurrLang, setUserState, setSnackbar } from '../actions/Actions';
+import { useStyles } from '../styles/Styles.js';
+import setAuthToken from "../utils/setAuthToken";
+import { instance } from './Config';
+
+import RuDict from '../dictionary/ru';
+import EnDict from '../dictionary/en';
 
 const Transition = React.forwardRef(function Transition(props, ref) {
     return <Slide direction="up" ref={ref} {...props} />;
@@ -256,18 +257,6 @@ function Sign(props) {
     const click = (action) => {
         let newPages = page;
         switch (action) {
-            case 'useVk':
-                // window.VK.Auth.login(checkLoginState, 4194304);
-                // let loadItems = async () => {
-                //     const response = await fetch('http://10.203.117.137:3001/auth/vk', {
-                //         method: 'GET',
-                //         credentials: 'include',
-                //     });
-                //     const body = await response.json();
-
-                //     console.log(response);
-                // }
-                break;
             case 'openLogin':
                 setOpenLogin(true);
                 break;
@@ -306,28 +295,21 @@ function Sign(props) {
     };
 
     const changeLanguage = (language) => {
-        if (language === 'Ru') {
-            setCurrLang(RuDict);
-        }
-        else {
-            setCurrLang(EnDict);
-        }
+        language === 'Ru' ? setCurrLang(RuDict) : setCurrLang(EnDict);
     };
 
     return (
         <MuiThemeProvider theme={muiTheme}>
             <CssBaseline />
-            <Dialog keepMounted
-                open={openLogin}
+            <Dialog open={openLogin}
                 TransitionComponent={Transition}
                 aria-labelledby="alert-dialog-slide-title"
-                aria-describedby="alert-dialog-slide-description"
             >
                 <DialogTitle id="alert-dialog-slide-title">
                     {lang.currLang.buttons.signIn}
                 </DialogTitle>
                 <DialogContent>
-                    <Grid className={`${classes.menuDivButton}`} align="center">
+                    <Grid className={`${classes.menuDivButton} ${classes.margin}`} align="center">
                         <TextField
                             className={classes.textField}
                             id="email-field"
@@ -335,7 +317,7 @@ function Sign(props) {
                             label="Email"
                             onBlur={(e) => { changeAuthLogin(e) }} />
                     </Grid>
-                    <Grid className={`${classes.menuDivButton}`} align="center">
+                    <Grid className={`${classes.menuDivButton} ${classes.margin}`} align="center">
                         <TextField
                             id="password-field"
                             className={classes.textField}
@@ -357,10 +339,6 @@ function Sign(props) {
                                 ),
                             }} />
                     </Grid>
-                    {isLoading
-                        ? <LinearProgress /> :
-                        ''
-                    }
                 </DialogContent>
                 {!isLoading
                     ? <DialogActions>
@@ -375,10 +353,10 @@ function Sign(props) {
                             {lang.currLang.buttons.signIn}
                         </Button>
                     </DialogActions>
-                    : ''}
+                    : <LinearProgress className={`${classes.margin}`} />
+                }
             </Dialog>
-            <Dialog keepMounted
-                open={openRegist}
+            <Dialog open={openRegist}
                 TransitionComponent={Transition}
                 aria-labelledby="alert-dialog-slide-title"
                 aria-describedby="alert-dialog-slide-description"
@@ -387,7 +365,7 @@ function Sign(props) {
                     {lang.currLang.buttons.signUp}
                 </DialogTitle>
                 <DialogContent>
-                    <Grid className={`${classes.menuDivButton}`} align="center">
+                    <Grid className={`${classes.menuDivButton} ${classes.margin}`} align="center">
                         <TextField id="reg-email-field"
                             error={regFieldErrors.emailErr}
                             helperText={regFieldErrors.emailErrText}
@@ -396,7 +374,7 @@ function Sign(props) {
                             label="Email"
                             onBlur={(e) => { changeRegistLogin(e) }} />
                     </Grid>
-                    <Grid className={`${classes.menuDivButton}`} align="center">
+                    <Grid className={`${classes.menuDivButton} ${classes.margin}`} align="center">
                         <TextField id="reg-nickname-field"
                             error={regFieldErrors.nicknameErr}
                             helperText={regFieldErrors.nicknameErrText}
@@ -405,7 +383,7 @@ function Sign(props) {
                             label={lang.currLang.texts.nickname}
                             onBlur={(e) => { changeRegistNickname(e) }} />
                     </Grid>
-                    <Grid className={`${classes.menuDivButton}`} align="center">
+                    <Grid className={`${classes.menuDivButton} ${classes.margin}`} align="center">
                         <TextField id="reg-password-field"
                             error={regFieldErrors.passwordErr}
                             helperText={regFieldErrors.passwordErrText}
@@ -428,7 +406,7 @@ function Sign(props) {
                                 ),
                             }} />
                     </Grid>
-                    <Grid className={`${classes.menuDivButton}`} align="center">
+                    <Grid className={`${classes.menuDivButton} ${classes.margin}`} align="center">
                         <TextField id="reg-password2-field"
                             error={regFieldErrors.password2Err}
                             helperText={regFieldErrors.password2ErrText}
@@ -451,10 +429,6 @@ function Sign(props) {
                                 ),
                             }} />
                     </Grid>
-                    {isLoading
-                        ? <LinearProgress />
-                        : ''
-                    }
                 </DialogContent>
                 {!isLoading
                     ? <DialogActions>
@@ -469,16 +443,11 @@ function Sign(props) {
                             {lang.currLang.buttons.signUp}
                         </Button>
                     </DialogActions>
-                    : ''}
+                    : <LinearProgress className={`${classes.margin}`} />
+                }
             </Dialog>
             <div className={classes.root}>
-                <div className={classes.mainPage}
-                    style={
-                        page.mainPage === true
-                            ? { transform: 'translateY(0%)' }
-                            : { transform: 'translateY(-100%)' }
-                    }
-                >
+                <div className={classes.mainPage} style={page.mainPage === true ? { transform: 'translateY(0%)' } : { transform: 'translateY(-100%)' }}>
                     <Grid container
                         className={`${classes.height12}`}
                         direction="column"
@@ -493,35 +462,38 @@ function Sign(props) {
                                 alignItems="stretch"
                             >
                                 <Grid item className={`${classes.height3}`} />
-                                <Grid item className={`${classes.height6} ${classes.menuDivButton}`}>
-                                    <Grid item className={`${classes.menuDivButton} ${classes.height2}`} align="center">
+                                <Grid item className={`${classes.height6} ${classes.mainGridBodyItem}`}>
+                                    <Grid item className={`${classes.height2}`} />
+                                    <Grid item className={`${classes.menuDivButton} ${classes.height2}`}>
                                         <Button variant="contained" color="primary"
                                             className={`${classes.menuButton} ${classes.centerButton}`}
                                             onClick={() => { click('openLogin') }}>
                                             {lang.currLang.buttons.signIn}
                                         </Button>
                                     </Grid>
-                                    <Grid item className={`${classes.menuDivButton} ${classes.height2}`} align="center">
+                                    <Grid item className={`${classes.menuDivButton} ${classes.height2}`}>
                                         <Button variant="contained" color="primary"
                                             className={`${classes.menuButton} ${classes.centerButton}`}
                                             onClick={() => { click('openRegist') }}>
                                             {lang.currLang.buttons.signUp}
                                         </Button>
                                     </Grid>
-                                    <Grid item className={`${classes.menuDivButton} ${classes.height2}`} align="center" />
-                                    <Grid item className={`${classes.menuDivButton} ${classes.height2}`} align="center">
+                                    <Grid item className={`${classes.height2}`} />
+                                    <Grid item className={`${classes.menuDivButton} ${classes.height2}`}>
                                         <Button variant="contained" color="primary"
                                             className={`${classes.menuButton} ${classes.centerButton}`}
                                             onClick={() => (click('openAboutPage'))} >
                                             {lang.currLang.buttons.about}
                                         </Button>
                                     </Grid>
+                                    <Grid item className={`${classes.height2}`} />
                                 </Grid>
                                 <Grid item className={`${classes.height3}`} />
                             </Grid>
                         </Grid>
                         <Grid item className={`${classes.mainGridBodyItem} ${classes.height1}`}>
                             <Grid container
+                                className={`${classes.menuButtonContainer}`}
                                 direction="row"
                                 justify="center"
                                 alignItems="center"
@@ -540,40 +512,30 @@ function Sign(props) {
                         </Grid>
                     </Grid>
                 </div >
-                <div className={classes.aboutPage}
-                    style={page.aboutPage === true
-                        ? { transform: 'translateY(-100%)' }
-                        : { transform: 'translateY(0%)' }
-                    }
-                >
-                    <Grid className={classes.aboutGridContainer}
-                        container
+                <div className={classes.aboutPage} style={page.aboutPage === true ? { transform: 'translateY(-100%)' } : { transform: 'translateY(0%)' }}>
+                    <Grid container
+                        className={`${classes.height12}`}
                         direction="column"
                         justify="center"
                         alignItems="stretch"
-                        spacing={5} >
-                        <Grid item
-                            className={classes.aboutGridItem}
-                            align='center'>
-                            <Paper className={classes.aboutPaper}>
-                                <Typography>
-                                    {lang.currLang.texts.about}
-                                </Typography>
-                            </Paper>
+                    >
+                        <Grid item className={`${classes.mainGridBodyItem} ${classes.height11}`} align='center'>
+                            <Container className={classes.mainGridDreamsBodyItemContainer}>
+                                <Paper className={classes.mainGridDreamsBodyItemContainerPaper}>
+                                    <Typography>
+                                        {lang.currLang.texts.about}
+                                    </Typography>
+                                </Paper>
+                            </Container>
                         </Grid>
-                        <Grid item
-                            className={classes.aboutGridItem}
-                            align='center'>
-                            <Button variant="contained"
-                                color="primary"
-                                className={classes.menuButton}
-                                onClick={() => (click('closeAboutPage'))} >
+                        <Grid item className={`${classes.mainGridBodyItem} ${classes.height1}`} align='center'>
+                            <Button className={classes.menuButton} variant="contained" color="primary" onClick={() => (click('closeAboutPage'))}>
                                 {lang.currLang.buttons.close}
                             </Button>
                         </Grid>
                     </Grid>
                 </div>
-            </div >
+            </div>
         </MuiThemeProvider>
     )
 }
