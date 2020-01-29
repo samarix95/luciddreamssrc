@@ -39,12 +39,9 @@ function ViewDreams(props) {
     const [dreams, setDreams] = React.useState([]);
     const [locations, setLocations] = React.useState({});
     const [openDialog, setOpenDialog] = React.useState(false);
-
     const [locationChecked, setLocationChecked] = React.useState(false);
     const [selectedLocations, setSelectedLocations] = React.useState(null);
-
     const [postType, setPostType] = React.useState(2);
-
     const [filterData, setFilterData] = React.useState({
         location: null,
         type: 2,
@@ -114,6 +111,15 @@ function ViewDreams(props) {
 
     React.useEffect(() => {
         loadPosts();
+
+        if (typeof (props.location.defaultData) !== 'undefined') {
+            let newFilterData = filterData;
+            newFilterData = { ...newFilterData, location: props.location.defaultData.location.name_eng };
+            setFilterData(newFilterData);
+            setLocationChecked(true);
+            lang.currLang.current === "Ru" ? setSelectedLocations(props.location.defaultData.location.name_rus) : setSelectedLocations(props.location.defaultData.location.name_eng);
+        }
+
     }, [loadPosts]);
 
     return (
@@ -293,7 +299,7 @@ function ViewDreams(props) {
                                 <Button className={classes.actionButton}
                                     variant="contained"
                                     color="secondary"
-                                    onClick={() => { history.push("/luciddreams") }}
+                                    onClick={() => { typeof (props.location.defaultData) !== 'undefined' ? history.push(props.location.defaultData.prevUrl) : history.push("/luciddreams") }}
                                 >
                                     {lang.currLang.buttons.close}
                                 </Button>

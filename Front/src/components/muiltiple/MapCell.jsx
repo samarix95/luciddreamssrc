@@ -86,6 +86,16 @@ function MapCell(props) {
         //loadMap();
     };
 
+    const openDreamsView = () => {
+        history.push({
+            pathname: "/dreams",
+            defaultData: {
+                location: locations.find(loc => loc.id === tagId),
+                prevUrl: "/dreammap",
+            }
+        });
+    };
+
     return (
         <td
             style={{
@@ -173,13 +183,7 @@ function MapCell(props) {
                                             </Typography>
                                         </Grid>
                                         <Grid item xs={2}>
-                                            <IconButton onClick={editLocation}
-                                                disabled={
-                                                    typeof tagId === 'number'
-                                                        ? false
-                                                        : true
-                                                }
-                                            >
+                                            <IconButton onClick={editLocation} disabled={typeof tagId === 'number' ? false : true} >
                                                 <EditIcon fontSize="small" />
                                             </IconButton >
                                         </Grid>
@@ -194,11 +198,7 @@ function MapCell(props) {
                                         <Grid item>
                                             <FormControl>
                                                 <Select
-                                                    value={
-                                                        typeof tagId === 'number'
-                                                            ? tagId
-                                                            : ''
-                                                    }
+                                                    value={typeof tagId === 'number' ? tagId : ''}
                                                     onChange={changeTagId}
                                                     MenuProps={{
                                                         PaperProps: {
@@ -212,17 +212,8 @@ function MapCell(props) {
                                                     {locations.map((item, key) => (
                                                         <MenuItem key={key} value={item.id}>
                                                             <Avatar className={classes.smallAvatar}
-                                                                src={
-                                                                    item.id
-                                                                        ? item.img_url
-                                                                        : 'https://static.thenounproject.com/png/1446402-200.png'
-                                                                }
-                                                                style={palette.type === 'dark'
-                                                                    ? {
-                                                                        filter: 'invert(1)',
-                                                                    }
-                                                                    : {}
-                                                                }
+                                                                src={item.id ? item.img_url : 'https://static.thenounproject.com/png/1446402-200.png'}
+                                                                style={palette.type === 'dark' ? { filter: 'invert(1)', } : {}}
                                                             />
                                                         </MenuItem>
                                                     ))}
@@ -230,7 +221,7 @@ function MapCell(props) {
                                             </FormControl>
                                         </Grid>
                                         <Grid item>
-                                            <Button disabled={countDreams !== 0 ? false : true} onClick={() => { alert('Посмотреть') }}>
+                                            <Button disabled={countDreams !== 0 ? false : true} onClick={openDreamsView}>
                                                 {lang.currLang.texts.dreams}: {countDreams}
                                             </Button>
                                         </Grid>
