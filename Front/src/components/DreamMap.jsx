@@ -2,7 +2,7 @@ import React from 'react';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 
-import ReactPinchZoomPan from '../../node_modules/react-pinch-zoom-pan/lib/ReactPinchZoomPan.js';
+import { TransformWrapper, TransformComponent } from '../../node_modules/react-zoom-pan-pinch/dist/index.js';
 
 import CssBaseline from '@material-ui/core/CssBaseline';
 import Button from '@material-ui/core/Button';
@@ -18,8 +18,7 @@ import { MuiThemeProvider, createMuiTheme } from '@material-ui/core/styles';
 import MapCell from './muiltiple/MapCell.jsx';
 import { useStyles } from '../styles/Styles.js';
 
-const ratio = ((window.innerHeight * 0.01 * (100 / 12 * 9 - 0.1)) / (window.innerWidth)) * 100;
-const cellWidth = Math.round(window.innerWidth / 20 * 1.5 * 0.6);
+const cellWidth = (window.innerWidth - 32) / 20;
 
 function DreamMap(props) {
     const { lang, themeMode, history, user_id } = props;
@@ -28,19 +27,6 @@ function DreamMap(props) {
     const [locations, setLocations] = React.useState({});
     const [dreamMap, setDreamMap] = React.useState(null);
     const [posts, setPosts] = React.useState(null);
-    const [initialScale, setScale] = React.useState(1);
-
-    const sizeUp = () => {
-        if (initialScale + 0.25 < 2.5) {
-            setScale(initialScale + 0.25);
-        }
-    };
-
-    const sizeDown = () => {
-        if (initialScale - 0.25 > 0.5) {
-            setScale(initialScale - 0.25);
-        }
-    };
 
     const createTable = () => {
         let table = [];
@@ -122,77 +108,67 @@ function DreamMap(props) {
                     justify="center"
                     alignItems="stretch"
                 >
-                    <Grid item className={`${classes.hiddenOverflow} ${classes.height9}`}>
-                        <ReactPinchZoomPan initialScale={initialScale} maxScale={2.5} render={obj => {
-                            return (
-                                <div
-                                    style={{
-                                        paddingTop: ratio.toFixed(2) + '%',
-                                        overflow: 'hidden',
-                                        height: '100%',
-                                        width: '100%',
-                                        position: 'relative'
-                                    }}
-                                >
-                                    <div
-                                        style={{
-                                            position: 'absolute',
-                                            top: '50%',
-                                            left: '50%',
-                                            transform: 'translate(-50%, -50%)',
-                                        }}
-                                    >
-                                        <table
-                                            style={{
-                                                // transform: 'rotateX(60deg) rotateY(0deg) rotateZ(-45deg)',
-                                                // transformStyle: 'preserve-3d',
-                                                width: '100%',
-                                                height: 'auto',
-                                                transform: `scale(${obj.scale}) translateY(${obj.y}px) translateX(${obj.x}px)`,
-                                                transition: 'transform .1s',
-                                                position: 'relative',
-                                                margin: 'auto',
-                                                borderCollapse: 'collapse',
-                                            }}
+                    <Grid item className={`${classes.hiddenOverflow} ${classes.height11}`}>
+                        <div style={{ padding: 16 }}>
+                            <TransformWrapper
+                                defaultScale={1}
+                                options={{
+                                    minScale: 0.5,
+                                    maxScale: 2.5,
+                                }}
+                                zoomIn={{
+                                    step: 10,
+                                }}
+                                zoomOut={{
+                                    step: 10,
+                                }}
+                                doubleClick={{
+                                    disabled: true,
+                                }}
+                            >
+                                {({ zoomIn, zoomOut, resetTransform, ...rest }) => (
+                                    <React.Fragment>
+                                        <TransformComponent>
+                                            <table style={{ borderCollapse: 'collapse' }} >
+                                                <tbody>
+                                                    {dreamMap !== null
+                                                        ? createTable()
+                                                        : <tr>
+                                                            <td />
+                                                        </tr>
+                                                    }
+                                                </tbody>
+                                            </table>
+                                        </TransformComponent>
+                                        <Grid container
+                                            className={"tools"}
+                                            direction="row"
+                                            justify="space-evenly"
+                                            alignItems="center"
+                                            style={{ marginTop: 16 }}
                                         >
-                                            <tbody>
-                                                {dreamMap !== null
-                                                    ? createTable()
-                                                    : <tr>
-                                                        <td />
-                                                    </tr>
-                                                }
-                                            </tbody>
-                                        </table>
-                                    </div>
-                                </div>
-                            )
-                        }} />
-                    </Grid>
-                    <Grid item className={`${classes.mainGridBodyItem} ${classes.height2}`}>
-                        <Grid container
-                            className={classes.mainGridContainer}
-                            direction="row"
-                            justify="space-evenly"
-                            alignItems="center" >
-                            <Grid item xs={2} align="center" />
-                            <Grid item xs={2} align="center">
-                                <Fab size="small" onClick={sizeDown}>
-                                    <ZoomOutIcon />
-                                </Fab>
-                            </Grid>
-                            <Grid item xs={4} align="center" >
-                                <Fab size="small" onClick={() => setScale(1)} >
-                                    <ZoomOutMapIcon />
-                                </Fab>
-                            </Grid>
-                            <Grid item xs={2} align="center">
-                                <Fab size="small" onClick={sizeUp} >
-                                    <ZoomInIcon />
-                                </Fab>
-                            </Grid>
-                            <Grid item xs={2} align="center" />
-                        </Grid>
+                                            <Grid item xs={2} align="center" />
+                                            <Grid item xs={2} align="center">
+                                                <Fab size="small" onClick={zoomOut}>
+                                                    <ZoomOutIcon />
+                                                </Fab>
+                                            </Grid>
+                                            <Grid item xs={4} align="center" >
+                                                <Fab size="small" onClick={resetTransform} >
+                                                    <ZoomOutMapIcon />
+                                                </Fab>
+                                            </Grid>
+                                            <Grid item xs={2} align="center">
+                                                <Fab size="small" onClick={zoomIn} >
+                                                    <ZoomInIcon />
+                                                </Fab>
+                                            </Grid>
+                                            <Grid item xs={2} align="center" />
+                                        </Grid>
+                                    </React.Fragment>
+                                )}
+                            </TransformWrapper>
+                        </div>
                     </Grid>
                     <Grid item className={`${classes.mainGridBodyItem} ${classes.height1}`}>
                         <Grid container
@@ -221,7 +197,7 @@ function DreamMap(props) {
                         </Grid>
                     </Grid>
                 </Grid>
-            </div>
+            </div >
         </MuiThemeProvider >
     )
 }

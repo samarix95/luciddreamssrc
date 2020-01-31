@@ -262,17 +262,19 @@ function ViewDreams(props) {
                                             justify="center"
                                             alignItems="stretch"
                                         >
-                                            {dreams
-                                                .filter(item => filterData.location ? item.tags.includes(item.tags.find(tag => tag[0] === locations.find(locations => locations.name_eng === filterData.location || locations.name_rus === filterData.location).id.toString())) : item)
-                                                .filter(item => filterData.type === 2 ? item : item.post_type === filterData.type)
-                                                .map((item, key) => (
-                                                    <DreamCard
-                                                        item={item}
-                                                        key={key}
-                                                        history={history}
-                                                        loadPosts={loadPosts}
-                                                    />
-                                                ))
+                                            {locations.length !== 0
+                                                ? dreams
+                                                    .filter(item => filterData.location ? item.tags.includes(item.tags.find(tag => tag[0] === locations.find(locations => locations.name_eng === filterData.location || locations.name_rus === filterData.location).id.toString())) : item)
+                                                    .filter(item => filterData.type === 2 ? item : item.post_type === filterData.type)
+                                                    .map((item, key) => (
+                                                        <DreamCard
+                                                            item={item}
+                                                            key={key}
+                                                            history={history}
+                                                            loadPosts={loadPosts}
+                                                        />
+                                                    ))
+                                                : ''
                                             }
                                         </Grid>
                                         : <div>
