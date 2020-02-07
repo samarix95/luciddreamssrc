@@ -108,8 +108,11 @@ function DreamMap(props) {
                     justify="center"
                     alignItems="stretch"
                 >
-                    <Grid item className={`${classes.hiddenOverflow} ${classes.height11}`}>
-                        <div style={{ padding: 16 }}>
+                    <Grid item className={`${classes.hiddenOverflow} ${classes.height2}`}>
+
+                    </Grid>
+                    <Grid item className={`${classes.hiddenOverflow} ${classes.height9}`}>
+                        <div style={{ padding: 16 }} className={`${classes.formControl} ${classes.fullMinWidthAbs}`}>
                             <TransformWrapper
                                 defaultScale={1}
                                 options={{

@@ -340,21 +340,23 @@ function Sign(props) {
                             }} />
                     </Grid>
                 </DialogContent>
-                {!isLoading
-                    ? <DialogActions>
-                        <Button onClick={() => { click('closeLogin') }}
-                            color="secondary"
-                            disabled={isLoading}>
-                            {lang.currLang.buttons.cancel}
-                        </Button>
-                        <Button onClick={() => { click('signIn') }}
-                            color="primary"
-                            disabled={isLoading}>
-                            {lang.currLang.buttons.signIn}
-                        </Button>
-                    </DialogActions>
-                    : <LinearProgress className={`${classes.margin}`} />
-                }
+                <DialogActions>
+                    {!isLoading
+                        ? <React.Fragment>
+                            <Button onClick={() => { click('closeLogin') }}
+                                color="secondary"
+                                disabled={isLoading}>
+                                {lang.currLang.buttons.cancel}
+                            </Button>
+                            <Button onClick={() => { click('signIn') }}
+                                color="primary"
+                                disabled={isLoading}>
+                                {lang.currLang.buttons.signIn}
+                            </Button>
+                        </React.Fragment>
+                        : <LinearProgress className={`${classes.margin} ${classes.textField}`} />
+                    }
+                </DialogActions>
             </Dialog>
             <Dialog open={openRegist}
                 TransitionComponent={Transition}
@@ -536,7 +538,7 @@ function Sign(props) {
                     </Grid>
                 </div>
             </div>
-        </MuiThemeProvider>
+        </MuiThemeProvider >
     )
 }
 

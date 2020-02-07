@@ -57,48 +57,50 @@ else {
 function App(props) {
     const { type } = props;
     const classes = useStyles();
-    stars = [];
-    clouds = [];
-    for (let i = 0; i < params.amountStars; i++) {
-        let size = Math.round(Math.random() * 10) === 0
-            ? params.size.giant
-            : randomBetween(params.size.min, params.size.max);
-        stars.push(
-            <div
-                className={classes.AppStar}
-                key={i + 'AppStar'}
-                style={{
-                    left: randomBetween(0, 100) + "%",
-                    top: randomBetween(0, 100) + "%",
-                    width: size + "px",
-                    height: size + "px",
-                    boxShadow: "0 0 " + size + "px " + size / 2 + "px #043668",
-                    animationDuration: randomBetween(params.duration.min, params.duration.max) + "s",
-                }}
-            />
-        );
-    }
+    let birdStyle = {};
 
-    for (let i = 0; i < params.amountClouds; i++) {
-        let left = Math.round(Math.random() * 50 + 150);
-        let top = Math.round(Math.random() * 100 / 100 * 90);
-        let scale = Math.random() * 2 - 0.5;
-        let opacity = Math.random() * 90 / 100;
-        let speed = Math.random() * 30 + 15;
-        clouds.push(
-            <div className={classes.AppCloud}
-                key={i + 'AppCloud'}
-                style={{
-                    left: left + '%',
-                    top: top + '%',
-                    width: '400px',
-                    height: '100px',
-                    transform: 'scale(' + scale + ')',
-                    opacity: opacity,
-                    animationDuration: speed + 's',
-                }}
-            />
-        );
+    if (type !== "light") {
+        stars = [];
+        for (let i = 0; i < params.amountStars; i++) {
+            const size = Math.round(Math.random() * 10) === 0 ? params.size.giant : randomBetween(params.size.min, params.size.max);
+            stars.push(
+                <div
+                    className={classes.AppStar}
+                    key={i + 'appstar'}
+                    style={{
+                        left: randomBetween(0, 100) + "%",
+                        top: randomBetween(0, 100) + "%",
+                        width: size + "px",
+                        height: size + "px",
+                        boxShadow: "0 0 " + size + "px " + size / 2 + "px #043668",
+                        animationDuration: randomBetween(params.duration.min, params.duration.max) + "s",
+                    }}
+                />
+            );
+        }
+    }
+    else {
+        clouds = [];
+        for (let i = 0; i < params.amountClouds; i++) {
+            clouds.push(
+                <div className={classes.AppCloud}
+                    key={i + 'appcloud'}
+                    style={{
+                        left: '1' + (Math.random() * (50 - 30) + 30).toFixed(0) + '%',
+                        top: (Math.random() * (80 - 30) + 30).toFixed(0) + '%',
+                        width: '400px',
+                        height: '100px',
+                        transform: 'scale(' + (Math.random() * (1.6 - 0.6) + 0.6).toFixed(2) + ')',
+                        opacity: '0.75',
+                        animationDuration: (Math.random() * 40 + 15).toFixed(0) + 's',
+                    }}
+                />
+            );
+        }
+        birdStyle = {
+            left: '-10%',
+            animationDuration: (Math.random() * (35 - 25) + 25).toFixed(0) + 's',
+        };
     }
 
     return (
@@ -107,23 +109,21 @@ function App(props) {
                 <div className={classes.AppDivLight} style={type === "light" ? { opacity: 1, } : { opacity: 0, }} />
                 {type === "light"
                     ? <div className={classes.AppCloudsDiv} style={type === "light" ? { opacity: 1, } : { opacity: 0, }}>
+                        <div className={classes.FlockOfBirds} style={birdStyle} />
                         {clouds}
                     </div>
                     : <div className={classes.AppStarsDiv} style={type === "light" ? { opacity: 0, } : { opacity: 1, }}>
-                        <div className={classes.AppComet}
-                            style={{
-                                position: 'absolute',
-                                left: 0 + "%",
-                                top: 100 + "%",
-                                width: 10 + "px",
-                                height: 10 + "px",
-                                boxShadow: "0 0 " + 20 + "px " + 20 / 2 + "px #043668",
-                                animationDuration: 180 + "s",
-                            }}
-                        />
+                        <div className={classes.AppComet}>
+                            <div className={classes.AppCometDiv}>
+                                <div className={classes.AppCometImg} />
+                            </div>
+                        </div>
                         {stars}
                     </div>
                 }
+                <div className={classes.MointainBackgroud} style={type === "light" ? { filter: 'grayscale(0%)', } : { filter: 'grayscale(100%)', }}>
+                    <div className={classes.TreesBackgroud} />
+                </div>
             </div>
             <Routes />
         </Router>

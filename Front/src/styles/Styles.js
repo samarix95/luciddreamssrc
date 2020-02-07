@@ -11,7 +11,11 @@ import green from '@material-ui/core/colors/green';
 import MapImg from '../img/map.png';
 import SunImg from '../img/sun.png';
 import MoonImg from '../img/moon.png';
+import MountainsImg from '../img/mountains.png';
+import TreesImg from '../img/trees.png';
 import AstronautImg from '../img/astronaut.png';
+import CometImg from '../img/comet.png';
+import BirdGif from '../img/bird.gif';
 import CloudSvg from '../img/cloud.svg';
 
 export const params = {
@@ -194,6 +198,30 @@ export const useStyles = makeStyles(theme => ({
         width: '100%',
         height: '100%',
     },
+    MointainBackgroud: {
+        backgroundImage: 'url(' + MountainsImg + ')',
+        backgroundPosition: 'right bottom',
+        backgroundSize: 'auto 100%',
+        position: 'absolute',
+        bottom: 0,
+        right: 0,
+        width: '100%',
+        height: '20%',
+        zIndex: -4,
+        transition: 'all 1s linear',
+    },
+    TreesBackgroud: {
+        position: 'absolute',
+        bottom: '-15%',
+        right: 0,
+        width: '100%',
+        height: '100%',
+        backgroundImage: 'url(' + TreesImg + ') ',
+        backgroundPosition: 'center bottom',
+        backgroundRepeat: 'no-repeat',
+        backgroundSize: 'cover',
+        zIndex: -4,
+    },
     AppDivDark: {
         position: 'fixed',
         background: 'radial-gradient(ellipse at center, rgba(8, 25, 42, 1) 20%, rgba(1, 4, 6, 1) 100%)',
@@ -201,7 +229,7 @@ export const useStyles = makeStyles(theme => ({
         margin: 0,
         width: '100%',
         height: '100%',
-        zIndex: -3,
+        zIndex: -5,
     },
     AppDivLight: {
         position: 'absolute',
@@ -211,7 +239,7 @@ export const useStyles = makeStyles(theme => ({
         opacity: 0,
         width: '100%',
         height: '100%',
-        zIndex: -3,
+        zIndex: -5,
     },
     AppStarsDiv: {
         transition: 'opacity 0.5s linear',
@@ -220,7 +248,7 @@ export const useStyles = makeStyles(theme => ({
         width: '100%',
         height: '100%',
         overflow: 'hidden',
-        zIndex: -2,
+        zIndex: -4,
     },
     AppCloudsDiv: {
         transition: 'opacity 0.5s linear',
@@ -229,24 +257,47 @@ export const useStyles = makeStyles(theme => ({
         width: '100%',
         height: '100%',
         overflow: 'hidden',
-        zIndex: -2,
+        zIndex: -3,
     },
     AppStar: {
         borderRadius: '100%',
         position: 'absolute',
         background: 'radial-gradient(ellipse at center, rgba(177, 198, 219, 1) 2%, rgba(5, 63, 118, 1) 100%)',
         filter: 'blur(1px)',
-        animation: '$shine infinite alternate',
+        animation: '$shine infinite linear',
         zIndex: -1,
     },
     AppComet: {
-        borderRadius: '100%',
-        position: 'absolute',
-        background: 'radial-gradient(ellipse at center, rgba(177, 198, 219, 1) 2%, rgba(5, 63, 118, 1) 100%)',
-        filter: 'blur(1px)',
+        position: 'relative',
+        top: '100%',
+        left: '0%',
+        width: '80px',
+        height: '40px',
+        transformOrigin: '50vw 0vh',
         animation: '$comet infinite linear',
-        transformOrigin: '100vw 0vh',
-        zIndex: -1,
+        animationDuration: '30s',
+    },
+    AppCometDiv: {
+        width: '100%',
+        height: '100%',
+        transform: 'rotate(90deg)',
+        zIndex: -4,
+    },
+    AppCometImg: {
+        transform: 'rotate(-15deg) scaleY(-1)',
+        width: '100%',
+        height: '100%',
+        backgroundImage: 'url(' + CometImg + ')',
+        backgroundSize: 'cover',
+    },
+    FlockOfBirds: {
+        position: 'absolute',
+        width: '20px',
+        height: '20px',
+        backgroundImage: 'url(' + BirdGif + ')',
+        backgroundSize: 'cover',
+        animation: '$movebird infinite linear',
+        zIndex: -2,
     },
     AppCloud: {
         position: 'absolute',
@@ -299,7 +350,6 @@ export const useStyles = makeStyles(theme => ({
         position: 'relative',
         left: '50%',
         top: '50%',
-        //transform: 'translate(-50%, -50%)',
         width: '25vw !important',
         height: '25vw',
         borderRadius: '50%',
@@ -401,6 +451,10 @@ export const useStyles = makeStyles(theme => ({
         minWidth: '100% !Important',
         position: 'relative'
     },
+    fullMinWidthAbs: {
+        minWidth: '100% !Important',
+        position: 'absolute'
+    },
     inputDiv: {
         minWidth: '85% !Important',
         maxWidth: '85% !Important',
@@ -464,12 +518,34 @@ export const useStyles = makeStyles(theme => ({
     },
     "@keyframes comet": {
         "100%": {
-            transform: 'rotate(360deg)',
+            transform: 'rotate(180deg)',
+        },
+    },
+    '@keyframes movebird': {
+        '0%': {
+            left: '-10%',
+            top: (Math.random() * (95 - 85) + 85).toFixed(0) + '%',
+        },
+        '25%': {
+            left: '20%',
+            top: (Math.random() * (95 - 85) + 85).toFixed(0) + '%',
+        },
+        '50%': {
+            left: '50%',
+            top: (Math.random() * (95 - 85) + 85).toFixed(0) + '%',
+        },
+        '75%': {
+            left: '70%',
+            top: (Math.random() * (95 - 85) + 85).toFixed(0) + '%',
+        },
+        '100%': {
+            left: '110%',
+            top: (Math.random() * (95 - 85) + 85).toFixed(0) + '%',
         },
     },
     "@keyframes moveclouds": {
         '100%': {
-            left: '-100%',
+            left: '-50%',
         },
     },
     "@keyframes swinging": {
