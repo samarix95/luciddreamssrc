@@ -90,6 +90,7 @@ function MapCell(props) {
         history.push({
             pathname: "/dreams",
             defaultData: {
+                mode: "fromMap",
                 location: locations.find(loc => loc.id === tagId),
                 prevUrl: "/dreammap",
             }

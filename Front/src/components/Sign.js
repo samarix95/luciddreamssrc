@@ -372,6 +372,7 @@ function Sign(props) {
                             error={regFieldErrors.emailErr}
                             helperText={regFieldErrors.emailErrText}
                             className={classes.textField}
+                            autoComplete="off"
                             type="email"
                             label="Email"
                             onBlur={(e) => { changeRegistLogin(e) }} />
@@ -381,6 +382,7 @@ function Sign(props) {
                             error={regFieldErrors.nicknameErr}
                             helperText={regFieldErrors.nicknameErrText}
                             className={classes.textField}
+                            autoComplete="off"
                             type="text"
                             label={lang.currLang.texts.nickname}
                             onBlur={(e) => { changeRegistNickname(e) }} />
@@ -389,6 +391,7 @@ function Sign(props) {
                         <TextField id="reg-password-field"
                             error={regFieldErrors.passwordErr}
                             helperText={regFieldErrors.passwordErrText}
+                            autoComplete="off"
                             className={classes.textField}
                             type={showPassword ? 'text' : 'password'}
                             label={lang.currLang.texts.password}
@@ -412,6 +415,7 @@ function Sign(props) {
                         <TextField id="reg-password2-field"
                             error={regFieldErrors.password2Err}
                             helperText={regFieldErrors.password2ErrText}
+                            autoComplete="off"
                             className={classes.textField}
                             type={showPassword ? 'text' : 'password'}
                             label={lang.currLang.texts.passwordAgain}

@@ -3,6 +3,7 @@ import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 
 import CircularProgress from '@material-ui/core/CircularProgress';
+import Typography from '@material-ui/core/Typography';
 import Container from '@material-ui/core/Container';
 import Button from '@material-ui/core/Button';
 import Paper from '@material-ui/core/Paper';
@@ -53,11 +54,16 @@ function Technics(props) {
                 >
                     <Grid item className={`${classes.hiddenOverflow} ${classes.height11}`}>
                         {isLoading
-                            ? <div className={classes.formControl}>
-                                <CircularProgress />
+                            ? <div className={`${classes.formControl} ${classes.centerTextAlign}`} >
+                                <div className={`${classes.inlineBlock} ${classes.relativePosition}`} >
+                                    <CircularProgress />
+                                </div>
+                                <Typography className={`${classes.relativePosition}`} component="div" >
+                                    {lang.currLang.texts.Loading}
+                                </Typography>
                             </div>
                             : <Container className={classes.mainGridDreamsBodyItemContainer}>
-                                <Paper className={classes.mainGridDreamsBodyItemContainerPaper}>
+                                {/* <Paper className={classes.mainGridDreamsBodyItemContainerPaper}> */}
                                     <Grid container
                                         className={classes.mainGridDreamsContainer}
                                         direction="column"
@@ -72,7 +78,7 @@ function Technics(props) {
                                             />
                                         ))}
                                     </Grid>
-                                </Paper>
+                                {/* </Paper> */}
                             </Container>
                         }
                     </Grid>

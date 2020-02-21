@@ -89,9 +89,9 @@ function ViewDreams(props) {
         setPostType(parseInt(event.target.value));
     };
 
-    const loadPosts = React.useCallback(() => {
+    const loadPosts = React.useCallback((user_id = auth.user.id) => {
         setIsLoading(true);
-        instance.post("/actions/users/getuserposts", { id: auth.user.id })
+        instance.post("/actions/users/getuserposts", { id: user_id })
             .then(res => {
                 setDreams(res.data);
                 setIsLoading(false);
@@ -110,18 +110,25 @@ function ViewDreams(props) {
     }, [auth.user.id]);
 
     React.useEffect(() => {
-        loadPosts();
-
         if (typeof (props.location.defaultData) !== 'undefined') {
-            let newFilterData = filterData;
-            newFilterData = { ...newFilterData, location: props.location.defaultData.location.name_eng };
-            setFilterData(newFilterData);
-            setLocationChecked(true);
-            lang.currLang.current === "Ru" ? setSelectedLocations(props.location.defaultData.location.name_rus) : setSelectedLocations(props.location.defaultData.location.name_eng);
+            if (props.location.defaultData.mode === "fromMap") {
+                let newFilterData = filterData;
+                newFilterData = { ...newFilterData, location: props.location.defaultData.location.name_eng };
+                setFilterData(newFilterData);
+                setLocationChecked(true);
+                lang.currLang.current === "Ru" ? setSelectedLocations(props.location.defaultData.location.name_rus) : setSelectedLocations(props.location.defaultData.location.name_eng);
+                loadPosts();
+            }
+            if (props.location.defaultData.mode === "fromFriend") {
+                loadPosts(props.location.defaultData.friend_id);
+            }
+        }
+        else {
+            loadPosts();
         }
 
     }, [loadPosts]);
-
+    
     return (
         <MuiThemeProvider theme={muiTheme}>
             <CssBaseline />
@@ -248,13 +255,18 @@ function ViewDreams(props) {
                     justify="center"
                     alignItems="stretch"
                 >
-                    <Grid item className={`${classes.hiddenOverflow} ${classes.height11}`}>
+                    <Grid item className={`${classes.hiddenOverflow} ${classes.height11}`} >
                         {isLoading
-                            ? <div className={classes.formControl}>
-                                <CircularProgress />
+                            ? <div className={`${classes.formControl} ${classes.centerTextAlign}`} >
+                                <div className={`${classes.inlineBlock} ${classes.relativePosition}`} >
+                                    <CircularProgress />
+                                </div>
+                                <Typography className={`${classes.relativePosition}`} component="div" >
+                                    {lang.currLang.texts.Loading}
+                                </Typography>
                             </div>
                             : <Container className={classes.mainGridDreamsBodyItemContainer}>
-                                <Paper className={classes.mainGridDreamsBodyItemContainerPaper}>
+                                {/* <Paper className={classes.mainGridDreamsBodyItemContainerPaper}> */}
                                     {dreams.length !== 0
                                         ? <Grid className={`${classes.mainGridDreamsContainer}`}
                                             container
@@ -287,7 +299,7 @@ function ViewDreams(props) {
                                             </div>
                                         </div>
                                     }
-                                </Paper>
+                                {/* </Paper> */}
                             </Container>
                         }
                     </Grid>

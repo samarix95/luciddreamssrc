@@ -15,6 +15,7 @@ import Dialog from '@material-ui/core/Dialog';
 import Button from '@material-ui/core/Button';
 import Slide from "@material-ui/core/Slide";
 import Grid from '@material-ui/core/Grid';
+import Link from '@material-ui/core/Link';
 
 import { SET_THEME_MODE, SET_CURRENT_USER, SET_SNACKBAR_MODE } from "../actions/types";
 
@@ -70,7 +71,8 @@ function MainPage(props) {
     };
 
     const onAstronautClick = () => {
-        alert('Тут должны перейти на страницу космонафта');
+        if (CheckTimeOut()) history.push("/profile");
+        else history.push("/");
     };
 
     const onMapClick = () => {
@@ -178,35 +180,12 @@ function MainPage(props) {
     };
 
     React.useEffect(() => {
-        let id = {
-            id: auth.user.id,
-        };
         instance
-            .post('/actions/users/getuserdata', id)
+            .post('/actions/users/getuserdata', { id: auth.user.id, })
             .then(res => {
                 res.data.result.language === 0 ? setCurrLangAction(EnDict) : setCurrLangAction(RuDict);
             });
-        // if (auth.user.result.times_mode === 0) {
-        //     setTheme({
-        //         type: SET_THEME_MODE,
-        //         palette: {
-        //             type: "dark",
-        //             primary: { main: "#f9a825" },
-        //             secondary: { main: "#f50057" },
-        //         }
-        //     });
-        // }
-        // else {
-        //     setTheme({
-        //         type: SET_THEME_MODE,
-        //         palette: {
-        //             type: "light",
-        //             primary: { main: "#3f51b5" },
-        //             secondary: { main: "#f50057" },
-        //         }
-        //     });
-        // }
-    }, [classes, setTheme, setCurrLangAction, auth.user.id]);
+    }, [setCurrLangAction, auth.user.id]);
 
     return (
         <MuiThemeProvider theme={muiTheme}>
@@ -294,26 +273,14 @@ function MainPage(props) {
                             alignItems="stretch"
                         >
                             <Grid item xs={4} >
-                                <ButtonBase className={classes.AstronautButton}
-                                    type='button'
-                                    focusRipple
-                                    onClick={onAstronautClick}>
+                                <ButtonBase className={classes.AstronautButton} focusRipple onClick={onAstronautClick} >
                                     <div className={classes.AstronautDiv}>
-                                        <div className={classes.AstronautImg}
-                                            style={
-                                                themeMode.palette.type === "light"
-                                                    ? { filter: 'invert(0)', }
-                                                    : { filter: 'invert(1)', }
-                                            }
-                                        />
+                                        <div className={classes.AstronautImg} style={themeMode.palette.type === "light" ? { filter: 'invert(0)', } : { filter: 'invert(1)', }} />
                                     </div>
                                 </ButtonBase>
                             </Grid>
                             <Grid item xs={4} >
-                                <ButtonBase className={classes.image}
-                                    type='button'
-                                    focusRipple
-                                    onClick={switchMode}>
+                                <ButtonBase className={classes.image} focusRipple onClick={switchMode}>
                                     <div className={classes.SkyDiv}>
                                         <div className={classes.SunSrc} style={themeMode.palette.type === "dark" ? { transform: 'translateY(36vw)' } : { transform: 'translateY(0)' }} />
                                         <div className={classes.MoonSrc} style={themeMode.palette.type === "dark" ? { transform: 'translateY(0)' } : { transform: 'translateY(-36vw)' }} />
@@ -321,10 +288,7 @@ function MainPage(props) {
                                 </ButtonBase>
                             </Grid>
                             <Grid item xs={4} >
-                                <ButtonBase className={classes.MapButton}
-                                    type='button'
-                                    focusRipple
-                                    onClick={onMapClick}>
+                                <ButtonBase className={classes.MapButton} focusRipple onClick={onMapClick}>
                                     <div className={classes.MapDiv}>
                                         <div className={classes.MapImg} style={themeMode.palette.type === "light" ? { filter: 'invert(0)', } : { filter: 'invert(1)', }} />
                                     </div>
@@ -340,11 +304,11 @@ function MainPage(props) {
                             alignItems="stretch"
                         >
                             <Grid item className={`${classes.mainGridBodyItem} ${classes.height12}`}>
-                                <Typography className={classes.mainGridContainer}
-                                    align='center'
-                                    variant='h6'
-                                >
-                                    {lang.currLang.texts.hello + auth.user.nickname}
+                                <Typography className={classes.mainGridContainer} align='center' variant='h6' >
+                                    {lang.currLang.texts.hello}
+                                    <Link color="inherit" onClick={() => { history.push("/profile") }}>
+                                        {auth.user.nickname}
+                                    </Link>
                                 </Typography>
                             </Grid>
                         </Grid>
@@ -433,14 +397,15 @@ function MainPage(props) {
                             direction="row"
                             justify="center"
                             alignItems="center"
+                            spacing={1}
                         >
                             <Grid item>
-                                <Button onClick={() => { changeLanguage('Ru') }}>
+                                <Button onClick={() => { changeLanguage('Ru') }} size="small" >
                                     RU
                                 </Button>
                             </Grid>
                             <Grid item>
-                                <Button onClick={() => { changeLanguage('En') }}>
+                                <Button onClick={() => { changeLanguage('En') }} size="small" >
                                     EN
                                 </Button>
                             </Grid>

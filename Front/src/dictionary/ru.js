@@ -36,6 +36,7 @@ const words = {
         description: 'Описание',
         content: 'Что снилось',
         tags: 'Места',
+        DreamsMap: 'Карта снов',
         dreams: 'Снов',
         technics: 'Техники',
         rating: 'Реалистичность',
@@ -61,6 +62,8 @@ const words = {
         ChangeIcon: "Иконка",
         FindIcon: "Поиск иконки (English only)",
         LogOutQuestion: "Вы точно хотите выйти?",
+        Loading: "Загрузка",
+        Avatar: "Аватар",
     },
     errors: {
         emailLenght: 'Введите email',

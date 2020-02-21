@@ -7,28 +7,21 @@ import { Route, Switch } from "react-router-dom";
 import { SET_SNACKBAR_MODE } from "./actions/types.js";
 import { setSnackbar } from './actions/Actions.js';
 
+import CircularProgress from '@material-ui/core/CircularProgress';
 import SnackbarContent from '@material-ui/core/SnackbarContent';
 import Typography from '@material-ui/core/Typography';
 import IconButton from '@material-ui/core/IconButton';
 import Snackbar from '@material-ui/core/Snackbar';
 
 import AddTechnics from './components/AddTechnics.jsx';
-//const AddTechnics = React.lazy(() => import('./components/AddTechnics.jsx'));
-//import Technics from './components/Technics.jsx';
 const Technics = React.lazy(() => import('./components/Technics.jsx'));
-//import AddLocation from './components/AddLocation.jsx';
 const AddLocation = React.lazy(() => import('./components/AddLocation.jsx'));
-//import AddCDream from './components/AddCDream.jsx';
 const AddCDream = React.lazy(() => import('./components/AddCDream.jsx'));
-//import AddDream from './components/AddDream.jsx';
 const AddDream = React.lazy(() => import('./components/AddDream.jsx'));
-//import ViewDreams from './components/ViewDreams.jsx';
 const ViewDreams = React.lazy(() => import('./components/ViewDreams.jsx'));
-//import DreamMap from './components/DreamMap.jsx';
 const DreamMap = React.lazy(() => import('./components/DreamMap.jsx'));
-//import MainPage from './components/MainPage.jsx';
+const Profile = React.lazy(() => import('./components/Profile.jsx'));
 const MainPage = React.lazy(() => import('./components/MainPage.jsx'));
-//import Sign from './components/Sign.js';
 const Sign = React.lazy(() => import('./components/Sign.js'));
 
 import CloseIcon from '@material-ui/icons/Close';
@@ -64,7 +57,7 @@ function MySnackbarContentWrapper(props) {
 
 function Routes(props) {
     const classes = useStyles();
-    const { open, variant, message } = props;
+    const { lang, open, variant, message } = props;
     const [openSnackbar, setOpenSnackbar] = React.useState(false);
     const [openSnackbarVariant, setOpenSnackbarVariant] = React.useState('');
     const [snackbarMessage, setSnackbarMessage] = React.useState('');
@@ -83,6 +76,7 @@ function Routes(props) {
             },
         });
     };
+
     React.useEffect(() => {
         setOpenSnackbarVariant(variant);
         setSnackbarMessage(message);
@@ -91,7 +85,14 @@ function Routes(props) {
 
     return (
         <React.Suspense fallback={
-            <p>Loading...</p>
+            <div className={`${classes.formControl} ${classes.centerTextAlign}`} >
+                <div className={`${classes.inlineBlock} ${classes.relativePosition}`} >
+                    <CircularProgress />
+                </div>
+                <Typography className={`${classes.relativePosition}`} component="div" >
+                    {lang.currLang.texts.Loading}
+                </Typography>
+            </div>
         }>
             <Snackbar open={openSnackbar}
                 onClose={handleCloseSnackbar}
@@ -107,6 +108,7 @@ function Routes(props) {
             <Route exact path="/" component={Sign} />
             <Switch>
                 <PrivateRoute path="/luciddreams" component={MainPage} />
+                <PrivateRoute path="/profile" component={Profile} />
                 <PrivateRoute path="/dreammap" component={DreamMap} />
                 <PrivateRoute path="/dreams" component={ViewDreams} />
                 <PrivateRoute path="/addregulardream" component={AddDream} />
@@ -120,6 +122,7 @@ function Routes(props) {
 }
 
 Routes.propTypes = {
+    lang: PropTypes.object.isRequired,
     open: PropTypes.bool.isRequired,
     variant: PropTypes.string.isRequired,
     message: PropTypes.string.isRequired,
@@ -128,6 +131,7 @@ Routes.propTypes = {
 
 const mapStateToProps = store => {
     return {
+        lang: store.lang,
         open: store.snackbar.snackbar.open,
         variant: store.snackbar.snackbar.variant,
         message: store.snackbar.snackbar.message,

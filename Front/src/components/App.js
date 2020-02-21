@@ -1,20 +1,20 @@
-import './App.css';
-import React from 'react';
-import { connect } from 'react-redux';
-import PropTypes from 'prop-types';
+import "./App.css";
+import React from "react";
+import { connect } from "react-redux";
+import PropTypes from "prop-types";
 import { Router } from "react-router-dom";
 
-import history from '../history.js';
+import history from "../history.js";
 import { store } from "../store.js";
-import { CheckTimeOut } from '../utils/CheckLoginTimeOut.js';
+import { CheckTimeOut } from "../utils/CheckLoginTimeOut.js";
 import setAuthToken from "../utils/setAuthToken.js";
 import { SET_CURRENT_USER, SET_THEME_MODE } from "../actions/types.js";
 
-import Routes from '../Routes.js';
+import Routes from "../Routes.js";
 
-import { useStyles, params, randomBetween } from '../styles/Styles.js';
+import { useStyles, params, randomBetween } from "../styles/Styles.js";
 
-let check = CheckTimeOut();
+const check = CheckTimeOut();
 let stars = [];
 let clouds = [];
 

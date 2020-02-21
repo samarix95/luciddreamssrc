@@ -36,6 +36,7 @@ const words = {
         description: 'Description',
         content: "What's a dream",
         tags: 'Locations',
+        DreamsMap: 'Dreams map',
         dreams: 'Dreams',
         technics: 'Technics',
         rating: 'Realistics',
@@ -61,6 +62,8 @@ const words = {
         ChangeIcon: "Icon",
         FindIcon: "Search icon",
         LogOutQuestion: "Do you want to logout?",
+        Loading: "Loading",
+        Avatar: "Avatar",
     },
     errors: {
         emailLenght: 'Email must not be empty',

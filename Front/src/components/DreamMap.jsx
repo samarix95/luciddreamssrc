@@ -4,7 +4,9 @@ import PropTypes from 'prop-types';
 
 import { TransformWrapper, TransformComponent } from '../../node_modules/react-zoom-pan-pinch/dist/index.js';
 
+import CircularProgress from '@material-ui/core/CircularProgress';
 import CssBaseline from '@material-ui/core/CssBaseline';
+import Typography from '@material-ui/core/Typography';
 import Button from '@material-ui/core/Button';
 import Grid from '@material-ui/core/Grid';
 import Fab from '@material-ui/core/Fab';
@@ -27,6 +29,7 @@ function DreamMap(props) {
     const [locations, setLocations] = React.useState({});
     const [dreamMap, setDreamMap] = React.useState(null);
     const [posts, setPosts] = React.useState(null);
+    const [isLoading, setIsLoading] = React.useState(true);
 
     const createTable = () => {
         let table = [];
@@ -65,6 +68,7 @@ function DreamMap(props) {
     };
 
     const loadMap = React.useCallback(() => {
+        setIsLoading(true);
         instance.get("/gettags")
             .then(res => {
                 const nothink = [{
@@ -78,9 +82,11 @@ function DreamMap(props) {
         instance.post("/actions/users/getusermap", { user_id: user_id })
             .then(res => {
                 setDreamMap(JSON.parse(res.data.result));
+                setIsLoading(false);
             })
             .catch(err => {
                 console.log(err);
+                setIsLoading(false);
             });
     }, [user_id]);
 
@@ -88,8 +94,6 @@ function DreamMap(props) {
         instance.post("/actions/users/getuserposts", { id: user_id })
             .then(res => {
                 setPosts(res.data);
-            })
-            .catch(err => {
             });
     }, [user_id]);
 
@@ -108,69 +112,81 @@ function DreamMap(props) {
                     justify="center"
                     alignItems="stretch"
                 >
-                    <Grid item className={`${classes.hiddenOverflow} ${classes.height2}`}>
-
+                    <Grid item className={`${classes.hiddenOverflow} ${classes.height2} ${classes.relativePosition}`} align="center">
+                        <Typography variant='h6' component='div' className={`${classes.centerButton}`}>
+                            {lang.currLang.texts.DreamsMap}
+                        </Typography>
                     </Grid>
                     <Grid item className={`${classes.hiddenOverflow} ${classes.height9}`}>
                         <div style={{ padding: 16 }} className={`${classes.formControl} ${classes.fullMinWidthAbs}`}>
-                            <TransformWrapper
-                                defaultScale={1}
-                                options={{
-                                    minScale: 0.5,
-                                    maxScale: 2.5,
-                                }}
-                                zoomIn={{
-                                    step: 10,
-                                }}
-                                zoomOut={{
-                                    step: 10,
-                                }}
-                                doubleClick={{
-                                    disabled: true,
-                                }}
-                            >
-                                {({ zoomIn, zoomOut, resetTransform, ...rest }) => (
-                                    <React.Fragment>
-                                        <TransformComponent>
-                                            <table style={{ borderCollapse: 'collapse' }} >
-                                                <tbody>
-                                                    {dreamMap !== null
-                                                        ? createTable()
-                                                        : <tr>
-                                                            <td />
-                                                        </tr>
-                                                    }
-                                                </tbody>
-                                            </table>
-                                        </TransformComponent>
-                                        <Grid container
-                                            className={"tools"}
-                                            direction="row"
-                                            justify="space-evenly"
-                                            alignItems="center"
-                                            style={{ marginTop: 16 }}
-                                        >
-                                            <Grid item xs={2} align="center" />
-                                            <Grid item xs={2} align="center">
-                                                <Fab size="small" onClick={zoomOut}>
-                                                    <ZoomOutIcon />
-                                                </Fab>
+                            {isLoading
+                                ? <div className={`${classes.formControl} ${classes.centerTextAlign}`} >
+                                    <div className={`${classes.inlineBlock} ${classes.relativePosition}`} >
+                                        <CircularProgress />
+                                    </div>
+                                    <Typography className={`${classes.relativePosition}`} component="div" >
+                                        {lang.currLang.texts.Loading}
+                                    </Typography>
+                                </div>
+                                : <TransformWrapper
+                                    defaultScale={1.5}
+                                    options={{
+                                        minScale: 0.5,
+                                        maxScale: 2.5,
+                                    }}
+                                    zoomIn={{
+                                        step: 10,
+                                    }}
+                                    zoomOut={{
+                                        step: 10,
+                                    }}
+                                    doubleClick={{
+                                        disabled: true,
+                                    }}
+                                >
+                                    {({ zoomIn, zoomOut, resetTransform, ...rest }) => (
+                                        <React.Fragment>
+                                            <TransformComponent>
+                                                <table style={{ borderCollapse: 'collapse' }} >
+                                                    <tbody>
+                                                        {dreamMap !== null
+                                                            ? createTable()
+                                                            : <tr>
+                                                                <td />
+                                                            </tr>
+                                                        }
+                                                    </tbody>
+                                                </table>
+                                            </TransformComponent>
+                                            <Grid container
+                                                className={"tools"}
+                                                direction="row"
+                                                justify="space-evenly"
+                                                alignItems="center"
+                                                style={{ marginTop: 16 }}
+                                            >
+                                                <Grid item xs={2} align="center" />
+                                                <Grid item xs={2} align="center">
+                                                    <Fab size="small" onClick={zoomOut}>
+                                                        <ZoomOutIcon />
+                                                    </Fab>
+                                                </Grid>
+                                                <Grid item xs={4} align="center" >
+                                                    <Fab size="small" onClick={resetTransform} >
+                                                        <ZoomOutMapIcon />
+                                                    </Fab>
+                                                </Grid>
+                                                <Grid item xs={2} align="center">
+                                                    <Fab size="small" onClick={zoomIn} >
+                                                        <ZoomInIcon />
+                                                    </Fab>
+                                                </Grid>
+                                                <Grid item xs={2} align="center" />
                                             </Grid>
-                                            <Grid item xs={4} align="center" >
-                                                <Fab size="small" onClick={resetTransform} >
-                                                    <ZoomOutMapIcon />
-                                                </Fab>
-                                            </Grid>
-                                            <Grid item xs={2} align="center">
-                                                <Fab size="small" onClick={zoomIn} >
-                                                    <ZoomInIcon />
-                                                </Fab>
-                                            </Grid>
-                                            <Grid item xs={2} align="center" />
-                                        </Grid>
-                                    </React.Fragment>
-                                )}
-                            </TransformWrapper>
+                                        </React.Fragment>
+                                    )}
+                                </TransformWrapper>
+                            }
                         </div>
                     </Grid>
                     <Grid item className={`${classes.mainGridBodyItem} ${classes.height1}`}>

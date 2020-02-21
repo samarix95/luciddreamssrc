@@ -44,6 +44,21 @@ export function randomBetween(a, b) {
 }
 
 export const useStyles = makeStyles(theme => ({
+    centerTextAlign: {
+        textAlign: "center",
+    },
+    inlineBlock: {
+        display: "inline-block",
+    },
+    topLeftCorner: {
+        position: "absolute",
+        bottom: "100%",
+        left: "100%",
+        transform: "translate(-50%, 50%)",
+    },
+    notDisplay: {
+        display: "none",
+    },
     formControl: {
         position: 'absolute',
         left: '50%',
@@ -430,13 +445,13 @@ export const useStyles = makeStyles(theme => ({
         position: 'relative',
     },
     menuButton: {
-        minWidth: '55vw',
-        maxWidth: '55vw',
-        height: '75%',
+        width: "55vw",
+        maxWidth: "250px",
+        maxHeight: "75%",
     },
     actionButton: {
-        minWidth: '40vw',
-        maxWidth: '40vw',
+        width: "40vw",
+        maxWidth: "250px",
     },
     poppupButton: {
         minWidth: '90%',
