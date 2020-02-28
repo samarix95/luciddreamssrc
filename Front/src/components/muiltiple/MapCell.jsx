@@ -15,11 +15,11 @@ import Grid from "@material-ui/core/Grid";
 import EditIcon from '@material-ui/icons/Edit';
 
 import { useStyles } from '../../styles/Styles';
-import { instance } from '../Config';
+import { instance } from '../../Config';
 
 function MapCell(props) {
     const classes = useStyles();
-    const { i, j, cellWidth, id, locations, palette, lang, history, user_id, posts } = props;
+    const { i, j, cellWidth, id, locations, palette, lang, history, user_id, posts, viewMode } = props;
     const [anchorEl, setAnchorEl] = React.useState(null);
     const [tagId, setTagId] = React.useState(id ? id : null);
     const [countDreams, setCountDreams] = React.useState(0);
@@ -29,13 +29,15 @@ function MapCell(props) {
 
     const calculateCount = (tagId) => {
         let count = 0;
-        posts.map(post =>
-            post.tags.map(tag =>
-                parseInt(tag[0]) === tagId
-                    ? count++
-                    : count += 0
-            )
-        );
+        if (!viewMode) {
+            posts.map(post =>
+                post.tags.map(tag =>
+                    parseInt(tag[0]) === tagId
+                        ? count++
+                        : count += 0
+                )
+            );
+        }
         setCountDreams(count);
     };
 
@@ -141,7 +143,7 @@ function MapCell(props) {
                 }}
             >
                 <Grid container
-                    className={`${classes.height12}`}
+                    className={`${classes.height12} ${classes.minWidth200px}`}
                     direction="column"
                     justify="center"
                     alignItems="stretch"
@@ -154,7 +156,7 @@ function MapCell(props) {
                                 justify="center"
                                 alignItems="stretch"
                             >
-                                <Grid item className={`${classes.height6}`}>
+                                <Grid item className={`${classes.height6} ${classes.minHeight20px}`}>
                                     <Grid container
                                         className={`${classes.height12}`}
                                         direction="row"
@@ -167,14 +169,7 @@ function MapCell(props) {
                                                 position: 'relative',
                                             }}
                                         >
-                                            <Typography variant='h6'
-                                                style={{
-                                                    position: 'absolute',
-                                                    top: '50%',
-                                                    left: '50%',
-                                                    transform: 'translate(-50%, -50%)',
-                                                }}
-                                            >
+                                            <Typography className={`${classes.centerButton}`}>
                                                 {typeof tagId === 'number'
                                                     ? lang.currLang.current === "Ru"
                                                         ? locations.find(loc => loc.id === tagId).name_rus
@@ -183,11 +178,14 @@ function MapCell(props) {
                                                 }
                                             </Typography>
                                         </Grid>
-                                        <Grid item xs={2}>
-                                            <IconButton onClick={editLocation} disabled={typeof tagId === 'number' ? false : true} >
-                                                <EditIcon fontSize="small" />
-                                            </IconButton >
-                                        </Grid>
+                                        {viewMode
+                                            ? <React.Fragment />
+                                            : <Grid item xs={2}>
+                                                <IconButton onClick={editLocation} disabled={typeof tagId === 'number' ? false : true} >
+                                                    <EditIcon fontSize="small" />
+                                                </IconButton >
+                                            </Grid>
+                                        }
                                     </Grid>
                                 </Grid>
                                 <Grid item className={`${classes.height6}`}>
@@ -198,7 +196,7 @@ function MapCell(props) {
                                     >
                                         <Grid item>
                                             <FormControl>
-                                                <Select
+                                                <Select disabled={viewMode}
                                                     value={typeof tagId === 'number' ? tagId : ''}
                                                     onChange={changeTagId}
                                                     MenuProps={{
@@ -221,11 +219,14 @@ function MapCell(props) {
                                                 </Select>
                                             </FormControl>
                                         </Grid>
-                                        <Grid item>
-                                            <Button disabled={countDreams !== 0 ? false : true} onClick={openDreamsView}>
-                                                {lang.currLang.texts.dreams}: {countDreams}
-                                            </Button>
-                                        </Grid>
+                                        {viewMode
+                                            ? <React.Fragment />
+                                            : <Grid item>
+                                                <Button disabled={countDreams !== 0 ? false : true} onClick={openDreamsView}>
+                                                    {lang.currLang.texts.CountDreams}: {countDreams}
+                                                </Button>
+                                            </Grid>
+                                        }
                                     </Grid>
                                 </Grid>
                             </Grid>
@@ -233,8 +234,7 @@ function MapCell(props) {
                         }
                     </Grid>
                     <Grid item className={`${classes.mainGridBodyItem} ${classes.height1}`}>
-                        <Grid className={classes.menuDivButton}
-                            container
+                        <Grid container
                             direction="row"
                             justify="space-around"
                             alignItems="stretch"
@@ -242,25 +242,28 @@ function MapCell(props) {
                                 padding: '16px'
                             }}
                         >
-                            <Grid item xs={6} align="center">
+                            <Grid item>
                                 <Button className={classes.poppupButton}
                                     variant="contained"
                                     color="secondary"
                                     onClick={handleClose}
                                 >
-                                    {lang.currLang.texts.cancel}
+                                    {lang.currLang.buttons.close}
                                 </Button>
                             </Grid>
-                            <Grid item xs={6} align="center">
-                                <Button className={classes.poppupButton}
-                                    disabled={disabledSave}
-                                    variant="contained"
-                                    color="primary"
-                                    onClick={saveCellLoc}
-                                >
-                                    {lang.currLang.buttons.Save}
-                                </Button>
-                            </Grid>
+                            {viewMode
+                                ? <React.Fragment />
+                                : <Grid item>
+                                    <Button className={classes.poppupButton}
+                                        disabled={disabledSave}
+                                        variant="contained"
+                                        color="primary"
+                                        onClick={saveCellLoc}
+                                    >
+                                        {lang.currLang.buttons.Save}
+                                    </Button>
+                                </Grid>
+                            }
                         </Grid>
                     </Grid>
                 </Grid>

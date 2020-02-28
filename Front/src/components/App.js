@@ -106,26 +106,26 @@ function App(props) {
     return (
         <Router history={history}>
             <div className={classes.AppDivDark}>
-                <div className={classes.AppDivLight} style={type === "light" ? { opacity: 1, } : { opacity: 0, }} />
+                <div className={classes.AppDivLight} style={type === "light" ? { opacity: 1, } : { opacity: 0, }}/>
                 {type === "light"
                     ? <div className={classes.AppCloudsDiv} style={type === "light" ? { opacity: 1, } : { opacity: 0, }}>
-                        <div className={classes.FlockOfBirds} style={birdStyle} />
+                        <div className={classes.FlockOfBirds} style={birdStyle}/>
                         {clouds}
                     </div>
                     : <div className={classes.AppStarsDiv} style={type === "light" ? { opacity: 0, } : { opacity: 1, }}>
                         <div className={classes.AppComet}>
                             <div className={classes.AppCometDiv}>
-                                <div className={classes.AppCometImg} />
+                                <div className={classes.AppCometImg}/>
                             </div>
                         </div>
                         {stars}
                     </div>
                 }
                 <div className={classes.MointainBackgroud} style={type === "light" ? { filter: 'grayscale(0%)', } : { filter: 'grayscale(100%)', }}>
-                    <div className={classes.TreesBackgroud} />
+                    <div className={classes.TreesBackgroud}/>
                 </div>
             </div>
-            <Routes />
+            <Routes/>
         </Router>
     );
 };

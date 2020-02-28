@@ -44,6 +44,23 @@ export function randomBetween(a, b) {
 }
 
 export const useStyles = makeStyles(theme => ({
+    SearchPaper: {
+        padding: '2px 4px',
+        display: 'flex',
+        alignItems: 'center',
+        width: "100%",
+    },
+    centerText: {
+        top: 0,
+        left: "50%",
+        width: "90%",
+        transform: "translate(-50%)",
+        marginTop: 10,
+        marginBottom: 10
+    },
+    hiddenOverflowX: {
+        overflowX: "hidden",
+    },
     centerTextAlign: {
         textAlign: "center",
     },
@@ -394,7 +411,6 @@ export const useStyles = makeStyles(theme => ({
         position: 'relative',
         left: '50%',
         top: '50%',
-        //transform: 'translate(-50%, -50%)',
         width: '25vw !important',
         height: '25vw',
         borderRadius: '10%',
@@ -444,6 +460,9 @@ export const useStyles = makeStyles(theme => ({
     relativePosition: {
         position: 'relative',
     },
+    absolutePosition: {
+        position: 'absolute',
+    },
     menuButton: {
         width: "55vw",
         maxWidth: "250px",
@@ -456,6 +475,8 @@ export const useStyles = makeStyles(theme => ({
     poppupButton: {
         minWidth: '90%',
         maxWidth: '90%',
+        left: "50%",
+        transform: "translateX(-50%)",
     },
     aboutGridContainer: {
         width: '100%',
@@ -495,8 +516,28 @@ export const useStyles = makeStyles(theme => ({
     chip: {
         margin: 1
     },
-    aboutGridItem: {
-        width: '100%',
+    fullWidth: {
+        width: "100%",
+    },
+    fullHeight: {
+        height: "100%",
+    },
+    minHeight20px: {
+        minHeight: "20px",
+    },
+    minHeight100px: {
+        minHeight: "100px",
+    },
+    minWidth200px: {
+        minWidth: "200px",
+    },
+    topLeft: {
+        top: 0,
+        left: 0,
+    },
+    topRight: {
+        top: 0,
+        right: 0,
     },
     paper: {
         height: '91%',
@@ -612,6 +653,45 @@ export const useStyles = makeStyles(theme => ({
     },
     height0: {
         height: 100 / 12 * 0 + "%",
+    },
+    width12: {
+        width: 100 / 12 * 12 + "%",
+    },
+    width11: {
+        width: 100 / 12 * 11 - 0.1 + "%",
+    },
+    width10: {
+        width: 100 / 12 * 10 - 0.1 + "%",
+    },
+    width9: {
+        width: 100 / 12 * 9 - 0.1 + "%",
+    },
+    width8: {
+        width: 100 / 12 * 8 - 0.1 + "%",
+    },
+    width7: {
+        width: 100 / 12 * 7 - 0.1 + "%",
+    },
+    width6: {
+        width: 100 / 12 * 6 - 0.1 + "%",
+    },
+    width5: {
+        width: 100 / 12 * 5 - 0.1 + "%",
+    },
+    width4: {
+        width: 100 / 12 * 4 - 0.1 + "%",
+    },
+    width3: {
+        width: 100 / 12 * 3 - 0.1 + "%",
+    },
+    width2: {
+        width: 100 / 12 * 2 - 0.1 + "%",
+    },
+    width1: {
+        width: 100 / 12 * 1 - 0.1 + "%",
+    },
+    width0: {
+        width: 100 / 12 * 0 + "%",
     },
 }));
 

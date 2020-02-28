@@ -10,7 +10,7 @@ import CssBaseline from '@material-ui/core/CssBaseline';
 import Typography from '@material-ui/core/Typography';
 import ButtonBase from '@material-ui/core/ButtonBase';
 import IconButton from '@material-ui/core/IconButton';
-import TextField from '@material-ui/core/TextField';
+import InputBase from '@material-ui/core/InputBase';
 import Dialog from '@material-ui/core/Dialog';
 import Button from '@material-ui/core/Button';
 import Avatar from '@material-ui/core/Avatar';
@@ -20,11 +20,13 @@ import Grid from '@material-ui/core/Grid';
 import { MuiThemeProvider, createMuiTheme } from '@material-ui/core/styles';
 
 import { useStyles } from '../styles/Styles.js';
-import { instance } from './Config';
+import { instance } from '../Config';
 
 import CheckCircleIcon from '@material-ui/icons/CheckCircle';
 import EditIcon from '@material-ui/icons/Edit';
 import SaveIcon from '@material-ui/icons/Save';
+
+const UserConnections = React.lazy(() => import('./dialogs/UserConnections.jsx'));
 
 const avatars = [
     {
@@ -94,31 +96,30 @@ const avatars = [
 ];
 
 function Profile(props) {
-    const { lang, themeMode, history, user_id, user_nickname, user_role } = props;
+    const { lang, themeMode, history, user_id } = props;
     const classes = useStyles();
     const muiTheme = createMuiTheme(themeMode);
+    const [profileid, setProfileId] = React.useState();
     const [openAva, setOpenAva] = React.useState(false);
+    const [openConnect, setOpenConnect] = React.useState(false);
     const descriptionElementRef = React.useRef(null);
-    const [editMode, setEditMode] = React.useState(false);
     const [viewMode, setViewMode] = React.useState(false);
     const [userData, setUserData] = React.useState({
+        nickname: null,
         about: null,
+        role: null,
         fb: null,
         ig: null,
+    });
+    const [postsCount, setPostsCount] = React.useState({
+        regular: 0,
+        cdream: 0,
+        is_public: 0,
     });
     const [isAboutLoad, setisAboutLoad] = React.useState(true);
     const [isEditAbout, setIsEditAbout] = React.useState(false);
     const [aboutText, setAboutText] = React.useState("");
     const [changedAvatar, setChangedAvatar] = React.useState(null);
-
-    const handleEditModeOn = () => {
-        setEditMode(true);
-    };
-
-    const handleEditModeOff = () => {
-        setEditMode(false);
-    };
-
     const handleSetAvatarId = (id) => {
         setChangedAvatar(id);
     };
@@ -131,8 +132,8 @@ function Profile(props) {
         if (userData.about !== aboutText) {
             setisAboutLoad(true);
             const data = {
-                id: user_id,
-                nickname: user_nickname,
+                id: profileid,
+                nickname: userData.nickname,
                 about: aboutText,
             };
 
@@ -164,15 +165,60 @@ function Profile(props) {
         setOpenAva(false);
     };
 
-    React.useEffect(() => {
-        if (typeof (props.location.defaultData) !== 'undefined') {
-            setViewMode(true);
-        }
+    const handleSaveAva = () => {
+        setOpenAva(false);
+    };
+
+    const openUserDreamJournal = () => {
+        history.push({
+            pathname: "/dreams",
+            defaultData: {
+                mode: "fromFriend",
+                friend_id: profileid,
+                prevUrl: "/profile",
+            }
+        });
+    };
+
+    const openUserDreamMap = () => {
+        history.push({
+            pathname: "/dreammap",
+            defaultData: {
+                mode: "fromFriend",
+                nickName: userData.nickname,
+                friend_id: profileid,
+                prevUrl: "/profile",
+            }
+        });
+    };
+
+    const openUserConnections = () => {
+        setOpenConnect(true);
+    };
+
+    const closeUserConnections = () => {
+        setOpenConnect(false);
+    };
+
+    const changeProfile = (id) => {
+        setProfileId(id);
+        loadProfileData(id);
+        setViewMode(true);
+    }
+
+    const changeDefaultProfile = () => {
+        setProfileId(user_id);
+        loadProfileData(user_id);
+        setViewMode(false);
+    };
+
+    const loadProfileData = React.useCallback((profileid) => {
         instance
-            .post('/actions/users/getuserdata', { id: user_id, })
+            .post('/actions/users/getuserdata', { id: profileid, })
             .then(res => {
                 let newUserData = userData;
-
+                newUserData = { ...newUserData, nickname: res.data.result.nickname };
+                newUserData = { ...newUserData, role: res.data.result.roles };
                 if (res.data.result.about) {
                     newUserData = { ...newUserData, about: res.data.result.about };
                     setAboutText(res.data.result.about);
@@ -187,6 +233,29 @@ function Profile(props) {
                 setUserData(newUserData);
                 setisAboutLoad(false);
             });
+        instance.post("/actions/users/getuserposts", { id: profileid })
+            .then(res => {
+                let newPostsCount = postsCount;
+                newPostsCount = { ...newPostsCount, regular: Object.keys(res.data.filter(item => item.post_type === 0 ? item : false)).length };
+                newPostsCount = { ...newPostsCount, cdream: Object.keys(res.data.filter(item => item.post_type === 1 ? item : false)).length };
+                newPostsCount = { ...newPostsCount, is_public: Object.keys(res.data.filter(item => item.is_public === 1 ? item : false)).length };
+                setPostsCount(newPostsCount);
+            })
+            .catch(err => {
+                alert("Error get user posts data: " + err);
+            });
+    }, [profileid]);
+
+    React.useEffect(() => {
+        if (typeof (props.location.defaultData) !== 'undefined') {
+            loadProfileData(props.location.defaultData.friend_id);
+            setProfileId(props.location.defaultData.friend_id);
+            setViewMode(true);
+        }
+        else {
+            loadProfileData(user_id);
+            setProfileId(user_id);
+        }
         if (openAva) {
             const { current: descriptionElement } = descriptionElementRef;
             if (descriptionElement !== null) {
@@ -198,6 +267,15 @@ function Profile(props) {
     return (
         <MuiThemeProvider theme={muiTheme}>
             <CssBaseline />
+            {openConnect
+                ? <UserConnections
+                    open={openConnect}
+                    user_id={profileid}
+                    closeAction={closeUserConnections}
+                    setProfile={changeProfile}
+                />
+                : <React.Fragment />
+            }
             <Dialog open={openAva}
                 scroll={'paper'}
                 fullWidth={true}
@@ -209,46 +287,27 @@ function Profile(props) {
                     {lang.currLang.texts.Avatar}
                 </DialogTitle>
                 <DialogContent dividers={true}>
-                    <Grid className={`${classes.height12}`}
-                        id="avatar-dialog-description"
-                        container
-                        spacing={2}
-                    >
+                    <Grid container className={`${classes.height12}`} id="avatar-dialog-description" spacing={2}>
                         {avatars.map((item, key) => (
                             <Grid item xs={4} sm={3} key={key}>
-                                <div style={{
-                                    position: "relative",
-                                    width: "100%",
-                                    height: 0,
-                                    paddingBottom: "100%",
-                                }}>
+                                <div className={`${classes.relativePosition} ${classes.fullWidth}`}
+                                    style={{
+                                        height: 0,
+                                        paddingBottom: "100%",
+                                    }}
+                                >
                                     <ButtonBase onClick={() => handleSetAvatarId(item.id)}
+                                        className={`${classes.absolutePosition} ${classes.fullWidth} ${classes.fullHeight} ${classes.topLeft}`}
                                         style={{
-                                            position: "absolute",
-                                            top: 0,
-                                            left: 0,
-                                            width: "100%",
-                                            height: "100%",
                                             borderRadius: "50%",
                                         }}
                                     >
-                                        <Avatar src={item.url}
-                                            style={{
-                                                position: "absolute",
-                                                width: "100%",
-                                                height: "100%",
-                                            }}
-                                        />
+                                        <Avatar src={item.url} className={`${classes.absolutePosition} ${classes.fullWidth} ${classes.fullHeight}`} />
                                     </ButtonBase>
                                     {changedAvatar === item.id
-                                        ? <CheckCircleIcon style={{
-                                            position: "absolute",
-                                            top: 0,
-                                            right: 0,
-                                        }} />
+                                        ? <CheckCircleIcon className={`${classes.absolutePosition} ${classes.topRight}`} />
                                         : <React.Fragment />
                                     }
-
                                 </div>
                             </Grid>
                         ))}
@@ -258,7 +317,7 @@ function Profile(props) {
                     <Button onClick={handleCloseAva} color="secondary">
                         {lang.currLang.buttons.cancel}
                     </Button>
-                    <Button onClick={handleEditModeOn} color="primary">
+                    <Button onClick={handleSaveAva} color="primary">
                         {lang.currLang.buttons.Save}
                     </Button>
                 </DialogActions>
@@ -271,9 +330,11 @@ function Profile(props) {
                     alignItems="stretch"
                 >
                     <Grid item className={`${classes.mainGridBodyItem} ${classes.height11}`} >
-                        <Grid container className={`${classes.height5} ${classes.relativePosition}`} >
-                            <Grid item xs={12} sm={6} className={`${classes.height6} ${classes.relativePosition}`} >
-                                <IconButton disabled={editMode ? false : true} className={`${classes.formControl}`} onClick={handleClickOpenAva} >
+                        <Grid className={`${classes.height5} ${classes.relativePosition}`}
+                            container
+                        >
+                            <Grid item xs={12} sm={6} className={`${classes.relativePosition}`} >
+                                <IconButton disabled={viewMode ? true : false} className={`${classes.formControl}`} onClick={handleClickOpenAva} >
                                     <Avatar src="/images/example.jpg"
                                         style={{
                                             width: "120px",
@@ -282,16 +343,18 @@ function Profile(props) {
                                     />
                                 </IconButton>
                             </Grid>
-                            <Grid item xs={12} sm={6} className={`${classes.height6} ${classes.relativePosition}`} >
+                            <Grid item xs={12} sm={6} className={`${classes.relativePosition}`} >
                                 <div className={`${classes.formControl}`} >
                                     <Typography variant="h5" align="center" color="textPrimary">
-                                        {user_nickname}
+                                        {userData.nickname}
                                     </Typography>
                                     <Typography variant="body2" align="center" color="textPrimary">
-                                        {user_role}
-                                    </Typography>
-                                    <Typography variant="body2" align="center" color="textPrimary">
-                                        SUMMARY DAYS
+                                        {userData.role === 0
+                                            ? lang.currLang.texts.Admin
+                                            : userData.role === 1
+                                                ? lang.currLang.texts.Moderator
+                                                : lang.currLang.texts.User
+                                        }
                                     </Typography>
                                 </div>
                             </Grid>
@@ -302,148 +365,185 @@ function Profile(props) {
                             justify="center"
                             alignItems="stretch"
                         >
-                            <Grid item xs={6} >
+                            <Grid item xs={7} >
+                                <Grid className={`${classes.height3}`}>
+                                    <Typography align="center">
+                                        {lang.currLang.texts.InfoDreams}:
+                                    </Typography>
+                                </Grid>
+                                <Grid className={`${classes.height9}`}
+                                    container
+                                    direction="column"
+                                    justify="center"
+                                    alignItems="stretch"
+                                >
+                                    <Grid className={`${classes.height4}`}
+                                        container
+                                        direction="row"
+                                        justify="center"
+                                        alignItems="stretch"
+                                    >
+                                        <Grid item xs={6} >
+                                            <Typography>
+                                                {lang.currLang.texts.Public}:
+                                            </Typography>
+                                        </Grid>
+                                        <Grid item xs={1} />
+                                        <Grid item xs={2} >
+                                            <Typography align="center">
+                                                {postsCount.is_public}
+                                            </Typography>
+                                        </Grid>
+                                    </Grid>
+                                    {!viewMode
+                                        ? <React.Fragment>
+                                            <Grid className={`${classes.height4}`}
+                                                container
+                                                direction="row"
+                                                justify="center"
+                                                alignItems="stretch"
+                                            >
+                                                <Grid item xs={6} >
+                                                    <Typography>
+                                                        {lang.currLang.texts.Regular}:
+                                                    </Typography>
+                                                </Grid>
+                                                <Grid item xs={1} />
+                                                <Grid item xs={2} >
+                                                    <Typography align="center">
+                                                        {postsCount.regular}
+                                                    </Typography>
+                                                </Grid>
+                                            </Grid>
+                                            <Grid className={`${classes.height4}`}
+                                                container
+                                                direction="row"
+                                                justify="center"
+                                                alignItems="stretch"
+                                            >
+                                                <Grid item xs={6}>
+                                                    <Typography>
+                                                        {lang.currLang.texts.Cdream}:
+                                                    </Typography>
+                                                </Grid>
+                                                <Grid item xs={1} />
+                                                <Grid item xs={2} >
+                                                    <Typography align="center">
+                                                        {postsCount.cdream}
+                                                    </Typography>
+                                                </Grid>
+                                            </Grid>
+                                        </React.Fragment>
+                                        : <React.Fragment />
+                                    }
+                                </Grid>
+                            </Grid>
+                            <Grid item xs={5} className={`${classes.relativePosition}`}>
                                 <Grid className={`${classes.height12}`}
                                     container
                                     direction="column"
                                     justify="center"
                                     alignItems="stretch"
                                 >
-                                    <Grid className={`${classes.height3}`}
-                                        container
-                                        direction="row"
-                                        justify="center"
-                                        alignItems="stretch"
-                                    >
-                                        <Grid item xs={6}>
-                                            <Typography>
-                                                Regular:
-                                            </Typography>
-                                        </Grid>
-                                        <Grid item xs={3}>
-                                            <Typography>
-                                                0
-                                            </Typography>
-                                        </Grid>
-                                    </Grid>
-                                    <Grid className={`${classes.height3}`}
-                                        container
-                                        direction="row"
-                                        justify="center"
-                                        alignItems="stretch"
-                                    >
-                                        <Grid item xs={6}>
-                                            <Typography>
-                                                C-dreams:
-                                            </Typography>
-                                        </Grid>
-                                        <Grid item xs={3}>
-                                            <Typography>
-                                                0
-                                            </Typography>
-                                        </Grid>
-                                    </Grid>
-                                    <Grid className={`${classes.height3}`}
-                                        container
-                                        direction="row"
-                                        justify="center"
-                                        alignItems="stretch"
-                                    >
-                                        <Grid item xs={6}>
-                                            <Typography>
-                                                Total:
-                                            </Typography>
-                                        </Grid>
-                                        <Grid item xs={3}>
-                                            <Typography>
-                                                0
-                                            </Typography>
-                                        </Grid>
-                                    </Grid>
+                                    {!viewMode
+                                        ? <React.Fragment>
+                                            <Grid className={`${classes.height6}`} >
+                                                <div className={`${classes.relativePosition} ${classes.fullHeight}`}>
+                                                    <Button className={`${classes.formControl} ${classes.fullWidth} ${classes.width10}`}
+                                                        variant="contained"
+                                                        color="primary"
+                                                        onClick={openUserConnections}
+                                                    >
+                                                        {lang.currLang.buttons.Connections}
+                                                    </Button>
+                                                </div>
+                                            </Grid>
+                                        </React.Fragment>
+                                        : <React.Fragment>
+                                            <Grid className={`${classes.height6}`} >
+                                                <div className={`${classes.relativePosition} ${classes.fullHeight}`}>
+                                                    <Button className={`${classes.formControl} ${classes.fullWidth} ${classes.width10}`}
+                                                        variant="contained"
+                                                        color="primary"
+                                                        onClick={openUserDreamJournal}
+                                                    >
+                                                        {lang.currLang.buttons.dreamJoirnal}
+                                                    </Button>
+                                                </div>
+                                            </Grid>
+                                            <Grid className={`${classes.height6}`} >
+                                                <div className={`${classes.relativePosition} ${classes.fullHeight}`}>
+                                                    <Button className={`${classes.formControl} ${classes.fullWidth} ${classes.width10}`}
+                                                        variant="contained"
+                                                        color="primary"
+                                                        onClick={openUserDreamMap}
+                                                    >
+                                                        {lang.currLang.texts.DreamsMap}
+                                                    </Button>
+                                                </div>
+                                            </Grid>
+                                        </React.Fragment>
+                                    }
                                 </Grid>
                             </Grid>
-                            <Grid item xs={3} className={`${classes.relativePosition}`}>
-                                <div className={`${classes.formControl}`} >
-                                    <Button //className={classes.actionButton}
-                                        variant="contained"
-                                        color="secondary"
-                                    //onClick={() => { history.push("/luciddreams") }}
-                                    >
-                                        РљРЅРѕРїРєР°
-                                    </Button>
-                                </div>
-                            </Grid>
-
                         </Grid>
-                        <Grid container className={`${classes.height2} ${classes.relativePosition}`} >
+                        <Grid className={`${classes.height2} ${classes.relativePosition}`} >
                             <Paper className={`${classes.mainGridDreamsContainer} ${classes.mainGridDreamsBodyItemContainerPaper}`}>
                                 {!isAboutLoad
                                     ? !isEditAbout
                                         ? <React.Fragment>
-                                            <div style={{ position: "absolute", top: 0, left: 0, width: "100%", height: "100%", overflowX: "hidden" }}>
-                                                <Typography component="div" style={{ position: "absolute", top: 0, left: "50%", width: "90%", transform: "translate(-50%)", marginTop: 10, marginBottom: 10 }}>
+                                            <div className={`${classes.absolutePosition} ${classes.hiddenOverflowX} ${classes.fullWidth} ${classes.fullHeight} ${classes.topLeft}`}>
+                                                <Typography className={`${classes.absolutePosition} ${classes.centerText}`} component="div">
                                                     {userData.about}
                                                 </Typography>
                                             </div>
                                             {!viewMode
-                                                ? editMode
-                                                    ? <IconButton size="small" className={`${classes.topLeftCorner}`} onClick={setEditAbout}>
+                                                ? <IconButton size="small" className={`${classes.topLeftCorner}`} onClick={setEditAbout}>
+                                                    <Avatar>
                                                         <EditIcon />
-                                                    </IconButton>
-                                                    : <React.Fragment />
+                                                    </Avatar>
+                                                </IconButton>
                                                 : <React.Fragment />
                                             }
                                         </React.Fragment>
                                         : <React.Fragment>
-                                            <div style={{ position: "absolute", top: 0, left: 0, width: "100%", height: "100%", overflowX: "hidden" }}>
-                                                <TextField style={{ position: "absolute", top: 0, left: "50%", width: "90%", transform: "translate(-50%)", marginTop: 10, marginBottom: 10 }}
+                                            <div className={`${classes.absolutePosition} ${classes.hiddenOverflowX} ${classes.fullWidth} ${classes.fullHeight} ${classes.topLeft}`}>
+                                                <InputBase className={`${classes.absolutePosition} ${classes.centerText}`}
                                                     value={aboutText}
                                                     onChange={handleSetAboutText}
                                                     multiline
                                                 />
                                             </div>
                                             {!viewMode
-                                                ? editMode
-                                                    ? <IconButton size="small" className={`${classes.topLeftCorner}`} onClick={saveAbout}>
+                                                ? <IconButton size="small" className={`${classes.topLeftCorner}`} onClick={saveAbout}>
+                                                    <Avatar>
                                                         <SaveIcon />
-                                                    </IconButton>
-                                                    : <React.Fragment />
+                                                    </Avatar>
+                                                </IconButton>
                                                 : <React.Fragment />
                                             }
                                         </React.Fragment>
-                                    : <div className={`${classes.formControl} ${classes.centerTextAlign}`} >
-                                        <div className={`${classes.inlineBlock} ${classes.relativePosition}`} >
+                                    : <div className={`${classes.formControl} ${classes.centerTextAlign}`}>
+                                        <div className={`${classes.inlineBlock} ${classes.relativePosition}`}>
                                             <CircularProgress />
                                         </div>
-                                        <Typography className={`${classes.relativePosition}`} component="div" >
+                                        <Typography className={`${classes.relativePosition}`} component="div">
                                             {lang.currLang.texts.Loading}
                                         </Typography>
                                     </div>
                                 }
                             </Paper>
                         </Grid>
-                        <Grid container className={`${classes.height1} ${classes.relativePosition}`} ></Grid>
-                        <Grid container className={`${classes.height1} ${classes.relativePosition}`} >
-                            <Paper className={`${classes.mainGridDreamsContainer} ${classes.mainGridDreamsBodyItemContainerPaper}`}>
-                                <div className={classes.avatarRoot}>
-                                    {/* {tags.map((tag, key) =>
-                                        tag[0]
-                                            ? <Avatar className={classes.smallAvatar}
-                                                src={tag[3]}
-                                                style={palette.type === 'dark'
-                                                    ? {
-                                                        filter: 'invert(1)',
-                                                    }
-                                                    : {}}
-                                            />
-                                            : ''
-                                    )} */}
+                        <Grid className={`${classes.height2} ${classes.relativePosition}`} />
+                        {/* <Grid container className={`${classes.height1} ${classes.relativePosition}`} >
+                            <Paper className={`${classes.mainGridDreamsContainer} ${classes.mainGridDreamsBodyItemContainerPaper}`} >
+                                <div className={classes.avatarRoot} >
                                 </div>
                                 <IconButton size="small" className={`${classes.topLeftCorner}`}>
                                     <EditIcon />
                                 </IconButton>
                             </Paper>
-                        </Grid>
+                        </Grid> */}
                     </Grid>
                     <Grid item className={`${classes.mainGridBodyItem} ${classes.height1}`}>
                         <Grid container
@@ -457,29 +557,20 @@ function Profile(props) {
                                     color="secondary"
                                     onClick={() => { history.push("/luciddreams") }}
                                 >
-                                    {lang.currLang.buttons.close}
+                                    {lang.currLang.buttons.Back}
                                 </Button>
                             </Grid>
                             {!viewMode
-                                ? <Grid item>
-                                    {!editMode
-                                        ? <Button className={classes.actionButton}
-                                            onClick={handleEditModeOn}
-                                            variant="contained"
-                                            color="secondary"
-                                        >
-                                            {lang.currLang.buttons.Edit}
-                                        </Button>
-                                        : <Button className={classes.actionButton}
-                                            onClick={handleEditModeOff}
-                                            variant="contained"
-                                            color="secondary"
-                                        >
-                                            {lang.currLang.buttons.Save}
-                                        </Button>
-                                    }
+                                ? <React.Fragment />
+                                : <Grid item>
+                                    <Button className={classes.actionButton}
+                                        onClick={changeDefaultProfile}
+                                        variant="contained"
+                                        color="secondary"
+                                    >
+                                        {lang.currLang.buttons.Home}
+                                    </Button>
                                 </Grid>
-                                : <React.Fragment />
                             }
                         </Grid>
                     </Grid>
@@ -493,8 +584,6 @@ Profile.propTypes = {
     themeMode: PropTypes.object.isRequired,
     lang: PropTypes.object.isRequired,
     user_id: PropTypes.number.isRequired,
-    user_nickname: PropTypes.number.isRequired,
-    user_role: PropTypes.number.isRequired,
 };
 
 const mapStateToProps = store => {
@@ -502,8 +591,6 @@ const mapStateToProps = store => {
         themeMode: store.themeMode,
         lang: store.lang,
         user_id: store.auth.user.id,
-        user_nickname: store.auth.user.nickname,
-        user_role: store.auth.user.roles,
     }
 };
 

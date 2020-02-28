@@ -1,5 +1,6 @@
 import React from 'react';
 import { connect } from 'react-redux';
+import { bindActionCreators } from 'redux';
 import PropTypes from 'prop-types';
 
 import { TransformWrapper, TransformComponent } from '../../node_modules/react-zoom-pan-pinch/dist/index.js';
@@ -15,7 +16,8 @@ import ZoomOutMapIcon from '@material-ui/icons/ZoomOutMap';
 import ZoomOutIcon from '@material-ui/icons/ZoomOut';
 import ZoomInIcon from '@material-ui/icons/ZoomIn';
 
-import { instance } from './Config.js';
+import { instance, fetchTagsAction } from '../Config.js';
+import { getTagsError, getTags, getTagsPending } from '../reducers/tagsReducer.js';
 import { MuiThemeProvider, createMuiTheme } from '@material-ui/core/styles';
 import MapCell from './muiltiple/MapCell.jsx';
 import { useStyles } from '../styles/Styles.js';
@@ -23,13 +25,18 @@ import { useStyles } from '../styles/Styles.js';
 const cellWidth = (window.innerWidth - 32) / 20;
 
 function DreamMap(props) {
-    const { lang, themeMode, history, user_id } = props;
+    const { lang, themeMode, history, user_id, tags, tagsError, tagsPending, fetchTags } = props;
+    if (tagsError) {
+        console.log("DreamMap");
+        console.log(tagsError);
+    }
+
     const classes = useStyles();
     const muiTheme = createMuiTheme(themeMode);
-    const [locations, setLocations] = React.useState({});
     const [dreamMap, setDreamMap] = React.useState(null);
     const [posts, setPosts] = React.useState(null);
     const [isLoading, setIsLoading] = React.useState(true);
+    const [isViewMode, setIsViewMode] = React.useState(false);
 
     const createTable = () => {
         let table = [];
@@ -46,11 +53,11 @@ function DreamMap(props) {
                         cellWidth={cellWidth}
                         dreamMap={dreamMap}
                         id={dreamMap[row][col].id}
-                        locations={locations}
-                        //loadMap={loadMap}
+                        locations={tags}
                         history={history}
                         user_id={user_id}
                         posts={posts}
+                        viewMode={isViewMode}
                     />
                 );
                 i++;
@@ -67,18 +74,10 @@ function DreamMap(props) {
         return table;
     };
 
-    const loadMap = React.useCallback(() => {
+    const loadMap = React.useCallback((user_id) => {
         setIsLoading(true);
-        instance.get("/gettags")
-            .then(res => {
-                const nothink = [{
-                    id: null,
-                }];
-                setLocations(nothink.concat(res.data));
-            })
-            .catch(err => {
-                console.log(err)
-            });
+        fetchTags();
+
         instance.post("/actions/users/getusermap", { user_id: user_id })
             .then(res => {
                 setDreamMap(JSON.parse(res.data.result));
@@ -98,8 +97,16 @@ function DreamMap(props) {
     }, [user_id]);
 
     React.useEffect(() => {
-        loadMap();
-        getPosts();
+        if (typeof (props.location.defaultData) !== 'undefined') {
+            if (props.location.defaultData.mode === "fromFriend") {
+                setIsViewMode(true);
+                loadMap(props.location.defaultData.friend_id);
+            }
+        }
+        else {
+            loadMap(user_id);
+            getPosts();
+        }
     }, [loadMap, getPosts]);
 
     return (
@@ -114,7 +121,7 @@ function DreamMap(props) {
                 >
                     <Grid item className={`${classes.hiddenOverflow} ${classes.height2} ${classes.relativePosition}`} align="center">
                         <Typography variant='h6' component='div' className={`${classes.centerButton}`}>
-                            {lang.currLang.texts.DreamsMap}
+                            {lang.currLang.texts.DreamsMap} {typeof (props.location.defaultData) !== "undefined" ? " " + props.location.defaultData.nickName : ""}
                         </Typography>
                     </Grid>
                     <Grid item className={`${classes.hiddenOverflow} ${classes.height9}`}>
@@ -199,20 +206,35 @@ function DreamMap(props) {
                                 <Button className={classes.actionButton}
                                     variant="contained"
                                     color="secondary"
-                                    onClick={() => { history.push("/luciddreams") }}
+                                    onClick={() => {
+                                        typeof (props.location.defaultData) !== 'undefined'
+                                            ? props.location.defaultData.mode === "fromFriend"
+                                                ? history.push({
+                                                    pathname: props.location.defaultData.prevUrl,
+                                                    defaultData: {
+                                                        friend_id: props.location.defaultData.friend_id,
+                                                        prevUrl: "/dreammap",
+                                                    }
+                                                })
+                                                : history.push(props.location.defaultData.prevUrl)
+                                            : history.push("/luciddreams")
+                                    }}
                                 >
-                                    {lang.currLang.buttons.close}
+                                    {lang.currLang.buttons.Back}
                                 </Button>
                             </Grid>
-                            <Grid item>
-                                <Button className={classes.actionButton}
-                                    variant="contained"
-                                    color="primary"
-                                    onClick={() => { history.push("/addlocation") }}
-                                >
-                                    {lang.currLang.buttons.add}
-                                </Button>
-                            </Grid>
+                            {isViewMode
+                                ? <React.Fragment />
+                                : <Grid item>
+                                    <Button className={classes.actionButton}
+                                        variant="contained"
+                                        color="primary"
+                                        onClick={() => { history.push("/addlocation") }}
+                                    >
+                                        {lang.currLang.buttons.add}
+                                    </Button>
+                                </Grid>
+                            }
                         </Grid>
                     </Grid>
                 </Grid>
@@ -225,20 +247,28 @@ DreamMap.propTypes = {
     themeMode: PropTypes.object.isRequired,
     lang: PropTypes.object.isRequired,
     user_id: PropTypes.number.isRequired,
+    tagsError: PropTypes.object.isRequired,
+    tags: PropTypes.object.isRequired,
+    tagsPending: PropTypes.object.isRequired,
 };
 
 const mapStateToProps = store => {
+    const nothink = [{
+        id: null,
+    }];
     return {
         themeMode: store.themeMode,
         lang: store.lang,
         user_id: store.auth.user.id,
+        tagsError: getTagsError(store),
+        tags: nothink.concat(getTags(store)),
+        tagsPending: getTagsPending(store),
     }
 };
 
-const mapDispatchToProps = (dispatch) => {
-    return {
-    }
-}
+const mapDispatchToProps = (dispatch) => bindActionCreators({
+    fetchTags: fetchTagsAction,
+}, dispatch)
 
 export default connect(
     mapStateToProps,

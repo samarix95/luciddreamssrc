@@ -21,7 +21,7 @@ import { SET_THEME_MODE, SET_CURRENT_USER, SET_SNACKBAR_MODE } from "../actions/
 
 import { setUserState, setCurrLang, setTheme, setSnackbar } from '../actions/Actions';
 import { useStyles } from '../styles/Styles.js';
-import { instance } from './Config';
+import { instance } from '../Config';
 import { CheckTimeOut } from '../utils/CheckLoginTimeOut';
 import setAuthToken from "../utils/setAuthToken.js";
 

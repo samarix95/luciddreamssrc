@@ -1,5 +1,6 @@
 import React from 'react';
 import { connect } from 'react-redux';
+import { bindActionCreators } from 'redux';
 import PropTypes from 'prop-types';
 
 import CircularProgress from '@material-ui/core/CircularProgress';
@@ -21,7 +22,6 @@ import Select from "@material-ui/core/Select";
 import Button from '@material-ui/core/Button';
 import Radio from "@material-ui/core/Radio";
 import Input from "@material-ui/core/Input";
-import Paper from '@material-ui/core/Paper';
 import Grid from '@material-ui/core/Grid';
 import Chip from "@material-ui/core/Chip";
 
@@ -29,15 +29,19 @@ import { MuiThemeProvider, createMuiTheme } from '@material-ui/core/styles';
 
 import DreamCard from './muiltiple/DreamCard.jsx';
 import { useStyles } from '../styles/Styles.js';
-import { instance } from './Config.js';
+import { instance, fetchTagsAction } from '../Config.js';
+import { getTagsError, getTags, getTagsPending } from '../reducers/tagsReducer.js';
 
 function ViewDreams(props) {
-    const { lang, themeMode, history, auth } = props;
+    const { lang, themeMode, history, auth, tags, tagsError, tagsPending, fetchTags } = props;
+    if (tagsError) {
+        console.log("ViewDreams");
+        console.log(tagsError);
+    }
     const muiTheme = createMuiTheme(themeMode);
     const classes = useStyles();
     const [isLoading, setIsLoading] = React.useState(true);
     const [dreams, setDreams] = React.useState([]);
-    const [locations, setLocations] = React.useState({});
     const [openDialog, setOpenDialog] = React.useState(false);
     const [locationChecked, setLocationChecked] = React.useState(false);
     const [selectedLocations, setSelectedLocations] = React.useState(null);
@@ -91,7 +95,9 @@ function ViewDreams(props) {
 
     const loadPosts = React.useCallback((user_id = auth.user.id) => {
         setIsLoading(true);
-        instance.post("/actions/users/getuserposts", { id: user_id })
+        let url = "/actions/users/";
+        user_id === auth.user.id ? url += "getuserposts" : url += "getconnectposts";
+        instance.post(url, { id: user_id })
             .then(res => {
                 setDreams(res.data);
                 setIsLoading(false);
@@ -99,14 +105,7 @@ function ViewDreams(props) {
             .catch(err => {
                 setIsLoading(false);
             });
-        instance.get("/gettags")
-            .then(res => {
-                setLocations(res.data);
-            })
-            .catch(err => {
-                alert("Error load locations from server");
-                console.log(err)
-            });
+        fetchTags();
     }, [auth.user.id]);
 
     React.useEffect(() => {
@@ -128,7 +127,7 @@ function ViewDreams(props) {
         }
 
     }, [loadPosts]);
-    
+
     return (
         <MuiThemeProvider theme={muiTheme}>
             <CssBaseline />
@@ -162,7 +161,7 @@ function ViewDreams(props) {
                                     />
                                 </Grid>
                                 <Grid item xs={9}>
-                                    <FormControl className={`${classes.aboutGridItem}`} disabled={!locationChecked}>
+                                    <FormControl className={`${classes.fullWidth}`} disabled={!locationChecked}>
                                         <InputLabel id="location-chip-label">
                                             {lang.currLang.texts.tags}
                                         </InputLabel>
@@ -178,8 +177,8 @@ function ViewDreams(props) {
                                                 <div className={classes.chips}>
                                                     <Chip size="small"
                                                         avatar={
-                                                            locations.length
-                                                                ? < Avatar src={locations.find(locations => locations.name_rus === selectedLocations || locations.name_eng === selectedLocations).img_url} />
+                                                            tags.length
+                                                                ? <Avatar src={tags.find(tags => tags.name_rus === selectedLocations || tags.name_eng === selectedLocations).img_url} />
                                                                 : null
                                                         }
                                                         key={selectedLocations}
@@ -198,12 +197,12 @@ function ViewDreams(props) {
                                             }}
                                         >
                                             {Object
-                                                .keys(locations)
+                                                .keys(tags)
                                                 .map(item =>
-                                                    <MenuItem key={locations[item].id + ' chip'}
-                                                        value={lang.currLang.current === "Ru" ? locations[item].name_rus : locations[item].name_eng}
+                                                    <MenuItem key={tags[item].id + ' chip'}
+                                                        value={lang.currLang.current === "Ru" ? tags[item].name_rus : tags[item].name_eng}
                                                     >
-                                                        {lang.currLang.current === "Ru" ? locations[item].name_rus : locations[item].name_eng}
+                                                        {lang.currLang.current === "Ru" ? tags[item].name_rus : tags[item].name_eng}
                                                     </MenuItem>)
                                             }
                                         </Select>
@@ -266,40 +265,38 @@ function ViewDreams(props) {
                                 </Typography>
                             </div>
                             : <Container className={classes.mainGridDreamsBodyItemContainer}>
-                                {/* <Paper className={classes.mainGridDreamsBodyItemContainerPaper}> */}
-                                    {dreams.length !== 0
-                                        ? <Grid className={`${classes.mainGridDreamsContainer}`}
-                                            container
-                                            direction="column"
-                                            justify="center"
-                                            alignItems="stretch"
-                                        >
-                                            {locations.length !== 0
-                                                ? dreams
-                                                    .filter(item => filterData.location ? item.tags.includes(item.tags.find(tag => tag[0] === locations.find(locations => locations.name_eng === filterData.location || locations.name_rus === filterData.location).id.toString())) : item)
-                                                    .filter(item => filterData.type === 2 ? item : item.post_type === filterData.type)
-                                                    .map((item, key) => (
-                                                        <DreamCard
-                                                            item={item}
-                                                            key={key}
-                                                            history={history}
-                                                            loadPosts={loadPosts}
-                                                        />
-                                                    ))
-                                                : ''
-                                            }
-                                        </Grid>
-                                        : <div>
-                                            <div className={classes.divDreamsNotFound} />
-                                            <div className={`${classes.divDreamsNotFound} ${classes.divDreamsNotFoundImg}`} />
-                                            <div className={classes.divDreamsNotFound}>
-                                                <Typography>
-                                                    {lang.currLang.texts.NoDreams}
-                                                </Typography>
-                                            </div>
+                                {dreams.length !== 0
+                                    ? <Grid className={`${classes.mainGridDreamsContainer}`}
+                                        container
+                                        direction="column"
+                                        justify="center"
+                                        alignItems="stretch"
+                                    >
+                                        {tags.length !== 0
+                                            ? dreams
+                                                .filter(item => filterData.location ? item.tags.includes(item.tags.find(tag => tag[0] === tags.find(tags => tags.name_eng === filterData.location || tags.name_rus === filterData.location).id.toString())) : item)
+                                                .filter(item => filterData.type === 2 ? item : item.post_type === filterData.type)
+                                                .map((item, key) => (
+                                                    <DreamCard
+                                                        item={item}
+                                                        key={key}
+                                                        history={history}
+                                                        loadPosts={loadPosts}
+                                                    />
+                                                ))
+                                            : ''
+                                        }
+                                    </Grid>
+                                    : <div>
+                                        <div className={classes.divDreamsNotFound} />
+                                        <div className={`${classes.divDreamsNotFound} ${classes.divDreamsNotFoundImg}`} />
+                                        <div className={classes.divDreamsNotFound}>
+                                            <Typography>
+                                                {lang.currLang.texts.NoDreams}
+                                            </Typography>
                                         </div>
-                                    }
-                                {/* </Paper> */}
+                                    </div>
+                                }
                             </Container>
                         }
                     </Grid>
@@ -313,9 +310,20 @@ function ViewDreams(props) {
                                 <Button className={classes.actionButton}
                                     variant="contained"
                                     color="secondary"
-                                    onClick={() => { typeof (props.location.defaultData) !== 'undefined' ? history.push(props.location.defaultData.prevUrl) : history.push("/luciddreams") }}
+                                    onClick={() => {
+                                        typeof (props.location.defaultData) !== 'undefined'
+                                            ? props.location.defaultData.mode === "fromFriend"
+                                                ? history.push({
+                                                    pathname: props.location.defaultData.prevUrl,
+                                                    defaultData: {
+                                                        friend_id: props.location.defaultData.friend_id,
+                                                    }
+                                                })
+                                                : history.push(props.location.defaultData.prevUrl)
+                                            : history.push("/luciddreams")
+                                    }}
                                 >
-                                    {lang.currLang.buttons.close}
+                                    {lang.currLang.buttons.Back}
                                 </Button>
                             </Grid>
                             <Grid item>
@@ -339,6 +347,9 @@ ViewDreams.propTypes = {
     themeMode: PropTypes.object.isRequired,
     lang: PropTypes.object.isRequired,
     auth: PropTypes.object.isRequired,
+    tagsError: PropTypes.object.isRequired,
+    tags: PropTypes.object.isRequired,
+    tagsPending: PropTypes.object.isRequired,
 };
 
 const mapStateToProps = store => {
@@ -346,13 +357,15 @@ const mapStateToProps = store => {
         themeMode: store.themeMode,
         lang: store.lang,
         auth: store.auth,
+        tagsError: getTagsError(store),
+        tags: getTags(store),
+        tagsPending: getTagsPending(store),
     }
 };
 
-const mapDispatchToProps = (dispatch) => {
-    return {
-    }
-}
+const mapDispatchToProps = (dispatch) => bindActionCreators({
+    fetchTags: fetchTagsAction,
+}, dispatch)
 
 export default connect(
     mapStateToProps,

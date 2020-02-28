@@ -41,7 +41,7 @@ import DeleteIcon from "@material-ui/icons/Delete";
 
 import { useStyles } from '../../styles/Styles.js';
 
-import { instance } from '../Config.js';
+import { instance } from '../../Config.js';
 
 import { SET_SNACKBAR_MODE } from "../../actions/types.js";
 import { setSnackbar } from '../../actions/Actions.js';

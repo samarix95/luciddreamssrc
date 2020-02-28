@@ -3,4 +3,6 @@ import { createStore, applyMiddleware } from "redux";
 import thunk from "redux-thunk";
 import { rootReducer } from "./reducers";
 
-export const store = createStore(rootReducer, composeWithDevTools(applyMiddleware(thunk)));
+const middlewares = [thunk];
+
+export const store = createStore(rootReducer, composeWithDevTools(applyMiddleware(...middlewares)));

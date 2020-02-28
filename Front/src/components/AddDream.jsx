@@ -1,5 +1,6 @@
 import React from 'react';
 import { connect } from 'react-redux';
+import { bindActionCreators } from 'redux';
 import PropTypes from 'prop-types';
 import DateFnsUtils from '@date-io/date-fns';
 import ruLocale from "date-fns/locale/ru";
@@ -30,14 +31,19 @@ import AddIcon from '@material-ui/icons/Add';
 import { useStyles } from '../styles/Styles.js';
 import { setSnackbar } from '../actions/Actions.js';
 import { SET_SNACKBAR_MODE } from "../actions/types.js";
-import { instance } from './Config.js';
+import { instance, fetchTagsAction } from '../Config.js';
+import { getTagsError, getTags, getTagsPending } from '../reducers/tagsReducer.js';
 import { compare } from '../functions.js';
 
 let defaultTags = [];
 
 function AddDream(props) {
     const classes = useStyles();
-    const { lang, themeMode, history, auth, setSnackbar } = props;
+    const { lang, themeMode, history, auth, setSnackbar, tags, tagsError, tagsPending, fetchTags } = props;
+    if (tagsError) {
+        console.log("AddCDream");
+        console.log(tagsError);
+    }
     const muiTheme = createMuiTheme(themeMode);
     Object.assign(muiTheme, {
         overrides: {
@@ -94,7 +100,6 @@ function AddDream(props) {
     const [contentText, setContentText] = React.useState();
     const [prevContentText, setPrevContentText] = React.useState();
     const [selectedLocations, setselectedLocations] = React.useState([]);
-    const [locations, setLocations] = React.useState({});
 
     const addLocation = () => {
         saveToLocalStorage();
@@ -326,13 +331,7 @@ function AddDream(props) {
             loadFromLocalStorage();
 
         defaultTags = [];
-        instance.get("/gettags")
-            .then(res => {
-                setLocations(res.data);
-            })
-            .catch(err => {
-                console.log(err)
-            });
+        fetchTags();
 
         if (typeof (props.location.defaultData) !== 'undefined') {
             setIsEditMode(true);
@@ -460,13 +459,13 @@ function AddDream(props) {
                                         alignItems="stretch"
                                     >
                                         <Grid item xs={10} style={{ position: 'relative' }}>
-                                            {locations.length
+                                            {!tagsPending
                                                 ? <Autocomplete
                                                     multiple
                                                     className={classes.inputDiv}
                                                     id="tags-outlined"
                                                     size="small"
-                                                    options={locations}
+                                                    options={tags}
                                                     getOptionLabel={option => (
                                                         <Chip
                                                             size="small"
@@ -483,7 +482,7 @@ function AddDream(props) {
                                                     )}
                                                     defaultValue={
                                                         defaultTags.map(item => {
-                                                            return locations[item.id - 1];
+                                                            return tags[item.id - 1];
                                                         })
                                                     }
                                                     onChange={(event, value) => handleChangeLocations(event, value)}
@@ -531,7 +530,7 @@ function AddDream(props) {
                                             window.localStorage.removeItem("postDreamData");
                                         }}
                                     >
-                                        {lang.currLang.buttons.close}
+                                        {lang.currLang.buttons.Back}
                                     </Button>
                                 </Grid>
                                 <Grid item>
@@ -561,6 +560,9 @@ AddDream.propTypes = {
     themeMode: PropTypes.object.isRequired,
     lang: PropTypes.object.isRequired,
     auth: PropTypes.object.isRequired,
+    tagsError: PropTypes.object.isRequired,
+    tags: PropTypes.object.isRequired,
+    tagsPending: PropTypes.object.isRequired,
 };
 
 const mapStateToProps = store => {
@@ -568,14 +570,16 @@ const mapStateToProps = store => {
         themeMode: store.themeMode,
         lang: store.lang,
         auth: store.auth,
+        tagsError: getTagsError(store),
+        tags: getTags(store),
+        tagsPending: getTagsPending(store),
     }
 };
 
-const mapDispatchToProps = (dispatch) => {
-    return {
-        setSnackbar: snackbar => dispatch(setSnackbar(snackbar)),
-    }
-}
+const mapDispatchToProps = (dispatch) => bindActionCreators({
+    setSnackbar: snackbar => dispatch(setSnackbar(snackbar)),
+    fetchTags: fetchTagsAction,
+}, dispatch)
 
 export default connect(
     mapStateToProps,

@@ -1,5 +1,6 @@
 import React from 'react';
 import { connect } from 'react-redux';
+import { bindActionCreators } from 'redux';
 import PropTypes from 'prop-types';
 import DateFnsUtils from '@date-io/date-fns';
 import ruLocale from "date-fns/locale/ru";
@@ -34,7 +35,9 @@ import { useStyles } from '../styles/Styles';
 import { SET_SNACKBAR_MODE } from "../actions/types";
 import { setSnackbar } from '../actions/Actions';
 
-import { instance } from './Config';
+import { instance, fetchTagsAction, fetchTechnicsAction } from '../Config.js';
+import { getTagsError, getTags, getTagsPending } from '../reducers/tagsReducer.js';
+import { getTechnicsError, getTechnics, getTechnicsPending } from '../reducers/technicsReducer.js';
 
 import { compare } from '../functions';
 
@@ -43,7 +46,15 @@ let defaultTags = [];
 
 function AddCDream(props) {
     const classes = useStyles();
-    const { lang, themeMode, history, auth, setSnackbar } = props;
+    const { lang, themeMode, history, auth, setSnackbar, tags, tagsError, tagsPending, fetchTags, technics, technicsError, technicsPending, fetchTechnics } = props;
+    if (tagsError) {
+        console.log("AddCDream");
+        console.log(tagsError);
+    }
+    if (technicsError) {
+        console.log("AddCDream");
+        console.log(technicsError);
+    }
     const muiTheme = createMuiTheme(themeMode);
     Object.assign(muiTheme, {
         overrides: {
@@ -102,8 +113,6 @@ function AddCDream(props) {
     const [selectedLocations, setselectedLocations] = React.useState([]);
     const [selectedTechnics, setselectedTechnics] = React.useState([]);
     const [realisticsValue, setRealisticsValue] = React.useState(1);
-    const [locations, setLocations] = React.useState({});
-    const [technics, setTechnics] = React.useState({});
 
     const addLocation = () => {
         saveToLocalStorage();
@@ -114,7 +123,6 @@ function AddCDream(props) {
             }
         });
     };
-
     const handleChangeRealistics = (event, newValue) => {
         setRealisticsValue(newValue);
     };
@@ -388,20 +396,9 @@ function AddCDream(props) {
 
         defaultTechnics = [];
         defaultTags = [];
-        instance.get("/gettags")
-            .then(res => {
-                setLocations(res.data);
-            })
-            .catch(err => {
-                console.log(err)
-            });
-        instance.get("/gettechnics")
-            .then(res => {
-                setTechnics(res.data);
-            })
-            .catch(err => {
-                console.log(err)
-            });
+
+        fetchTags();
+        fetchTechnics();
 
         if (typeof (props.location.defaultData) !== 'undefined') {
             setIsEditMode(true);
@@ -541,7 +538,7 @@ function AddCDream(props) {
                                         alignItems="center"
                                     >
                                         <Grid item xs={12} style={{ position: 'relative' }}>
-                                            {technics.length
+                                            {!technicsPending
                                                 ? <Autocomplete
                                                     multiple
                                                     className={classes.inputDiv}
@@ -588,13 +585,13 @@ function AddCDream(props) {
                                         alignItems="center"
                                     >
                                         <Grid item xs={10} style={{ position: 'relative' }}>
-                                            {locations.length
+                                            {!tagsPending
                                                 ? <Autocomplete
                                                     multiple
                                                     className={classes.inputDiv}
                                                     id="tags-outlined"
                                                     size="small"
-                                                    options={locations}
+                                                    options={tags}
                                                     getOptionLabel={option => (
                                                         <Chip
                                                             size="small"
@@ -611,7 +608,7 @@ function AddCDream(props) {
                                                     )}
                                                     defaultValue={
                                                         defaultTags.map(item => {
-                                                            return locations[item.id - 1];
+                                                            return tags[item.id - 1];
                                                         })}
                                                     onChange={(event, value) => handleChangeLocations(event, value)}
                                                     filterSelectedOptions
@@ -680,7 +677,7 @@ function AddCDream(props) {
                                                 : history.push("/luciddreams");
                                         }}
                                     >
-                                        {lang.currLang.buttons.close}
+                                        {lang.currLang.buttons.Back}
                                     </Button>
                                 </Grid>
                                 <Grid item>
@@ -709,7 +706,12 @@ AddCDream.propTypes = {
     setSnackbar: PropTypes.func.isRequired,
     themeMode: PropTypes.object.isRequired,
     lang: PropTypes.object.isRequired,
-    auth: PropTypes.object.isRequired,
+    tagsError: PropTypes.object.isRequired,
+    tags: PropTypes.object.isRequired,
+    tagsPending: PropTypes.object.isRequired,
+    technicsError: PropTypes.object.isRequired,
+    technics: PropTypes.object.isRequired,
+    technicsPending: PropTypes.object.isRequired,
 };
 
 const mapStateToProps = store => {
@@ -717,14 +719,20 @@ const mapStateToProps = store => {
         themeMode: store.themeMode,
         lang: store.lang,
         auth: store.auth,
+        tagsError: getTagsError(store),
+        tags: getTags(store),
+        tagsPending: getTagsPending(store),
+        technicsError: getTechnicsError(store),
+        technics: getTechnics(store),
+        technicsPending: getTechnicsPending(store),
     }
 };
 
-const mapDispatchToProps = (dispatch) => {
-    return {
-        setSnackbar: snackbar => dispatch(setSnackbar(snackbar)),
-    }
-}
+const mapDispatchToProps = (dispatch) => bindActionCreators({
+    setSnackbar: snackbar => dispatch(setSnackbar(snackbar)),
+    fetchTags: fetchTagsAction,
+    fetchTechnics: fetchTechnicsAction,
+}, dispatch)
 
 export default connect(
     mapStateToProps,

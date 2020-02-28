@@ -29,7 +29,7 @@ import { GET_ERRORS, SET_CURRENT_USER, SET_SNACKBAR_MODE } from "../actions/type
 import { setCurrLang, setUserState, setSnackbar } from '../actions/Actions';
 import { useStyles } from '../styles/Styles.js';
 import setAuthToken from "../utils/setAuthToken";
-import { instance } from './Config';
+import { instance } from '../Config';
 
 import RuDict from '../dictionary/ru';
 import EnDict from '../dictionary/en';
@@ -536,7 +536,7 @@ function Sign(props) {
                         </Grid>
                         <Grid item className={`${classes.mainGridBodyItem} ${classes.height1}`} align='center'>
                             <Button className={classes.menuButton} variant="contained" color="primary" onClick={() => (click('closeAboutPage'))}>
-                                {lang.currLang.buttons.close}
+                                {lang.currLang.buttons.Back}
                             </Button>
                         </Grid>
                     </Grid>

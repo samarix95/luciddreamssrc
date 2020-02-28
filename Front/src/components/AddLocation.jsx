@@ -19,7 +19,7 @@ import { MuiThemeProvider, createMuiTheme } from '@material-ui/core/styles';
 
 import { setSnackbar } from '../actions/Actions.js';
 import { SET_SNACKBAR_MODE } from "../actions/types.js";
-import { instance } from './Config.js';
+import { instance } from '../Config.js';
 import { useStyles } from '../styles/Styles.js';
 
 function AddLocation(props) {
@@ -411,7 +411,7 @@ function AddLocation(props) {
                                             : history.push(prevUrl);
                                     }}
                                 >
-                                    {lang.currLang.buttons.close}
+                                    {lang.currLang.buttons.Back}
                                 </Button>
                             </Grid>
                             <Grid item>
