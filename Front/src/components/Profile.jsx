@@ -326,18 +326,9 @@ function Profile(props) {
                     <Grid container className={`${classes.height12}`} id="avatar-dialog-description" spacing={2}>
                         {avatars.map((item, key) => (
                             <Grid item xs={4} sm={3} key={key}>
-                                <div className={`${classes.relativePosition} ${classes.fullWidth}`}
-                                    style={{
-                                        height: 0,
-                                        paddingBottom: "100%",
-                                    }}
-                                >
+                                <div className={`${classes.relativePosition} ${classes.fullWidth} ${classes.equalHeight}`}>
                                     <ButtonBase onClick={() => handleSetAvatarId(item.id)}
-                                        className={`${classes.absolutePosition} ${classes.fullWidth} ${classes.fullHeight} ${classes.topLeft}`}
-                                        style={{
-                                            borderRadius: "50%",
-                                        }}
-                                    >
+                                        className={`${classes.absolutePosition} ${classes.fullWidth} ${classes.fullHeight} ${classes.topLeft} ${classes.borderRadius50}`}>
                                         <Avatar src={item.url} className={`${classes.absolutePosition} ${classes.fullWidth} ${classes.fullHeight}`} />
                                     </ButtonBase>
                                     {changedAvatar === item.id
@@ -485,7 +476,7 @@ function Profile(props) {
                                         ? <React.Fragment>
                                             <Grid className={`${classes.height6}`} >
                                                 <div className={`${classes.relativePosition} ${classes.fullHeight}`}>
-                                                    <Button className={`${classes.formControl} ${classes.fullWidth} ${classes.width10}`}
+                                                    <Button className={`${classes.formControl} ${classes.width10}`}
                                                         variant="contained"
                                                         color="primary"
                                                         onClick={openUserConnections}
@@ -498,7 +489,7 @@ function Profile(props) {
                                         : <React.Fragment>
                                             <Grid className={`${classes.height6}`} >
                                                 <div className={`${classes.relativePosition} ${classes.fullHeight}`}>
-                                                    <Button className={`${classes.formControl} ${classes.fullWidth} ${classes.width10}`}
+                                                    <Button className={`${classes.formControl} ${classes.width10}`}
                                                         variant="contained"
                                                         color="primary"
                                                         onClick={openUserDreamJournal}
@@ -509,7 +500,7 @@ function Profile(props) {
                                             </Grid>
                                             <Grid className={`${classes.height6}`} >
                                                 <div className={`${classes.relativePosition} ${classes.fullHeight}`}>
-                                                    <Button className={`${classes.formControl} ${classes.fullWidth} ${classes.width10}`}
+                                                    <Button className={`${classes.formControl} ${classes.width10}`}
                                                         variant="contained"
                                                         color="primary"
                                                         onClick={openUserDreamMap}
@@ -591,7 +582,7 @@ function Profile(props) {
                                 <Button className={classes.actionButton}
                                     variant="contained"
                                     color="secondary"
-                                    onClick={() => { history.push("/luciddreams") }}
+                                    onClick={() => { history.push("/aeronauts") }}
                                 >
                                     {lang.currLang.buttons.Back}
                                 </Button>

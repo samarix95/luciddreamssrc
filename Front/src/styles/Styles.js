@@ -44,6 +44,10 @@ export function randomBetween(a, b) {
 }
 
 export const useStyles = makeStyles(theme => ({
+    equalHeight: {
+        height: 0,
+        paddingBottom: "100%",
+    },
     SearchPaper: {
         padding: '2px 4px',
         display: 'flex',
@@ -416,6 +420,12 @@ export const useStyles = makeStyles(theme => ({
         borderRadius: '10%',
         animation: '$swinging 4s infinite linear',
     },
+    borderRadius50: {
+        borderRadius: "50%",
+    },
+    padding10: {
+        padding: "10px",
+    },
     MapDiv: {
         position: 'absolute',
         top: 0,
@@ -461,7 +471,7 @@ export const useStyles = makeStyles(theme => ({
         position: 'relative',
     },
     absolutePosition: {
-        position: 'absolute',
+        position: 'absolute !Important',
     },
     menuButton: {
         width: "55vw",
@@ -491,6 +501,10 @@ export const useStyles = makeStyles(theme => ({
         minWidth: '100% !Important',
         position: 'absolute'
     },
+    heightWidth80: {
+        width: "80px !Important",
+        height: "80px !Important",
+    },
     inputDiv: {
         minWidth: '85% !Important',
         maxWidth: '85% !Important',
@@ -517,10 +531,10 @@ export const useStyles = makeStyles(theme => ({
         margin: 1
     },
     fullWidth: {
-        width: "100%",
+        width: "100% !Important",
     },
     fullHeight: {
-        height: "100%",
+        height: "100% !Important",
     },
     minHeight20px: {
         minHeight: "20px",

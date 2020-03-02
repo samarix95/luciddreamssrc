@@ -21,6 +21,7 @@ const AddDream = React.lazy(() => import('./components/AddDream.jsx'));
 const ViewDreams = React.lazy(() => import('./components/ViewDreams.jsx'));
 const DreamMap = React.lazy(() => import('./components/DreamMap.jsx'));
 const Profile = React.lazy(() => import('./components/Profile.jsx'));
+const Aeronauts = React.lazy(() => import('./components/Aeronauts.jsx'));
 const MainPage = React.lazy(() => import('./components/MainPage.jsx'));
 const Sign = React.lazy(() => import('./components/Sign.js'));
 
@@ -109,6 +110,7 @@ function Routes(props) {
             <Switch>
                 <PrivateRoute path="/luciddreams" component={MainPage} />
                 <PrivateRoute path="/profile" component={Profile} />
+                <PrivateRoute path="/aeronauts" component={Aeronauts} />
                 <PrivateRoute path="/dreammap" component={DreamMap} />
                 <PrivateRoute path="/dreams" component={ViewDreams} />
                 <PrivateRoute path="/addregulardream" component={AddDream} />

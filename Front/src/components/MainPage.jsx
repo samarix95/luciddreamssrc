@@ -85,7 +85,7 @@ function MainPage(props) {
     };
 
     const onAstronautClick = () => {
-        if (CheckTimeOut()) history.push("/profile");
+        if (CheckTimeOut()) history.push("/aeronauts");
         else history.push("/");
     };
 
@@ -305,27 +305,6 @@ function MainPage(props) {
                             </Grid>
                         </Grid>
                     </Grid>
-                    <Grid item className={`${classes.mainGridBodyItem} ${classes.height1}`}>
-                        <Grid container
-                            className={`${classes.menuButtonContainer}`}
-                            direction="column"
-                            justify="center"
-                            alignItems="stretch"
-                        >
-                            <Grid item className={`${classes.mainGridBodyItem} ${classes.height12}`}>
-                                {!userDataPending
-                                    ? <Typography className={classes.mainGridContainer} align='center' variant='h6' >
-                                        {lang.currLang.texts.hello} {userData.nickname}
-                                    </Typography>
-                                    : <div className={`${classes.formControl} ${classes.centerTextAlign}`} >
-                                        <div className={`${classes.inlineBlock} ${classes.relativePosition}`} >
-                                            <CircularProgress />
-                                        </div>
-                                    </div>
-                                }
-                            </Grid>
-                        </Grid>
-                    </Grid>
                     <Grid item className={`${classes.mainGridBodyItem} ${classes.height6}`}>
                         <Grid container
                             className={`${classes.menuButtonContainer} ${classes.height12}`}
@@ -403,6 +382,8 @@ function MainPage(props) {
                                 </Button>
                             </Grid>
                         </Grid>
+                    </Grid>
+                    <Grid item className={`${classes.mainGridBodyItem} ${classes.height1}`}>
                     </Grid>
                     <Grid item className={`${classes.mainGridBodyItem} ${classes.height1}`}>
                         <Grid container
