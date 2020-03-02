@@ -23,3 +23,12 @@ export function CheckTimeOut() {
         }
     }
 }
+
+export function getToken() {
+    if (localStorage.jwtToken) {
+        return localStorage.jwtToken;
+    }
+    else {
+        return false;
+    }
+}

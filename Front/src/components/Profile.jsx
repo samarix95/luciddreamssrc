@@ -1,5 +1,6 @@
 import React from 'react';
 import { connect } from 'react-redux';
+import { bindActionCreators } from 'redux';
 import PropTypes from 'prop-types';
 
 import CircularProgress from '@material-ui/core/CircularProgress';
@@ -20,13 +21,34 @@ import Grid from '@material-ui/core/Grid';
 import { MuiThemeProvider, createMuiTheme } from '@material-ui/core/styles';
 
 import { useStyles } from '../styles/Styles.js';
-import { instance } from '../Config';
+import { instance, fetchUserDataAction, fetchUserPostsAction, fetchConnectPostsAction } from '../Config';
+import { getUserDataError, getUserData, getUserDataPending } from '../reducers/userDataReducer.js';
+import { getUserPostsError, getUserPosts, getUserPostsPending } from '../reducers/userPostsReducer.js';
+import { getConnectPostsError, getConnectPosts, getConnectPostsPending } from '../reducers/connectPostsReducer.js';
+import { getToken } from '../utils/CheckLoginTimeOut';
 
 import CheckCircleIcon from '@material-ui/icons/CheckCircle';
 import EditIcon from '@material-ui/icons/Edit';
 import SaveIcon from '@material-ui/icons/Save';
 
 const UserConnections = React.lazy(() => import('./dialogs/UserConnections.jsx'));
+
+let isUserDataLoaded = true;
+let isUserPostsLoaded = true;
+
+const countInitialState = {
+    regular: 0,
+    cdream: 0,
+    is_public: 0,
+};
+
+const profileDataInitialState = {
+    nickname: null,
+    about: null,
+    role: null,
+    fb: null,
+    ig: null,
+};
 
 const avatars = [
     {
@@ -96,7 +118,24 @@ const avatars = [
 ];
 
 function Profile(props) {
-    const { lang, themeMode, history, user_id } = props;
+    const { lang, themeMode, history, user_id, userData, userDataError, userDataPending, fetchUserData, userPosts, userPostsError, userPostsPending, fetchUserPosts, connectPosts, connectPostsError, connectPostsPending, fetchConnectPosts } = props;
+
+    if (userDataError) {
+        console.log("Profile");
+        console.log(userDataError);
+        alert("Error");
+    }
+    if (userPostsError) {
+        console.log("Profile");
+        console.log(userPostsError);
+        alert("Error");
+    }
+    if (connectPostsError) {
+        console.log("Profile");
+        console.log(connectPostsError);
+        alert("Error");
+    }
+
     const classes = useStyles();
     const muiTheme = createMuiTheme(themeMode);
     const [profileid, setProfileId] = React.useState();
@@ -104,22 +143,43 @@ function Profile(props) {
     const [openConnect, setOpenConnect] = React.useState(false);
     const descriptionElementRef = React.useRef(null);
     const [viewMode, setViewMode] = React.useState(false);
-    const [userData, setUserData] = React.useState({
-        nickname: null,
-        about: null,
-        role: null,
-        fb: null,
-        ig: null,
-    });
-    const [postsCount, setPostsCount] = React.useState({
-        regular: 0,
-        cdream: 0,
-        is_public: 0,
-    });
+    const [userProfileData, setUserProfileData] = React.useState(profileDataInitialState);
+    const [postsCount, setPostsCount] = React.useState(countInitialState);
     const [isAboutLoad, setisAboutLoad] = React.useState(true);
     const [isEditAbout, setIsEditAbout] = React.useState(false);
     const [aboutText, setAboutText] = React.useState("");
     const [changedAvatar, setChangedAvatar] = React.useState(null);
+
+    if (!userDataPending && userDataError == null && !isUserDataLoaded) {
+        isUserDataLoaded = true;
+        let newUserProfileData = userProfileData;
+        newUserProfileData = { ...newUserProfileData, nickname: userData.nickname };
+        newUserProfileData = { ...newUserProfileData, role: userData.roles };
+        newUserProfileData = { ...newUserProfileData, about: userData.about };
+        newUserProfileData = { ...newUserProfileData, fb: userData.fb };
+        newUserProfileData = { ...newUserProfileData, ig: userData.ig };
+        setUserProfileData(newUserProfileData);
+
+        setAboutText(userData.about);
+        setisAboutLoad(false);
+    }
+
+    if (!userPostsPending && userPostsError == null && !isUserPostsLoaded && !viewMode) {
+        isUserPostsLoaded = true;
+        let newPostsCount = postsCount;
+        newPostsCount = { ...newPostsCount, regular: Object.keys(userPosts.filter(item => item.post_type === 0 ? item : false)).length };
+        newPostsCount = { ...newPostsCount, cdream: Object.keys(userPosts.filter(item => item.post_type === 1 ? item : false)).length };
+        newPostsCount = { ...newPostsCount, is_public: Object.keys(userPosts.filter(item => item.is_public === 1 ? item : false)).length };
+        setPostsCount(newPostsCount);
+    }
+
+    if (!connectPostsPending && connectPostsError == null && !isUserPostsLoaded && viewMode) {
+        isUserPostsLoaded = true;
+        let newPostsCount = postsCount;
+        newPostsCount = { ...newPostsCount, is_public: Object.keys(connectPosts.filter(item => item.is_public === 1 ? item : false)).length };
+        setPostsCount(newPostsCount);
+    }
+
     const handleSetAvatarId = (id) => {
         setChangedAvatar(id);
     };
@@ -129,20 +189,19 @@ function Profile(props) {
     };
 
     const saveAbout = () => {
-        if (userData.about !== aboutText) {
+        if (userProfileData.about !== aboutText) {
             setisAboutLoad(true);
             const data = {
                 id: profileid,
-                nickname: userData.nickname,
+                nickname: userProfileData.nickname,
                 about: aboutText,
             };
 
-            instance
-                .post('/actions/users/updateuserdata', data)
+            instance.post('/actions/users/updateuserdata', data)
                 .then(res => {
-                    let newUserData = userData;
-                    newUserData = { ...newUserData, about: aboutText };
-                    setUserData(newUserData);
+                    let newUserProfileData = userProfileData;
+                    newUserProfileData = { ...newUserProfileData, about: aboutText };
+                    setUserProfileData(newUserProfileData);
                     setisAboutLoad(false);
                 })
                 .catch(err => {
@@ -185,7 +244,7 @@ function Profile(props) {
             pathname: "/dreammap",
             defaultData: {
                 mode: "fromFriend",
-                nickName: userData.nickname,
+                nickName: userProfileData.nickname,
                 friend_id: profileid,
                 prevUrl: "/profile",
             }
@@ -213,37 +272,13 @@ function Profile(props) {
     };
 
     const loadProfileData = React.useCallback((profileid) => {
-        instance
-            .post('/actions/users/getuserdata', { id: profileid, })
-            .then(res => {
-                let newUserData = userData;
-                newUserData = { ...newUserData, nickname: res.data.result.nickname };
-                newUserData = { ...newUserData, role: res.data.result.roles };
-                if (res.data.result.about) {
-                    newUserData = { ...newUserData, about: res.data.result.about };
-                    setAboutText(res.data.result.about);
-                }
-                else {
-                    newUserData = { ...newUserData, about: "" };
-                    setAboutText("");
-                }
-
-                newUserData = { ...newUserData, fb: res.data.result.fb };
-                newUserData = { ...newUserData, ig: res.data.result.ig };
-                setUserData(newUserData);
-                setisAboutLoad(false);
-            });
-        instance.post("/actions/users/getuserposts", { id: profileid })
-            .then(res => {
-                let newPostsCount = postsCount;
-                newPostsCount = { ...newPostsCount, regular: Object.keys(res.data.filter(item => item.post_type === 0 ? item : false)).length };
-                newPostsCount = { ...newPostsCount, cdream: Object.keys(res.data.filter(item => item.post_type === 1 ? item : false)).length };
-                newPostsCount = { ...newPostsCount, is_public: Object.keys(res.data.filter(item => item.is_public === 1 ? item : false)).length };
-                setPostsCount(newPostsCount);
-            })
-            .catch(err => {
-                alert("Error get user posts data: " + err);
-            });
+        isUserDataLoaded = false;
+        isUserPostsLoaded = false;
+        setPostsCount({ ...countInitialState });
+        setUserProfileData({ ...profileDataInitialState });
+        const token = getToken();
+        fetchUserData(profileid, token);
+        user_id === profileid ? fetchUserPosts(profileid, token) : fetchConnectPosts(profileid, token);
     }, [profileid]);
 
     React.useEffect(() => {
@@ -256,6 +291,7 @@ function Profile(props) {
             loadProfileData(user_id);
             setProfileId(user_id);
         }
+
         if (openAva) {
             const { current: descriptionElement } = descriptionElementRef;
             if (descriptionElement !== null) {
@@ -346,12 +382,12 @@ function Profile(props) {
                             <Grid item xs={12} sm={6} className={`${classes.relativePosition}`} >
                                 <div className={`${classes.formControl}`} >
                                     <Typography variant="h5" align="center" color="textPrimary">
-                                        {userData.nickname}
+                                        {userProfileData.nickname}
                                     </Typography>
                                     <Typography variant="body2" align="center" color="textPrimary">
-                                        {userData.role === 0
+                                        {userProfileData.role === 0
                                             ? lang.currLang.texts.Admin
-                                            : userData.role === 1
+                                            : userProfileData.role === 1
                                                 ? lang.currLang.texts.Moderator
                                                 : lang.currLang.texts.User
                                         }
@@ -494,7 +530,7 @@ function Profile(props) {
                                         ? <React.Fragment>
                                             <div className={`${classes.absolutePosition} ${classes.hiddenOverflowX} ${classes.fullWidth} ${classes.fullHeight} ${classes.topLeft}`}>
                                                 <Typography className={`${classes.absolutePosition} ${classes.centerText}`} component="div">
-                                                    {userData.about}
+                                                    {userProfileData.about}
                                                 </Typography>
                                             </div>
                                             {!viewMode
@@ -584,6 +620,15 @@ Profile.propTypes = {
     themeMode: PropTypes.object.isRequired,
     lang: PropTypes.object.isRequired,
     user_id: PropTypes.number.isRequired,
+    userDataError: PropTypes.object.isRequired,
+    userData: PropTypes.object.isRequired,
+    userDataPending: PropTypes.object.isRequired,
+    userPostsError: PropTypes.object.isRequired,
+    userPosts: PropTypes.object.isRequired,
+    userPostsPending: PropTypes.object.isRequired,
+    connectPostsError: PropTypes.object.isRequired,
+    connectPosts: PropTypes.object.isRequired,
+    connectPostsPending: PropTypes.object.isRequired,
 };
 
 const mapStateToProps = store => {
@@ -591,13 +636,23 @@ const mapStateToProps = store => {
         themeMode: store.themeMode,
         lang: store.lang,
         user_id: store.auth.user.id,
+        userDataError: getUserDataError(store),
+        userData: getUserData(store),
+        userDataPending: getUserDataPending(store),
+        userPostsError: getUserPostsError(store),
+        userPosts: getUserPosts(store),
+        userPostsPending: getUserPostsPending(store),
+        connectPostsError: getConnectPostsError(store),
+        connectPosts: getConnectPosts(store),
+        connectPostsPending: getConnectPostsPending(store),
     }
 };
 
-const mapDispatchToProps = dispatch => {
-    return {
-    }
-}
+const mapDispatchToProps = (dispatch) => bindActionCreators({
+    fetchUserData: fetchUserDataAction,
+    fetchUserPosts: fetchUserPostsAction,
+    fetchConnectPosts: fetchConnectPostsAction,
+}, dispatch)
 
 export default connect(
     mapStateToProps,

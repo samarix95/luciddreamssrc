@@ -52,8 +52,7 @@ function UserConnections(props) {
 
     const deleteConnection = (id) => {
         setIsConnectsLoad(true);
-        instance
-            .post('/actions/users/edituserconnects', { action: "delete", user: user_id, connect: id })
+        instance.post('/actions/users/edituserconnects', { action: "delete", user: user_id, connect: id })
             .then(res => {
                 loadUserData(user_id);
                 setSnackbar({
@@ -73,8 +72,7 @@ function UserConnections(props) {
     };
 
     const loadUserData = React.useCallback((user_id) => {
-        instance
-            .post('/actions/users/getuserconnects', { id: user_id, })
+        instance.post('/actions/users/getuserconnects', { id: user_id, })
             .then(res => {
                 setConnectionsList(res.data);
                 setIsConnectsLoad(false);

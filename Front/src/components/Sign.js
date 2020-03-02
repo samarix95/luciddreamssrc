@@ -135,8 +135,7 @@ function Sign(props) {
     };
 
     const singIn = () => {
-        instance
-            .post("/actions/users/login", loginData)
+        instance.post("/actions/users/login", loginData)
             .then(res => {
                 const { token } = res.data;
                 localStorage.setItem("jwtToken", token);
@@ -208,8 +207,7 @@ function Sign(props) {
             setIsLoading(false);
         }
         else {
-            instance
-                .post('/actions/users/register', registData)
+            instance.post('/actions/users/register', registData)
                 .then(res => {
                     setSnackbar({
                         type: SET_SNACKBAR_MODE,

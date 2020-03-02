@@ -29,18 +29,35 @@ import { MuiThemeProvider, createMuiTheme } from '@material-ui/core/styles';
 
 import DreamCard from './muiltiple/DreamCard.jsx';
 import { useStyles } from '../styles/Styles.js';
-import { instance, fetchTagsAction } from '../Config.js';
+import { fetchTagsAction, fetchUserPostsAction, fetchConnectPostsAction } from '../Config';
 import { getTagsError, getTags, getTagsPending } from '../reducers/tagsReducer.js';
+import { getUserPostsError, getUserPosts, getUserPostsPending } from '../reducers/userPostsReducer.js';
+import { getConnectPostsError, getConnectPosts, getConnectPostsPending } from '../reducers/connectPostsReducer.js';
+import { getToken } from '../utils/CheckLoginTimeOut';
+
+let isDreamsLoading = true;
 
 function ViewDreams(props) {
-    const { lang, themeMode, history, auth, tags, tagsError, tagsPending, fetchTags } = props;
+    const { lang, themeMode, history, auth, tags, tagsError, tagsPending, fetchTags, userPosts, userPostsError, userPostsPending, fetchUserPosts, connectPosts, connectPostsError, connectPostsPending, fetchConnectPosts } = props;
     if (tagsError) {
         console.log("ViewDreams");
         console.log(tagsError);
+        alert("Error");
     }
+    if (userPostsError) {
+        console.log("ViewDreams");
+        console.log(userPostsError);
+        alert("Error");
+    }
+    if (connectPostsError) {
+        console.log("ViewDreams");
+        console.log(connectPostsError);
+        alert("Error");
+    }
+
     const muiTheme = createMuiTheme(themeMode);
     const classes = useStyles();
-    const [isLoading, setIsLoading] = React.useState(true);
+    const [viewMode, setViewMode] = React.useState(false);
     const [dreams, setDreams] = React.useState([]);
     const [openDialog, setOpenDialog] = React.useState(false);
     const [locationChecked, setLocationChecked] = React.useState(false);
@@ -50,6 +67,15 @@ function ViewDreams(props) {
         location: null,
         type: 2,
     });
+
+    if (!userPostsPending && userPostsError == null && !isDreamsLoading && !viewMode) {
+        isDreamsLoading = true;
+        setDreams(userPosts);
+    }
+    if (!connectPostsPending && connectPostsError == null && !isDreamsLoading && viewMode) {
+        isDreamsLoading = true;
+        setDreams(connectPosts);
+    }
 
     const openFilter = () => {
         setOpenDialog(true);
@@ -94,18 +120,17 @@ function ViewDreams(props) {
     };
 
     const loadPosts = React.useCallback((user_id = auth.user.id) => {
-        setIsLoading(true);
-        let url = "/actions/users/";
-        user_id === auth.user.id ? url += "getuserposts" : url += "getconnectposts";
-        instance.post(url, { id: user_id })
-            .then(res => {
-                setDreams(res.data);
-                setIsLoading(false);
-            })
-            .catch(err => {
-                setIsLoading(false);
-            });
+        isDreamsLoading = false;
         fetchTags();
+        const token = getToken();
+        if (user_id === auth.user.id) {
+            setViewMode(false);
+            fetchUserPosts(user_id, token)
+        }
+        else {
+            setViewMode(true);
+            fetchConnectPosts(user_id, token);
+        }
     }, [auth.user.id]);
 
     React.useEffect(() => {
@@ -125,7 +150,6 @@ function ViewDreams(props) {
         else {
             loadPosts();
         }
-
     }, [loadPosts]);
 
     return (
@@ -255,16 +279,8 @@ function ViewDreams(props) {
                     alignItems="stretch"
                 >
                     <Grid item className={`${classes.hiddenOverflow} ${classes.height11}`} >
-                        {isLoading
-                            ? <div className={`${classes.formControl} ${classes.centerTextAlign}`} >
-                                <div className={`${classes.inlineBlock} ${classes.relativePosition}`} >
-                                    <CircularProgress />
-                                </div>
-                                <Typography className={`${classes.relativePosition}`} component="div" >
-                                    {lang.currLang.texts.Loading}
-                                </Typography>
-                            </div>
-                            : <Container className={classes.mainGridDreamsBodyItemContainer}>
+                        {viewMode && !connectPostsPending || !viewMode && !userPostsPending
+                            ? <Container className={classes.mainGridDreamsBodyItemContainer}>
                                 {dreams.length !== 0
                                     ? <Grid className={`${classes.mainGridDreamsContainer}`}
                                         container
@@ -298,6 +314,14 @@ function ViewDreams(props) {
                                     </div>
                                 }
                             </Container>
+                            : <div className={`${classes.formControl} ${classes.centerTextAlign}`} >
+                                <div className={`${classes.inlineBlock} ${classes.relativePosition}`} >
+                                    <CircularProgress />
+                                </div>
+                                <Typography className={`${classes.relativePosition}`} component="div" >
+                                    {lang.currLang.texts.Loading}
+                                </Typography>
+                            </div>
                         }
                     </Grid>
                     <Grid item className={`${classes.mainGridBodyItem} ${classes.height1}`}>
@@ -350,6 +374,12 @@ ViewDreams.propTypes = {
     tagsError: PropTypes.object.isRequired,
     tags: PropTypes.object.isRequired,
     tagsPending: PropTypes.object.isRequired,
+    userPostsError: PropTypes.object.isRequired,
+    userPosts: PropTypes.object.isRequired,
+    userPostsPending: PropTypes.object.isRequired,
+    connectPostsError: PropTypes.object.isRequired,
+    connectPosts: PropTypes.object.isRequired,
+    connectPostsPending: PropTypes.object.isRequired,
 };
 
 const mapStateToProps = store => {
@@ -360,11 +390,19 @@ const mapStateToProps = store => {
         tagsError: getTagsError(store),
         tags: getTags(store),
         tagsPending: getTagsPending(store),
+        userPostsError: getUserPostsError(store),
+        userPosts: getUserPosts(store),
+        userPostsPending: getUserPostsPending(store),
+        connectPostsError: getConnectPostsError(store),
+        connectPosts: getConnectPosts(store),
+        connectPostsPending: getConnectPostsPending(store),
     }
 };
 
 const mapDispatchToProps = (dispatch) => bindActionCreators({
     fetchTags: fetchTagsAction,
+    fetchUserPosts: fetchUserPostsAction,
+    fetchConnectPosts: fetchConnectPostsAction,
 }, dispatch)
 
 export default connect(

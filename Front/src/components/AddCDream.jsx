@@ -293,8 +293,7 @@ function AddCDream(props) {
                             postData.technics = { ...postData.technics, remove: remove };
                         }
                     }
-                    instance
-                        .post('/actions/users/updatepost', postData)
+                    instance.post('/actions/users/updatepost', postData)
                         .then(res => {
                             setIsLoading(false);
                             setSnackbar({
@@ -338,8 +337,7 @@ function AddCDream(props) {
                     technics: selectedTechnics
                 }
 
-                instance
-                    .post('/actions/users/createpost', postData)
+                instance.post('/actions/users/createpost', postData)
                     .then(res => {
                         setIsLoading(false);
                         setSnackbar({

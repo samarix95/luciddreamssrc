@@ -150,8 +150,7 @@ function DreamCard(props) {
                 const postData = {
                     post_id: post_id
                 };
-                instance
-                    .post('/actions/users/deletepost', postData)
+                instance.post('/actions/users/deletepost', postData)
                     .then(res => {
                         closeMenu();
                         setSnackbar({
@@ -187,8 +186,7 @@ function DreamCard(props) {
                         post_id: post_id,
                         newPublic: 0
                     };
-                    instance
-                        .post('/actions/users/updatepost', postData)
+                    instance.post('/actions/users/updatepost', postData)
                         .then(res => {
                             setPublicChecked(false);
                             setSnackbar({
@@ -209,8 +207,7 @@ function DreamCard(props) {
                         post_id: post_id,
                         newPublic: 1,
                     };
-                    instance
-                        .post('/actions/users/updatepost', postData)
+                    instance.post('/actions/users/updatepost', postData)
                         .then(res => {
                             setPublicChecked(true);
                             setSnackbar({

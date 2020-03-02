@@ -6,6 +6,10 @@ import errorReducer from './errorReducer';
 import { snackbarReducer } from './snackbarReducer';
 import { tagsReducer } from "./tagsReducer.js";
 import { technicsReducer } from "./technicsReducer.js";
+import { userDataReducer } from "./userDataReducer.js";
+import { userPostsReducer } from "./userPostsReducer.js";
+import { connectPostsReducer } from "./connectPostsReducer.js";
+import { userMapReducer } from "./userMapReducer.js";
 
 export const rootReducer = combineReducers({
     lang: currLangReducer,
@@ -15,4 +19,8 @@ export const rootReducer = combineReducers({
     snackbar: snackbarReducer,
     fetchTags: tagsReducer,
     fetchTechnics: technicsReducer,
+    fetchUserData: userDataReducer,
+    fetchUserPosts: userPostsReducer,
+    fetchConnectPosts: connectPostsReducer,
+    fetchUserMap: userMapReducer,
 });

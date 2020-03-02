@@ -16,27 +16,52 @@ import ZoomOutMapIcon from '@material-ui/icons/ZoomOutMap';
 import ZoomOutIcon from '@material-ui/icons/ZoomOut';
 import ZoomInIcon from '@material-ui/icons/ZoomIn';
 
-import { instance, fetchTagsAction } from '../Config.js';
+import { fetchTagsAction, fetchUserPostsAction, fetchUserMapAction } from '../Config.js';
 import { getTagsError, getTags, getTagsPending } from '../reducers/tagsReducer.js';
+import { getUserPostsError, getUserPosts, getUserPostsPending } from '../reducers/userPostsReducer.js';
+import { getUserMapError, getUserMap, getUserMapPending } from '../reducers/userMapReducer.js';
+import { getToken } from '../utils/CheckLoginTimeOut';
+
 import { MuiThemeProvider, createMuiTheme } from '@material-ui/core/styles';
 import MapCell from './muiltiple/MapCell.jsx';
 import { useStyles } from '../styles/Styles.js';
 
 const cellWidth = (window.innerWidth - 32) / 20;
+let isPostsLoading = true;
+let isMapLoaded = true;
 
 function DreamMap(props) {
-    const { lang, themeMode, history, user_id, tags, tagsError, tagsPending, fetchTags } = props;
+    const { lang, themeMode, history, user_id, tags, tagsError, tagsPending, fetchTags, userPosts, userPostsError, userPostsPending, fetchUserPosts, userMap, userMapError, userMapPending, fetchUserMap } = props;
     if (tagsError) {
         console.log("DreamMap");
         console.log(tagsError);
+        alert("Error");
+    }
+    if (userPostsError) {
+        console.log("DreamMap");
+        console.log(userPostsError);
+        alert("Error");
+    }
+    if (userMapError) {
+        console.log("DreamMap");
+        console.log(userMapError);
+        alert("Error");
     }
 
     const classes = useStyles();
     const muiTheme = createMuiTheme(themeMode);
     const [dreamMap, setDreamMap] = React.useState(null);
     const [posts, setPosts] = React.useState(null);
-    const [isLoading, setIsLoading] = React.useState(true);
     const [isViewMode, setIsViewMode] = React.useState(false);
+
+    if (!userPostsPending && userPostsError == null && !isPostsLoading && !isViewMode) {
+        isPostsLoading = true;
+        setPosts(userPosts);
+    }
+    if (!userMapPending && userMapError == null && !isMapLoaded) {
+        isMapLoaded = true;
+        setDreamMap(JSON.parse(userMap));
+    }
 
     const createTable = () => {
         let table = [];
@@ -75,25 +100,14 @@ function DreamMap(props) {
     };
 
     const loadMap = React.useCallback((user_id) => {
-        setIsLoading(true);
+        isMapLoaded = false;
         fetchTags();
-
-        instance.post("/actions/users/getusermap", { user_id: user_id })
-            .then(res => {
-                setDreamMap(JSON.parse(res.data.result));
-                setIsLoading(false);
-            })
-            .catch(err => {
-                console.log(err);
-                setIsLoading(false);
-            });
+        fetchUserMap(user_id, getToken());
     }, [user_id]);
 
     const getPosts = React.useCallback(() => {
-        instance.post("/actions/users/getuserposts", { id: user_id })
-            .then(res => {
-                setPosts(res.data);
-            });
+        isPostsLoading = false;
+        fetchUserPosts(user_id, getToken());
     }, [user_id]);
 
     React.useEffect(() => {
@@ -126,7 +140,7 @@ function DreamMap(props) {
                     </Grid>
                     <Grid item className={`${classes.hiddenOverflow} ${classes.height9}`}>
                         <div style={{ padding: 16 }} className={`${classes.formControl} ${classes.fullMinWidthAbs}`}>
-                            {isLoading
+                            {userMapPending
                                 ? <div className={`${classes.formControl} ${classes.centerTextAlign}`} >
                                     <div className={`${classes.inlineBlock} ${classes.relativePosition}`} >
                                         <CircularProgress />
@@ -250,6 +264,12 @@ DreamMap.propTypes = {
     tagsError: PropTypes.object.isRequired,
     tags: PropTypes.object.isRequired,
     tagsPending: PropTypes.object.isRequired,
+    userPostsError: PropTypes.object.isRequired,
+    userPosts: PropTypes.object.isRequired,
+    userPostsPending: PropTypes.object.isRequired,
+    userMapError: PropTypes.object.isRequired,
+    userMap: PropTypes.object.isRequired,
+    userMapPending: PropTypes.object.isRequired,
 };
 
 const mapStateToProps = store => {
@@ -263,11 +283,19 @@ const mapStateToProps = store => {
         tagsError: getTagsError(store),
         tags: nothink.concat(getTags(store)),
         tagsPending: getTagsPending(store),
+        userPostsError: getUserPostsError(store),
+        userPosts: getUserPosts(store),
+        userPostsPending: getUserPostsPending(store),
+        userMapError: getUserMapError(store),
+        userMap: getUserMap(store),
+        userMapPending: getUserMapPending(store),
     }
 };
 
 const mapDispatchToProps = (dispatch) => bindActionCreators({
     fetchTags: fetchTagsAction,
+    fetchUserPosts: fetchUserPostsAction,
+    fetchUserMap: fetchUserMapAction,
 }, dispatch)
 
 export default connect(

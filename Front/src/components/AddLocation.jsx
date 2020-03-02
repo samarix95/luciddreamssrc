@@ -72,8 +72,7 @@ function AddLocation(props) {
             const postData = {
                 name: searchName.replace(/ /g, "%20"),
             };
-            instance
-                .post('/actions/users/geticons', postData)
+            instance.post('/actions/users/geticons', postData)
                 .then(res => {
                     if (res.data.length === 0) {
                         loadIconsList();
@@ -124,8 +123,7 @@ function AddLocation(props) {
                     img_url: selectedIcon,
                     color: iconColor
                 };
-                instance
-                    .post('/actions/users/createlocation', postData)
+                instance.post('/actions/users/createlocation', postData)
                     .then(res => {
                         setSnackbar({
                             type: SET_SNACKBAR_MODE,
@@ -175,8 +173,7 @@ function AddLocation(props) {
             }
 
             if (chages) {
-                instance
-                    .post('/actions/users/updatelocation', postData)
+                instance.post('/actions/users/updatelocation', postData)
                     .then(res => {
                         setSnackbar({
                             type: SET_SNACKBAR_MODE,
@@ -217,8 +214,7 @@ function AddLocation(props) {
     React.useEffect(() => {
         if (typeof (props.location.defaultData) !== 'undefined') {
             const getIcon = (data, img_url) => {
-                instance
-                    .post('/actions/users/geticons', data)
+                instance.post('/actions/users/geticons', data)
                     .then(res => {
                         if (res.data.length === 0) {
                             getIcon(data, img_url);

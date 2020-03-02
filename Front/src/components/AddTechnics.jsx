@@ -124,8 +124,7 @@ function AddTechnics(props) {
                 setIsLoading(false);
             }
             else {
-                instance
-                    .post('/actions/users/createtechnic', technicsData)
+                instance.post('/actions/users/createtechnic', technicsData)
                     .then(res => {
                         setIsLoading(false);
                         setSnackbar({
@@ -168,8 +167,7 @@ function AddTechnics(props) {
             }
 
             if (haveChanges) {
-                instance
-                    .post('/actions/users/updatetechnic', postData)
+                instance.post('/actions/users/updatetechnic', postData)
                     .then(res => {
                         setIsLoading(false);
                         setSnackbar({

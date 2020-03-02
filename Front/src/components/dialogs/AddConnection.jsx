@@ -42,8 +42,7 @@ function AddConnection(props) {
 
     const addNewConnection = (id) => {
         setIsLoad(true);
-        instance
-            .post('/actions/users/edituserconnects', { action: "add", user: user_id, connect: id })
+        instance.post('/actions/users/edituserconnects', { action: "add", user: user_id, connect: id })
             .then(res => {
                 loadUserList();
                 setSnackbar({
@@ -63,8 +62,7 @@ function AddConnection(props) {
     };
 
     const loadUserList = React.useCallback(() => {
-        instance
-            .post('/actions/users/getusers', { id: user_id, })
+        instance.post('/actions/users/getusers', { id: user_id, })
             .then(res => {
                 setUsersList(res.data)
                 setIsLoad(false);

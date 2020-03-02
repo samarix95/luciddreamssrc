@@ -1,8 +1,10 @@
 import React from "react";
 import { connect } from 'react-redux';
+import { bindActionCreators } from 'redux';
 import PropTypes from 'prop-types';
 
 import DialogContentText from "@material-ui/core/DialogContentText";
+import CircularProgress from '@material-ui/core/CircularProgress';
 import SnackbarContent from "@material-ui/core/SnackbarContent";
 import DialogContent from "@material-ui/core/DialogContent";
 import DialogActions from "@material-ui/core/DialogActions";
@@ -15,14 +17,14 @@ import Dialog from '@material-ui/core/Dialog';
 import Button from '@material-ui/core/Button';
 import Slide from "@material-ui/core/Slide";
 import Grid from '@material-ui/core/Grid';
-import Link from '@material-ui/core/Link';
 
 import { SET_THEME_MODE, SET_CURRENT_USER, SET_SNACKBAR_MODE } from "../actions/types";
 
 import { setUserState, setCurrLang, setTheme, setSnackbar } from '../actions/Actions';
 import { useStyles } from '../styles/Styles.js';
-import { instance } from '../Config';
-import { CheckTimeOut } from '../utils/CheckLoginTimeOut';
+import { instance, fetchUserDataAction } from '../Config';
+import { getUserDataError, getUserData, getUserDataPending } from '../reducers/userDataReducer.js';
+import { CheckTimeOut, getToken } from '../utils/CheckLoginTimeOut';
 import setAuthToken from "../utils/setAuthToken.js";
 
 import { MuiThemeProvider, createMuiTheme } from '@material-ui/core/styles';
@@ -38,9 +40,21 @@ function TransitionDown(props) {
     return <Slide {...props} direction="down" />;
 }
 
+let isFirstLoading = true;
+
 function MainPage(props) {
+    const { lang, themeMode, auth, history, setCurrLangAction, setTheme, setSnackbar, userData, userDataError, userDataPending, fetchUserData } = props;
+    if (userDataError) {
+        console.log("MainPage");
+        console.log(userDataError);
+    }
+
+    if (!userDataPending && userDataError == null && isFirstLoading) {
+        userData.language === 0 ? setCurrLangAction(EnDict) : setCurrLangAction(RuDict);
+        isFirstLoading = false;
+    }
+
     const classes = useStyles();
-    const { lang, themeMode, auth, history, setCurrLangAction, setTheme, setSnackbar } = props;
     const muiTheme = createMuiTheme(themeMode);
     const [prevLanguage, setPrevLanguage] = React.useState(undefined);
     const [openLangSnakbar, setOpenLangSnakbar] = React.useState(false);
@@ -138,8 +152,7 @@ function MainPage(props) {
 
         const check = CheckTimeOut();
         if (check) {
-            instance
-                .post('/actions/users/updateuserdata', newUserData)
+            instance.post('/actions/users/updateuserdata', newUserData)
                 .then(res => {
                     setSnackbar({
                         type: SET_SNACKBAR_MODE,
@@ -180,12 +193,8 @@ function MainPage(props) {
     };
 
     React.useEffect(() => {
-        instance
-            .post('/actions/users/getuserdata', { id: auth.user.id, })
-            .then(res => {
-                res.data.result.language === 0 ? setCurrLangAction(EnDict) : setCurrLangAction(RuDict);
-            });
-    }, [setCurrLangAction, auth.user.id]);
+        fetchUserData(auth.user.id, getToken());
+    }, []);
 
     return (
         <MuiThemeProvider theme={muiTheme}>
@@ -304,12 +313,16 @@ function MainPage(props) {
                             alignItems="stretch"
                         >
                             <Grid item className={`${classes.mainGridBodyItem} ${classes.height12}`}>
-                                <Typography className={classes.mainGridContainer} align='center' variant='h6' >
-                                    {lang.currLang.texts.hello}
-                                    <Link color="inherit" onClick={() => { history.push("/profile") }}>
-                                        {auth.user.nickname}
-                                    </Link>
-                                </Typography>
+                                {!userDataPending
+                                    ? <Typography className={classes.mainGridContainer} align='center' variant='h6' >
+                                        {lang.currLang.texts.hello} {userData.nickname}
+                                    </Typography>
+                                    : <div className={`${classes.formControl} ${classes.centerTextAlign}`} >
+                                        <div className={`${classes.inlineBlock} ${classes.relativePosition}`} >
+                                            <CircularProgress />
+                                        </div>
+                                    </div>
+                                }
                             </Grid>
                         </Grid>
                     </Grid>
@@ -425,6 +438,9 @@ MainPage.propTypes = {
     lang: PropTypes.object.isRequired,
     themeMode: PropTypes.object.isRequired,
     auth: PropTypes.object.isRequired,
+    userDataError: PropTypes.object.isRequired,
+    userData: PropTypes.object.isRequired,
+    userDataPending: PropTypes.object.isRequired,
 }
 
 const mapStateToProps = store => {
@@ -432,17 +448,19 @@ const mapStateToProps = store => {
         lang: store.lang,
         themeMode: store.themeMode,
         auth: store.auth,
+        userDataError: getUserDataError(store),
+        userData: getUserData(store),
+        userDataPending: getUserDataPending(store),
     }
 }
 
-const mapDispatchToProps = (dispatch) => {
-    return {
-        setCurrLangAction: currLangState => dispatch(setCurrLang(currLangState)),
-        setTheme: palette => dispatch(setTheme(palette)),
-        setSnackbar: snackbar => dispatch(setSnackbar(snackbar)),
-        setUserState: State => dispatch(setUserState(State)),
-    }
-}
+const mapDispatchToProps = (dispatch) => bindActionCreators({
+    setCurrLangAction: currLangState => dispatch(setCurrLang(currLangState)),
+    setTheme: palette => dispatch(setTheme(palette)),
+    setSnackbar: snackbar => dispatch(setSnackbar(snackbar)),
+    setUserState: state => dispatch(setUserState(state)),
+    fetchUserData: fetchUserDataAction,
+}, dispatch)
 
 export default connect(
     mapStateToProps,

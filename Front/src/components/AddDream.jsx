@@ -232,8 +232,7 @@ function AddDream(props) {
                             postData.tags = { ...postData.tags, remove: remove };
                         }
                     }
-                    instance
-                        .post('/actions/users/updatepost', postData)
+                    instance.post('/actions/users/updatepost', postData)
                         .then(res => {
                             setIsLoading(false);
                             setSnackbar({
@@ -274,8 +273,7 @@ function AddDream(props) {
                     nickname: auth.user.nickname,
                     tags: selectedLocations,
                 }
-                instance
-                    .post('/actions/users/createpost', postData)
+                instance.post('/actions/users/createpost', postData)
                     .then(res => {
                         setIsLoading(false);
                         setSnackbar({
