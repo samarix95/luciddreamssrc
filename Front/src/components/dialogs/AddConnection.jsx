@@ -111,9 +111,7 @@ function AddConnection(props) {
                                     .map((item, key) => (
                                         <ListItem key={key}>
                                             <ListItemAvatar>
-                                                <Avatar>
-                                                    <InboxIcon />
-                                                </Avatar>
+                                                <Avatar src={item.avatar_url} />
                                             </ListItemAvatar>
                                             <ListItemText primary={item.nickname} />
                                             <ListItemSecondaryAction>

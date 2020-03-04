@@ -14,6 +14,7 @@ import Typography from '@material-ui/core/Typography';
 import Snackbar from "@material-ui/core/Snackbar";
 import Dialog from '@material-ui/core/Dialog';
 import Button from '@material-ui/core/Button';
+import Avatar from '@material-ui/core/Avatar';
 import Slide from "@material-ui/core/Slide";
 import Grid from '@material-ui/core/Grid';
 
@@ -22,6 +23,7 @@ import { SET_THEME_MODE, SET_CURRENT_USER, SET_SNACKBAR_MODE } from "../actions/
 import { setUserState, setCurrLang, setTheme, setSnackbar } from '../actions/Actions';
 import { useStyles } from '../styles/Styles.js';
 import { instance } from '../Config';
+import { getUserData, getUserDataPending } from '../reducers/userDataReducer';
 import { CheckTimeOut } from '../utils/CheckLoginTimeOut';
 import setAuthToken from "../utils/setAuthToken.js";
 
@@ -39,7 +41,7 @@ function TransitionDown(props) {
 }
 
 function MainPage(props) {
-    const { lang, themeMode, auth, history, setCurrLangAction, setTheme, setSnackbar } = props;
+    const { lang, themeMode, auth, history, setCurrLangAction, setTheme, setSnackbar, userData, userDataPending } = props;
     const classes = useStyles();
     const muiTheme = createMuiTheme(themeMode);
     const [prevLanguage, setPrevLanguage] = React.useState(undefined);
@@ -264,22 +266,28 @@ function MainPage(props) {
                             alignItems="stretch"
                         >
                             <Grid item xs={4} >
-                                <ButtonBase className={classes.AstronautButton} focusRipple onClick={onAstronautClick} >
+                                <ButtonBase className={classes.AstronautButton} onClick={onAstronautClick} >
                                     <div className={classes.AstronautDiv}>
                                         <div className={classes.AstronautImg} style={themeMode.palette.type === "light" ? { filter: 'invert(0)', } : { filter: 'invert(1)', }} />
                                     </div>
                                 </ButtonBase>
                             </Grid>
                             <Grid item xs={4} >
-                                <ButtonBase className={classes.image} focusRipple onClick={switchMode}>
-                                    <div className={classes.SkyDiv}>
-                                        <div className={classes.SunSrc} style={themeMode.palette.type === "dark" ? { transform: 'translateY(36vw)' } : { transform: 'translateY(0)' }} />
-                                        <div className={classes.MoonSrc} style={themeMode.palette.type === "dark" ? { transform: 'translateY(0)' } : { transform: 'translateY(-36vw)' }} />
-                                    </div>
-                                </ButtonBase>
+                                <Grid className={`${classes.height8} ${classes.relativePosition}`}>
+                                    <ButtonBase className={classes.image} onClick={switchMode}>
+                                        <div className={classes.SkyDiv}>
+                                            <div className={classes.SunSrc} style={themeMode.palette.type === "dark" ? { transform: 'translateY(36vw)' } : { transform: 'translateY(0)' }} />
+                                            <div className={classes.MoonSrc} style={themeMode.palette.type === "dark" ? { transform: 'translateY(0)' } : { transform: 'translateY(-36vw)' }} />
+                                        </div>
+                                    </ButtonBase>
+                                </Grid>
+                                <Grid className={`${classes.height4} ${classes.relativePosition} ${classes.horizontalCenter} ${classes.inlineBlock}`} >
+                                    <img className={`${classes.fullHeight}`} src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" />
+                                    <Avatar className={`${classes.absolutePosition} ${classes.fullHeight} ${classes.fullWidth} ${classes.absoluteZero}`} src={!userDataPending ? userData.avatar_url : ""} />
+                                </Grid>
                             </Grid>
                             <Grid item xs={4} >
-                                <ButtonBase className={classes.MapButton} focusRipple onClick={onMapClick}>
+                                <ButtonBase className={classes.MapButton} onClick={onMapClick}>
                                     <div className={classes.MapDiv}>
                                         <div className={classes.MapImg} style={themeMode.palette.type === "light" ? { filter: 'invert(0)', } : { filter: 'invert(1)', }} />
                                     </div>
@@ -365,8 +373,7 @@ function MainPage(props) {
                             </Grid>
                         </Grid>
                     </Grid>
-                    <Grid item className={`${classes.mainGridBodyItem} ${classes.height1}`}>
-                    </Grid>
+                    <Grid item className={`${classes.mainGridBodyItem} ${classes.height1}`} />
                     <Grid item className={`${classes.mainGridBodyItem} ${classes.height1}`}>
                         <Grid container
                             className={`${classes.menuButtonContainer}`}
@@ -408,6 +415,8 @@ const mapStateToProps = store => {
         lang: store.lang,
         themeMode: store.themeMode,
         auth: store.auth,
+        userDataPending: getUserDataPending(store),
+        userData: getUserData(store)
     }
 }
 

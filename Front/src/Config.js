@@ -3,11 +3,13 @@ import { diff } from 'deep-object-diff';
 import {
     fetchTagsPending, fetchTagsSuccess, fetchTagsError,
     fetchTechnicsPending, fetchTechnicsSuccess, fetchTechnicsError,
-    fetchUserDataPending, fetchUserDataStopPending, fetchUserDataSuccess, fetchUserDataError,
+    fetchAvatarsPending, fetchAvatarsSuccess, fetchAvatarsError,
+    fetchUserDataPending, fetchUserDataSuccess, fetchUserDataError,
     fetchUserPostsPending, fetchUserPostsSuccess, fetchUserPostsError,
     fetchConnectPostsPending, fetchConnectPostsSuccess, fetchConnectPostsError,
     fetchUserMapPending, fetchUserMapSuccess, fetchUserMapError,
-    fetchRandomUsersPending, fetchRandomUsersSuccess, fetchRandomUsersError
+    fetchRandomUsersPending, fetchRandomUsersSuccess, fetchRandomUsersError,
+    fetchUpdateUserDataPending, fetchUpdateUserDataSuccess, fetchUpdateUserDataError
 } from './actions/Actions.js';
 
 const baseURL = "https://ldserver.herokuapp.com";
@@ -18,6 +20,7 @@ export const instance = axios.create({
     headers: { "Access-Control-Allow-Origin": "*" }
 });
 
+/*Get data from DB*/
 export function fetchTagsAction() {
     return dispatch => {
         dispatch(fetchTagsPending());
@@ -42,6 +45,20 @@ export function fetchTechnicsAction() {
             })
             .catch(error => {
                 dispatch(fetchTechnicsError(error));
+            });
+    }
+}
+
+export function fetchAvatarsAction() {
+    return dispatch => {
+        dispatch(fetchAvatarsPending());
+        instance.get("/getavatars")
+            .then(res => {
+                dispatch(fetchAvatarsSuccess(res.data));
+                return res.data;
+            })
+            .catch(error => {
+                dispatch(fetchAvatarsError(error));
             });
     }
 }
@@ -129,3 +146,17 @@ export function fetchRandomUsersAction(userId, limit, userToken) {
     }
 };
 
+/*Update data in DB*/
+export function fetchUpdateUserDataAction(userId, data, userToken) {
+    return dispatch => {
+        dispatch(fetchUpdateUserDataPending());
+        instance.post("/actions/users/updateuserdata", { id: userId, data: data, token: userToken })
+            .then(res => {
+                dispatch(fetchUpdateUserDataSuccess());
+                dispatch(fetchUserDataAction(userId, userToken));
+            })
+            .catch(error => {
+                dispatch(fetchUpdateUserDataError(error));
+            });
+    }
+};

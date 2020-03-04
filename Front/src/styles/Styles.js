@@ -467,11 +467,24 @@ export const useStyles = makeStyles(theme => ({
         left: '50%',
         transform: 'translate(-50%, -50%)',
     },
+    inlineBlock: {
+        display: "inline-block"
+    },
+    horizontalCenter: {
+        left: "50%",
+        transform: "translate(-50%)"
+    },
     relativePosition: {
         position: 'relative',
     },
     absolutePosition: {
         position: 'absolute !Important',
+    },
+    absoluteZero: {
+        top: 0,
+        bottom: 0,
+        left: 0,
+        right: 0
     },
     menuButton: {
         width: "55vw",
@@ -544,6 +557,10 @@ export const useStyles = makeStyles(theme => ({
     },
     minWidth200px: {
         minWidth: "200px",
+    },
+    mediumAvatar: {
+        width: "120px !Important",
+        height: "120px !Important",
     },
     topLeft: {
         top: 0,

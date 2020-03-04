@@ -1,6 +1,5 @@
 import {
     FETCH_USER_DATA_PENDING,
-    FETCH_USER_DATA_STOP_PENDING,
     FETCH_USER_DATA_SUCCESS,
     FETCH_USER_DATA_ERROR
 } from '../actions/types.js';
@@ -17,11 +16,6 @@ export function userDataReducer(state = initialState, action) {
             return {
                 ...state,
                 pending: true
-            }
-        case FETCH_USER_DATA_STOP_PENDING:
-            return {
-                ...state,
-                pending: false
             }
         case FETCH_USER_DATA_SUCCESS:
             return {

@@ -96,7 +96,7 @@ function Aeronauts(props) {
                                 <div className={`${classes.relativePosition} ${classes.fullWidth} ${classes.equalHeight} ${classes.centerButton}`}>
                                     <ButtonBase onClick={openUserProfile}
                                         className={`${classes.absolutePosition} ${classes.fullWidth} ${classes.fullHeight} ${classes.topLeft} ${classes.borderRadius50}`}>
-                                        <Avatar className={`${classes.absolutePosition} ${classes.fullWidth} ${classes.fullHeight}`} />
+                                        <Avatar src={!userDataPending ? userData.avatar_url : ""} className={`${classes.absolutePosition} ${classes.fullWidth} ${classes.fullHeight}`} />
                                     </ButtonBase>
                                 </div>
                             </Grid>
@@ -190,7 +190,7 @@ function Aeronauts(props) {
                                                                 : <React.Fragment />
                                                         }
                                                     >
-                                                        <Avatar className={`${classes.absolutePosition} ${classes.fullWidth} ${classes.fullHeight}`} src="https://api.adorable.io/avatars/227/333.png" />
+                                                        <Avatar className={`${classes.absolutePosition} ${classes.fullWidth} ${classes.fullHeight}`} src={item.avatar_url} />
                                                     </Badge>
                                                 </ButtonBase>
                                             ))

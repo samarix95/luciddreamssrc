@@ -128,9 +128,7 @@ function UserConnections(props) {
                                 {connectionsList.map((item, key) => (
                                     <ListItem button key={key} onClick={() => { openProfile(item.id) }}>
                                         <ListItemAvatar>
-                                            <Avatar>
-                                                <InboxIcon />
-                                            </Avatar>
+                                            <Avatar src={item.avatar_url} />
                                         </ListItemAvatar>
                                         <ListItemText primary={item.nickname} />
                                         <ListItemSecondaryAction>
