@@ -31,23 +31,12 @@ import CheckCircleIcon from '@material-ui/icons/CheckCircle';
 import EditIcon from '@material-ui/icons/Edit';
 import SaveIcon from '@material-ui/icons/Save';
 
-const UserConnections = React.lazy(() => import('./dialogs/UserConnections.jsx'));
-
-let isUserDataLoaded = true;
 let isUserPostsLoaded = true;
 
 const countInitialState = {
     regular: 0,
     cdream: 0,
     is_public: 0,
-};
-
-const profileDataInitialState = {
-    nickname: null,
-    about: null,
-    role: null,
-    fb: null,
-    ig: null,
 };
 
 const avatars = [
@@ -119,7 +108,6 @@ const avatars = [
 
 function Profile(props) {
     const { lang, themeMode, history, user_id, userData, userDataError, userDataPending, fetchUserData, userPosts, userPostsError, userPostsPending, fetchUserPosts, connectPosts, connectPostsError, connectPostsPending, fetchConnectPosts } = props;
-
     if (userDataError) {
         console.log("Profile");
         console.log(userDataError);
@@ -140,29 +128,13 @@ function Profile(props) {
     const muiTheme = createMuiTheme(themeMode);
     const [profileid, setProfileId] = React.useState();
     const [openAva, setOpenAva] = React.useState(false);
-    const [openConnect, setOpenConnect] = React.useState(false);
     const descriptionElementRef = React.useRef(null);
     const [viewMode, setViewMode] = React.useState(false);
-    const [userProfileData, setUserProfileData] = React.useState(profileDataInitialState);
     const [postsCount, setPostsCount] = React.useState(countInitialState);
-    const [isAboutLoad, setisAboutLoad] = React.useState(true);
+    const [isAboutLoad, setisAboutLoad] = React.useState(false);
     const [isEditAbout, setIsEditAbout] = React.useState(false);
-    const [aboutText, setAboutText] = React.useState("");
+    const [aboutText, setAboutText] = React.useState(userData.about);
     const [changedAvatar, setChangedAvatar] = React.useState(null);
-
-    if (!userDataPending && userDataError == null && !isUserDataLoaded) {
-        isUserDataLoaded = true;
-        let newUserProfileData = userProfileData;
-        newUserProfileData = { ...newUserProfileData, nickname: userData.nickname };
-        newUserProfileData = { ...newUserProfileData, role: userData.roles };
-        newUserProfileData = { ...newUserProfileData, about: userData.about };
-        newUserProfileData = { ...newUserProfileData, fb: userData.fb };
-        newUserProfileData = { ...newUserProfileData, ig: userData.ig };
-        setUserProfileData(newUserProfileData);
-
-        setAboutText(userData.about);
-        setisAboutLoad(false);
-    }
 
     if (!userPostsPending && userPostsError == null && !isUserPostsLoaded && !viewMode) {
         isUserPostsLoaded = true;
@@ -189,19 +161,16 @@ function Profile(props) {
     };
 
     const saveAbout = () => {
-        if (userProfileData.about !== aboutText) {
+        if (userData.about !== aboutText) {
             setisAboutLoad(true);
             const data = {
                 id: profileid,
-                nickname: userProfileData.nickname,
+                nickname: userData.nickname,
                 about: aboutText,
             };
 
             instance.post('/actions/users/updateuserdata', data)
                 .then(res => {
-                    let newUserProfileData = userProfileData;
-                    newUserProfileData = { ...newUserProfileData, about: aboutText };
-                    setUserProfileData(newUserProfileData);
                     setisAboutLoad(false);
                 })
                 .catch(err => {
@@ -244,38 +213,16 @@ function Profile(props) {
             pathname: "/dreammap",
             defaultData: {
                 mode: "fromFriend",
-                nickName: userProfileData.nickname,
+                nickName: userData.nickname,
                 friend_id: profileid,
                 prevUrl: "/profile",
             }
         });
     };
 
-    const openUserConnections = () => {
-        setOpenConnect(true);
-    };
-
-    const closeUserConnections = () => {
-        setOpenConnect(false);
-    };
-
-    const changeProfile = (id) => {
-        setProfileId(id);
-        loadProfileData(id);
-        setViewMode(true);
-    }
-
-    const changeDefaultProfile = () => {
-        setProfileId(user_id);
-        loadProfileData(user_id);
-        setViewMode(false);
-    };
-
     const loadProfileData = React.useCallback((profileid) => {
-        isUserDataLoaded = false;
         isUserPostsLoaded = false;
         setPostsCount({ ...countInitialState });
-        setUserProfileData({ ...profileDataInitialState });
         const token = getToken();
         fetchUserData(profileid, token);
         user_id === profileid ? fetchUserPosts(profileid, token) : fetchConnectPosts(profileid, token);
@@ -303,15 +250,6 @@ function Profile(props) {
     return (
         <MuiThemeProvider theme={muiTheme}>
             <CssBaseline />
-            {openConnect
-                ? <UserConnections
-                    open={openConnect}
-                    user_id={profileid}
-                    closeAction={closeUserConnections}
-                    setProfile={changeProfile}
-                />
-                : <React.Fragment />
-            }
             <Dialog open={openAva}
                 scroll={'paper'}
                 fullWidth={true}
@@ -372,17 +310,29 @@ function Profile(props) {
                             </Grid>
                             <Grid item xs={12} sm={6} className={`${classes.relativePosition}`} >
                                 <div className={`${classes.formControl}`} >
-                                    <Typography variant="h5" align="center" color="textPrimary">
-                                        {userProfileData.nickname}
-                                    </Typography>
-                                    <Typography variant="body2" align="center" color="textPrimary">
-                                        {userProfileData.role === 0
-                                            ? lang.currLang.texts.Admin
-                                            : userProfileData.role === 1
-                                                ? lang.currLang.texts.Moderator
-                                                : lang.currLang.texts.User
-                                        }
-                                    </Typography>
+                                    {!userDataPending
+                                        ? <React.Fragment>
+                                            <Typography variant="h5" align="center" color="textPrimary">
+                                                {userData.nickname}
+                                            </Typography>
+                                            <Typography variant="body2" align="center" color="textPrimary">
+                                                {userData.roles === 0
+                                                    ? lang.currLang.texts.Admin
+                                                    : userData.roles === 1
+                                                        ? lang.currLang.texts.Moderator
+                                                        : lang.currLang.texts.User
+                                                }
+                                            </Typography>
+                                        </React.Fragment>
+                                        : <div className={`${classes.formControl} ${classes.centerTextAlign}`}>
+                                            <div className={`${classes.inlineBlock} ${classes.relativePosition}`}>
+                                                <CircularProgress />
+                                            </div>
+                                            <Typography className={`${classes.relativePosition}`} component="div">
+                                                {lang.currLang.texts.Loading}
+                                            </Typography>
+                                        </div>
+                                    }
                                 </div>
                             </Grid>
                         </Grid>
@@ -473,19 +423,7 @@ function Profile(props) {
                                     alignItems="stretch"
                                 >
                                     {!viewMode
-                                        ? <React.Fragment>
-                                            <Grid className={`${classes.height6}`} >
-                                                <div className={`${classes.relativePosition} ${classes.fullHeight}`}>
-                                                    <Button className={`${classes.formControl} ${classes.width10}`}
-                                                        variant="contained"
-                                                        color="primary"
-                                                        onClick={openUserConnections}
-                                                    >
-                                                        {lang.currLang.buttons.Connections}
-                                                    </Button>
-                                                </div>
-                                            </Grid>
-                                        </React.Fragment>
+                                        ? <React.Fragment />
                                         : <React.Fragment>
                                             <Grid className={`${classes.height6}`} >
                                                 <div className={`${classes.relativePosition} ${classes.fullHeight}`}>
@@ -516,12 +454,12 @@ function Profile(props) {
                         </Grid>
                         <Grid className={`${classes.height2} ${classes.relativePosition}`} >
                             <Paper className={`${classes.mainGridDreamsContainer} ${classes.mainGridDreamsBodyItemContainerPaper}`}>
-                                {!isAboutLoad
+                                {!isAboutLoad && !userDataPending
                                     ? !isEditAbout
                                         ? <React.Fragment>
                                             <div className={`${classes.absolutePosition} ${classes.hiddenOverflowX} ${classes.fullWidth} ${classes.fullHeight} ${classes.topLeft}`}>
                                                 <Typography className={`${classes.absolutePosition} ${classes.centerText}`} component="div">
-                                                    {userProfileData.about}
+                                                    {userData.about}
                                                 </Typography>
                                             </div>
                                             {!viewMode
@@ -587,18 +525,6 @@ function Profile(props) {
                                     {lang.currLang.buttons.Back}
                                 </Button>
                             </Grid>
-                            {!viewMode
-                                ? <React.Fragment />
-                                : <Grid item>
-                                    <Button className={classes.actionButton}
-                                        onClick={changeDefaultProfile}
-                                        variant="contained"
-                                        color="secondary"
-                                    >
-                                        {lang.currLang.buttons.Home}
-                                    </Button>
-                                </Grid>
-                            }
                         </Grid>
                     </Grid>
                 </Grid>

@@ -1,24 +1,32 @@
 import "./App.css";
 import React from "react";
 import { connect } from "react-redux";
+import { bindActionCreators } from 'redux';
 import PropTypes from "prop-types";
 import { Router } from "react-router-dom";
 
 import history from "../history.js";
 import { store } from "../store.js";
-import { CheckTimeOut } from "../utils/CheckLoginTimeOut.js";
 import setAuthToken from "../utils/setAuthToken.js";
 import { SET_CURRENT_USER, SET_THEME_MODE } from "../actions/types.js";
+import { setCurrLang } from '../actions/Actions.js';
 
 import Routes from "../Routes.js";
 
 import { useStyles, params, randomBetween } from "../styles/Styles.js";
 
-const check = CheckTimeOut();
+import { fetchUserDataAction } from '../Config';
+import { CheckTimeOut, getToken } from '../utils/CheckLoginTimeOut';
+import { getUserDataError, getUserData, getUserDataPending } from '../reducers/userDataReducer.js';
+
+import RuDict from '../dictionary/ru.js';
+import EnDict from '../dictionary/en.js';
+
 let stars = [];
 let clouds = [];
+let isFirstLoading = true;
 
-if (!check) {
+if (!CheckTimeOut()) {
     localStorage.removeItem("jwtToken");
     setAuthToken(false);
     store.dispatch({
@@ -55,9 +63,18 @@ else {
 }
 
 function App(props) {
-    const { type } = props;
+    const { user_id, type, userData, userDataError, userDataPending, fetchUserData, setCurrLangAction } = props;
+    if (userDataError) {
+        console.log("MainPage");
+        console.log(userDataError);
+    }
     const classes = useStyles();
     let birdStyle = {};
+
+    if (!userDataPending && userDataError == null && isFirstLoading) {
+        userData.language === 0 ? setCurrLangAction(EnDict) : setCurrLangAction(RuDict);
+        isFirstLoading = false;
+    }
 
     if (type !== "light") {
         stars = [];
@@ -103,47 +120,59 @@ function App(props) {
         };
     }
 
+    React.useEffect(() => {
+        fetchUserData(user_id, getToken());
+    }, []);
+
     return (
         <Router history={history}>
             <div className={classes.AppDivDark}>
-                <div className={classes.AppDivLight} style={type === "light" ? { opacity: 1, } : { opacity: 0, }}/>
+                <div className={classes.AppDivLight} style={type === "light" ? { opacity: 1, } : { opacity: 0, }} />
                 {type === "light"
                     ? <div className={classes.AppCloudsDiv} style={type === "light" ? { opacity: 1, } : { opacity: 0, }}>
-                        <div className={classes.FlockOfBirds} style={birdStyle}/>
+                        <div className={classes.FlockOfBirds} style={birdStyle} />
                         {clouds}
                     </div>
                     : <div className={classes.AppStarsDiv} style={type === "light" ? { opacity: 0, } : { opacity: 1, }}>
                         <div className={classes.AppComet}>
                             <div className={classes.AppCometDiv}>
-                                <div className={classes.AppCometImg}/>
+                                <div className={classes.AppCometImg} />
                             </div>
                         </div>
                         {stars}
                     </div>
                 }
                 <div className={classes.MointainBackgroud} style={type === "light" ? { filter: 'grayscale(0%)', } : { filter: 'grayscale(100%)', }}>
-                    <div className={classes.TreesBackgroud}/>
+                    <div className={classes.TreesBackgroud} />
                 </div>
             </div>
-            <Routes/>
+            <Routes />
         </Router>
     );
 };
 
 App.propTypes = {
+    user_id: PropTypes.number.isRequired,
     type: PropTypes.string.isRequired,
+    userDataError: PropTypes.object.isRequired,
+    userData: PropTypes.object.isRequired,
+    userDataPending: PropTypes.object.isRequired,
 }
 
 const mapStateToProps = store => {
     return {
+        user_id: store.auth.user.id,
         type: store.themeMode.palette.type,
+        userDataError: getUserDataError(store),
+        userData: getUserData(store),
+        userDataPending: getUserDataPending(store),
     }
 }
 
-const mapDispatchToProps = (dispatch) => {
-    return {
-    }
-}
+const mapDispatchToProps = (dispatch) => bindActionCreators({
+    setCurrLangAction: currLangState => dispatch(setCurrLang(currLangState)),
+    fetchUserData: fetchUserDataAction,
+}, dispatch)
 
 export default connect(
     mapStateToProps,

@@ -1,11 +1,13 @@
 import axios from "axios";
+import { diff } from 'deep-object-diff';
 import {
     fetchTagsPending, fetchTagsSuccess, fetchTagsError,
     fetchTechnicsPending, fetchTechnicsSuccess, fetchTechnicsError,
-    fetchUserDataPending, fetchUserDataSuccess, fetchUserDataError,
+    fetchUserDataPending, fetchUserDataStopPending, fetchUserDataSuccess, fetchUserDataError,
     fetchUserPostsPending, fetchUserPostsSuccess, fetchUserPostsError,
     fetchConnectPostsPending, fetchConnectPostsSuccess, fetchConnectPostsError,
-    fetchUserMapPending, fetchUserMapSuccess, fetchUserMapError
+    fetchUserMapPending, fetchUserMapSuccess, fetchUserMapError,
+    fetchRandomUsersPending, fetchRandomUsersSuccess, fetchRandomUsersError
 } from './actions/Actions.js';
 
 const baseURL = "https://ldserver.herokuapp.com";
@@ -45,16 +47,29 @@ export function fetchTechnicsAction() {
 }
 
 export function fetchUserDataAction(userId, userToken) {
-    return dispatch => {
-        dispatch(fetchUserDataPending());
-        instance.post("/actions/users/getuserdata", { id: userId, token: userToken })
-            .then(res => {
-                dispatch(fetchUserDataSuccess(res.data));
-                return res.data;
-            })
-            .catch(error => {
-                dispatch(fetchUserDataError(error));
-            });
+    return (dispatch, getState) => {
+        const oldStore = getState().fetchUserData.userData;
+        if (oldStore.result && oldStore.result.id === userId) {
+            instance.post("/actions/users/getuserdata", { id: userId, token: userToken })
+                .then(res => {
+                    if (Object.keys(diff(oldStore, res.data)).length) {
+                        dispatch(fetchUserDataSuccess(res.data));
+                    }
+                })
+                .catch(error => {
+                    dispatch(fetchUserDataError(error));
+                });
+        }
+        else {
+            dispatch(fetchUserDataPending());
+            instance.post("/actions/users/getuserdata", { id: userId, token: userToken })
+                .then(res => {
+                    dispatch(fetchUserDataSuccess(res.data));
+                })
+                .catch(error => {
+                    dispatch(fetchUserDataError(error));
+                });
+        }
     }
 };
 
@@ -99,3 +114,18 @@ export function fetchUserMapAction(userId, userToken) {
             });
     }
 };
+
+export function fetchRandomUsersAction(userId, limit, userToken) {
+    return dispatch => {
+        dispatch(fetchRandomUsersPending());
+        instance.post("/actions/users/getranomusers", { id: userId, limit: limit, token: userToken })
+            .then(res => {
+                dispatch(fetchRandomUsersSuccess(res.data));
+                return res.data;
+            })
+            .catch(error => {
+                dispatch(fetchRandomUsersError(error));
+            });
+    }
+};
+

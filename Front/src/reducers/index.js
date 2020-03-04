@@ -10,6 +10,7 @@ import { userDataReducer } from "./userDataReducer.js";
 import { userPostsReducer } from "./userPostsReducer.js";
 import { connectPostsReducer } from "./connectPostsReducer.js";
 import { userMapReducer } from "./userMapReducer.js";
+import { randomUsersReducer } from "./randomUsersReducer.js";
 
 export const rootReducer = combineReducers({
     lang: currLangReducer,
@@ -23,4 +24,5 @@ export const rootReducer = combineReducers({
     fetchUserPosts: userPostsReducer,
     fetchConnectPosts: connectPostsReducer,
     fetchUserMap: userMapReducer,
+    fetchRandomUsers: randomUsersReducer,
 });

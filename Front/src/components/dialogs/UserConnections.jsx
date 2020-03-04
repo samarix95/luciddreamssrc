@@ -18,7 +18,7 @@ import Button from '@material-ui/core/Button';
 import Grid from '@material-ui/core/Grid';
 import List from "@material-ui/core/List";
 
-const AddConnection = React.lazy(() => import('./AddConnection.jsx'));
+import AddConnection from './AddConnection.jsx';
 
 import { useStyles } from '../../styles/Styles.js';
 import { instance } from '../../Config';
@@ -29,7 +29,7 @@ import InboxIcon from "@material-ui/icons/Inbox";
 import ClearIcon from '@material-ui/icons/Clear';
 
 function UserConnections(props) {
-    const { lang, open, closeAction, setProfile, user_id, setSnackbar } = props;
+    const { lang, history, open, closeAction, user_id, setSnackbar } = props;
     const classes = useStyles();
     const [openNewConnect, setOpenNewConnect] = React.useState(false);
     const [connectionsList, setConnectionsList] = React.useState({});
@@ -46,7 +46,13 @@ function UserConnections(props) {
     };
 
     const openProfile = (user_id) => {
-        setProfile(user_id);
+        history.push({
+            pathname: "/profile",
+            defaultData: {
+                friend_id: user_id,
+                prevUrl: "/aeronauts",
+            }
+        })
         closeAction();
     };
 

@@ -2,10 +2,11 @@ import {
 	SET_LANG,
 	FETCH_TAGS_PENDING, FETCH_TAGS_SUCCESS, FETCH_TAGS_ERROR,
 	FETCH_TECHNICS_PENDING, FETCH_TECHNICS_SUCCESS, FETCH_TECHNICS_ERROR,
-	FETCH_USER_DATA_PENDING, FETCH_USER_DATA_SUCCESS, FETCH_USER_DATA_ERROR,
+	FETCH_USER_DATA_PENDING, FETCH_USER_DATA_STOP_PENDING, FETCH_USER_DATA_SUCCESS, FETCH_USER_DATA_ERROR,
 	FETCH_USER_POSTS_PENDING, FETCH_USER_POSTS_SUCCESS, FETCH_USER_POSTS_ERROR,
 	FETCH_CONNECT_POSTS_PENDING, FETCH_CONNECT_POSTS_SUCCESS, FETCH_CONNECT_POSTS_ERROR,
-	FETCH_USER_MAP_PENDING, FETCH_USER_MAP_SUCCESS, FETCH_USER_MAP_ERROR
+	FETCH_USER_MAP_PENDING, FETCH_USER_MAP_SUCCESS, FETCH_USER_MAP_ERROR,
+	FETCH_RANDOM_USERS_PENDING, FETCH_RANDOM_USERS_SUCCESS, FETCH_RANDOM_USERS_ERROR
 } from '../actions/types.js';
 
 export function setCurrLang(state) {
@@ -82,6 +83,12 @@ export function fetchUserDataPending() {
 	}
 }
 
+export function fetchUserDataStopPending() {
+	return {
+		type: FETCH_USER_DATA_STOP_PENDING
+	}
+}
+
 export function fetchUserDataSuccess(userData) {
 	return {
 		type: FETCH_USER_DATA_SUCCESS,
@@ -152,6 +159,26 @@ export function fetchUserMapSuccess(userMap) {
 export function fetchUserMapError(error) {
 	return {
 		type: FETCH_USER_MAP_ERROR,
+		error: error
+	}
+}
+
+export function fetchRandomUsersPending() {
+	return {
+		type: FETCH_RANDOM_USERS_PENDING
+	}
+}
+
+export function fetchRandomUsersSuccess(randomUsers) {
+	return {
+		type: FETCH_RANDOM_USERS_SUCCESS,
+		randomUsers: randomUsers
+	}
+}
+
+export function fetchRandomUsersError(error) {
+	return {
+		type: FETCH_RANDOM_USERS_ERROR,
 		error: error
 	}
 }

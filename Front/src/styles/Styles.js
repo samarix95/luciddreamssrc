@@ -389,7 +389,7 @@ export const useStyles = makeStyles(theme => ({
         width: '25vw !important',
         height: '25vw',
         borderRadius: '50%',
-        animation: '$swinging 3s infinite linear',
+        transform: "translate(-50%, -50%)",
     },
     AstronautDiv: {
         position: 'absolute',
@@ -418,7 +418,7 @@ export const useStyles = makeStyles(theme => ({
         width: '25vw !important',
         height: '25vw',
         borderRadius: '10%',
-        animation: '$swinging 4s infinite linear',
+        transform: "translate(-50%, -50%)",
     },
     borderRadius50: {
         borderRadius: "50%",
@@ -616,17 +616,6 @@ export const useStyles = makeStyles(theme => ({
     "@keyframes moveclouds": {
         '100%': {
             left: '-50%',
-        },
-    },
-    "@keyframes swinging": {
-        '0%': {
-            transform: 'rotate(0) translate(-50%, -50%)',
-        },
-        '50%': {
-            transform: 'rotate(7deg) translate(-50%, -50%)',
-        },
-        '100%': {
-            transform: 'rotate(0) translate(-50%, -50%)',
         },
     },
     height12: {
