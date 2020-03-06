@@ -78,7 +78,7 @@ function Profile(props) {
     const [isEditAbout, setIsEditAbout] = React.useState(false);
     const [aboutText, setAboutText] = React.useState(userData.about);
     const [changedAvatar, setChangedAvatar] = React.useState(userData.avatar_id);
-    
+
     if (!userPostsPending && userPostsError == null && !isUserPostsLoaded && !viewMode) {
         isUserPostsLoaded = true;
         let newPostsCount = postsCount;
@@ -237,9 +237,7 @@ function Profile(props) {
                     alignItems="stretch"
                 >
                     <Grid item className={`${classes.mainGridBodyItem} ${classes.height11}`} >
-                        <Grid className={`${classes.height5} ${classes.relativePosition}`}
-                            container
-                        >
+                        <Grid className={`${classes.height5} ${classes.relativePosition}`} container >
                             <Grid item xs={12} sm={6} className={`${classes.relativePosition}`} >
                                 <IconButton disabled={viewMode ? true : false} className={`${classes.formControl}`} onClick={handleClickOpenAva} >
                                     <Avatar src={userData.avatar_url} className={`${classes.mediumAvatar}`} />

@@ -22,9 +22,10 @@ import { SET_THEME_MODE, SET_CURRENT_USER, SET_SNACKBAR_MODE } from "../actions/
 
 import { setUserState, setCurrLang, setTheme, setSnackbar } from '../actions/Actions';
 import { useStyles } from '../styles/Styles.js';
-import { instance } from '../Config';
+import { fetchUpdateUserDataAction, resetUpdateUserDataErrorAction, resetUpdateUserDataAction } from '../Config';
 import { getUserData, getUserDataPending } from '../reducers/userDataReducer';
-import { CheckTimeOut } from '../utils/CheckLoginTimeOut';
+import { getUpdateUserData, getUpdateUserDataError } from '../reducers/updateUserDataReducer.js';
+import { CheckTimeOut, getToken } from '../utils/CheckLoginTimeOut.js';
 import setAuthToken from "../utils/setAuthToken.js";
 
 import { MuiThemeProvider, createMuiTheme } from '@material-ui/core/styles';
@@ -41,7 +42,10 @@ function TransitionDown(props) {
 }
 
 function MainPage(props) {
-    const { lang, themeMode, auth, history, setCurrLangAction, setTheme, setSnackbar, userData, userDataPending } = props;
+    const { lang, themeMode, auth, history, setCurrLangAction, setTheme, setSnackbar,
+        userData, userDataPending,
+        updateUserData, updateUserDataError, fetchUpdateUserData, resetUpdateUserDataError, resetUpdateUserData } = props;
+
     const classes = useStyles();
     const muiTheme = createMuiTheme(themeMode);
     const [prevLanguage, setPrevLanguage] = React.useState(undefined);
@@ -130,44 +134,7 @@ function MainPage(props) {
                 newLang = 0;
                 break;
         }
-        let userid = auth.user.id;
-        let usernickname = auth.user.nickname;
-        let newUserData = {
-            language: newLang,
-            id: userid,
-            nickname: usernickname,
-        };
-
-        const check = CheckTimeOut();
-        if (check) {
-            instance.post('/actions/users/updateuserdata', newUserData)
-                .then(res => {
-                    setSnackbar({
-                        type: SET_SNACKBAR_MODE,
-                        snackbar: {
-                            open: true,
-                            variant: 'success',
-                            message: lang.currLang.texts.success,
-                        },
-                    });
-                    setOpenLangSnakbar(false);
-                })
-                .catch(err => {
-                    handleCloseLangSnakbar();
-                });
-
-        }
-        else {
-            setSnackbar({
-                type: SET_SNACKBAR_MODE,
-                snackbar: {
-                    open: true,
-                    variant: 'error',
-                    message: lang.currLang.errors.NotLogin,
-                },
-            });
-            handleCloseLangSnakbar();
-        }
+        fetchUpdateUserData(userData.id, { language: newLang }, getToken());
     };
 
     const logOut = () => {
@@ -179,7 +146,34 @@ function MainPage(props) {
         });
         history.push("/");
     };
-
+    
+    if (Object.keys(updateUserData).length > 0 && updateUserData.result === 'success') {
+        setSnackbar({
+            type: SET_SNACKBAR_MODE,
+            snackbar: {
+                open: true,
+                variant: 'success',
+                message: lang.currLang.texts.success
+            }
+        });
+        if (openLangSnakbar)
+            setOpenLangSnakbar(false);
+        resetUpdateUserData();
+    }
+    if (updateUserDataError) {
+        setSnackbar({
+            type: SET_SNACKBAR_MODE,
+            snackbar: {
+                open: true,
+                variant: 'error',
+                message: updateUserDataError
+            }
+        });
+        if (openLangSnakbar)
+            handleCloseLangSnakbar();
+        resetUpdateUserDataError();
+    }
+    
     return (
         <MuiThemeProvider theme={muiTheme}>
             <CssBaseline />
@@ -416,7 +410,9 @@ const mapStateToProps = store => {
         themeMode: store.themeMode,
         auth: store.auth,
         userDataPending: getUserDataPending(store),
-        userData: getUserData(store)
+        userData: getUserData(store),
+        updateUserData: getUpdateUserData(store),
+        updateUserDataError: getUpdateUserDataError(store)
     }
 }
 
@@ -425,6 +421,9 @@ const mapDispatchToProps = (dispatch) => bindActionCreators({
     setTheme: palette => dispatch(setTheme(palette)),
     setSnackbar: snackbar => dispatch(setSnackbar(snackbar)),
     setUserState: state => dispatch(setUserState(state)),
+    fetchUpdateUserData: fetchUpdateUserDataAction,
+    resetUpdateUserDataError: resetUpdateUserDataErrorAction,
+    resetUpdateUserData: resetUpdateUserDataAction
 }, dispatch)
 
 export default connect(

@@ -9,8 +9,11 @@ import {
     fetchConnectPostsPending, fetchConnectPostsSuccess, fetchConnectPostsError,
     fetchUserMapPending, fetchUserMapSuccess, fetchUserMapError,
     fetchRandomUsersPending, fetchRandomUsersSuccess, fetchRandomUsersError,
-    fetchUpdateUserDataPending, fetchUpdateUserDataSuccess, fetchUpdateUserDataError
+    fetchUpdateUserDataPending, fetchUpdateUserDataSuccess, fetchUpdateUserDataError, fetchResetUpdateUserDataError, fetchResetUpdateUserData,
+    fetchCreateUserPending, fetchCreateUserSuccess, fetchCreateUserError, fetchResetCreateUserError,
 } from './actions/Actions.js';
+
+export const maxSignUpSteps = 3;
 
 const baseURL = "https://ldserver.herokuapp.com";
 
@@ -152,11 +155,40 @@ export function fetchUpdateUserDataAction(userId, data, userToken) {
         dispatch(fetchUpdateUserDataPending());
         instance.post("/actions/users/updateuserdata", { id: userId, data: data, token: userToken })
             .then(res => {
-                dispatch(fetchUpdateUserDataSuccess());
+                dispatch(fetchUpdateUserDataSuccess(res.data));
                 dispatch(fetchUserDataAction(userId, userToken));
             })
             .catch(error => {
-                dispatch(fetchUpdateUserDataError(error));
+                dispatch(fetchUpdateUserDataError(error.response.data));
             });
     }
 };
+export function resetUpdateUserDataErrorAction() {
+    return dispatch => {
+        dispatch(fetchResetUpdateUserDataError());
+    }
+}
+export function resetUpdateUserDataAction() {
+    return dispatch => {
+        dispatch(fetchResetUpdateUserData());
+    }
+}
+
+/*Create user*/
+export function fetchCreateUserAction(data) {
+    return dispatch => {
+        dispatch(fetchCreateUserPending());
+        instance.post("/actions/users/register", data)
+            .then(res =>
+                dispatch(fetchCreateUserSuccess(res.data))
+            )
+            .catch(err =>
+                dispatch(fetchCreateUserError(err.response.data))
+            );
+    }
+};
+export function resetCreateUserErrorAction() {
+    return dispatch => {
+        dispatch(fetchResetCreateUserError());
+    }
+}

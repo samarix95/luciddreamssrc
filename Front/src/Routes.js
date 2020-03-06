@@ -25,6 +25,8 @@ const Aeronauts = React.lazy(() => import('./components/Aeronauts.jsx'));
 const MainPage = React.lazy(() => import('./components/MainPage.jsx'));
 const Sign = React.lazy(() => import('./components/Sign.js'));
 
+const SignUp = React.lazy(() => import('./components/Sign/SignUp.jsx'));
+
 import CloseIcon from '@material-ui/icons/Close';
 
 import PrivateRoute from "./components/PrivateRoute.js";
@@ -41,7 +43,7 @@ function MySnackbarContentWrapper(props) {
             aria-describedby="client-snackbar"
             message={
                 <span id="client-snackbar" className={snackClasses.message}>
-                    <Icon className={clsx(snackClasses.icon, snackClasses.iconVariant)} />
+                    <Icon className={`${clsx(snackClasses.icon, snackClasses.iconVariant)} ${snackClasses.margin}`} />
                     <Typography align='center' variant='body2'>
                         {message}
                     </Typography>
@@ -85,16 +87,18 @@ function Routes(props) {
     }, [open, variant, message]);
 
     return (
-        <React.Suspense fallback={
-            <div className={`${classes.formControl} ${classes.centerTextAlign}`} >
-                <div className={`${classes.inlineBlock} ${classes.relativePosition}`} >
-                    <CircularProgress />
+        <React.Suspense
+            fallback={
+                <div className={`${classes.formControl} ${classes.centerTextAlign}`} >
+                    <div className={`${classes.inlineBlock} ${classes.relativePosition}`} >
+                        <CircularProgress />
+                    </div>
+                    <Typography className={`${classes.relativePosition}`} component="div" >
+                        {lang.currLang.texts.Loading}
+                    </Typography>
                 </div>
-                <Typography className={`${classes.relativePosition}`} component="div" >
-                    {lang.currLang.texts.Loading}
-                </Typography>
-            </div>
-        }>
+            }
+        >
             <Snackbar open={openSnackbar}
                 onClose={handleCloseSnackbar}
                 autoHideDuration={3000}
@@ -107,6 +111,7 @@ function Routes(props) {
                 />
             </Snackbar>
             <Route exact path="/" component={Sign} />
+            <Route exact path="/signup" component={SignUp} />
             <Switch>
                 <PrivateRoute path="/luciddreams" component={MainPage} />
                 <PrivateRoute path="/profile" component={Profile} />

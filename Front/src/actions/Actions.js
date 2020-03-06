@@ -8,7 +8,8 @@ import {
 	FETCH_CONNECT_POSTS_PENDING, FETCH_CONNECT_POSTS_SUCCESS, FETCH_CONNECT_POSTS_ERROR,
 	FETCH_USER_MAP_PENDING, FETCH_USER_MAP_SUCCESS, FETCH_USER_MAP_ERROR,
 	FETCH_RANDOM_USERS_PENDING, FETCH_RANDOM_USERS_SUCCESS, FETCH_RANDOM_USERS_ERROR,
-	FETCH_UPDATE_USER_DATA_PENDING, FETCH_UPDATE_USER_DATA_SUCCESS, FETCH_UPDATE_USER_DATA_ERROR
+	FETCH_UPDATE_USER_DATA_PENDING, FETCH_UPDATE_USER_DATA_SUCCESS, FETCH_UPDATE_USER_DATA_ERROR, RESET_UPDATE_USER_DATA_ERROR, RESET_UPDATE_USER_DATA,
+	FETCH_CREATE_USER_PENDING, FETCH_CREATE_USER_SUCCESS, FETCH_CREATE_USER_ERROR, RESET_CREATE_USER_ERROR
 } from '../actions/types.js';
 
 export function setCurrLang(state) {
@@ -190,14 +191,52 @@ export function fetchUpdateUserDataPending() {
 		type: FETCH_UPDATE_USER_DATA_PENDING
 	}
 }
-export function fetchUpdateUserDataSuccess() {
+export function fetchUpdateUserDataSuccess(data) {
 	return {
-		type: FETCH_UPDATE_USER_DATA_SUCCESS
+		type: FETCH_UPDATE_USER_DATA_SUCCESS,
+		data: data
 	}
 }
 export function fetchUpdateUserDataError(error) {
 	return {
 		type: FETCH_UPDATE_USER_DATA_ERROR,
 		error: error
+	}
+}
+export function fetchResetUpdateUserDataError() {
+	return {
+		type: RESET_UPDATE_USER_DATA_ERROR,
+		error: null
+	}
+}
+export function fetchResetUpdateUserData() {
+	return {
+		type: RESET_UPDATE_USER_DATA,
+		data: null
+	}
+}
+
+/*Create user*/
+export function fetchCreateUserPending() {
+	return {
+		type: FETCH_CREATE_USER_PENDING
+	}
+}
+export function fetchCreateUserSuccess(newUser) {
+	return {
+		type: FETCH_CREATE_USER_SUCCESS,
+		newUser: newUser
+	}
+}
+export function fetchCreateUserError(error) {
+	return {
+		type: FETCH_CREATE_USER_ERROR,
+		error: error
+	}
+}
+export function fetchResetCreateUserError() {
+	return {
+		type: RESET_CREATE_USER_ERROR,
+		error: null
 	}
 }

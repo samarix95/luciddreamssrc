@@ -44,6 +44,10 @@ export function randomBetween(a, b) {
 }
 
 export const useStyles = makeStyles(theme => ({
+    backdrop: {
+        zIndex: theme.zIndex.drawer + 1,
+        color: '#fff',
+    },
     equalHeight: {
         height: 0,
         paddingBottom: "100%",
@@ -558,6 +562,12 @@ export const useStyles = makeStyles(theme => ({
     minWidth200px: {
         minWidth: "200px",
     },
+    minWidth100px: {
+        minWidth: "100px",
+    },
+    minWidth50px: {
+        minWidth: "50px",
+    },
     mediumAvatar: {
         width: "120px !Important",
         height: "120px !Important",
@@ -738,5 +748,8 @@ export const snackStyles = makeStyles(theme => ({
     message: {
         display: 'flex' + ' !Important',
         alignItems: 'center' + ' !Important',
+    },
+    margin: {
+        margin: theme.spacing(1),
     },
 }));

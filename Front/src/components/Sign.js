@@ -25,7 +25,7 @@ import { MuiThemeProvider, createMuiTheme } from '@material-ui/core/styles';
 
 import CssBaseline from '@material-ui/core/CssBaseline';
 
-import { GET_ERRORS, SET_CURRENT_USER, SET_SNACKBAR_MODE } from "../actions/types";
+import { SET_CURRENT_USER, SET_SNACKBAR_MODE } from "../actions/types";
 import { setCurrLang, setUserState, setSnackbar } from '../actions/Actions';
 import { useStyles } from '../styles/Styles.js';
 import setAuthToken from "../utils/setAuthToken";
@@ -44,31 +44,14 @@ function Sign(props) {
     const muiTheme = createMuiTheme(themeMode);
     const [loginData, setLoginData] = React.useState({
         email: '',
-        password: '',
-    });
-    const [registData, setRegistData] = React.useState({
-        email: '',
-        nickname: '',
-        password: '',
-        password2: '',
-    });
-    const [regFieldErrors, setRegFieldErrors] = React.useState({
-        emailErr: false,
-        emailErrText: '',
-        nicknameErr: false,
-        nicknameErrText: '',
-        passwordErr: false,
-        passwordErrText: '',
-        password2Err: false,
-        password2ErrText: '',
+        password: ''
     });
     const [isLoading, setIsLoading] = React.useState(false);
     const [showPassword, setShowPassword] = React.useState(false);
     const [openLogin, setOpenLogin] = React.useState(false);
-    const [openRegist, setOpenRegist] = React.useState(false);
     const [page, setPage] = React.useState({
         mainPage: true,
-        aboutPage: false,
+        aboutPage: false
     });
 
     const handleMouseDownPassword = event => {
@@ -85,53 +68,6 @@ function Sign(props) {
         let newLoginData = loginData;
         newLoginData = { ...newLoginData, password: e.target.value };
         setLoginData(newLoginData);
-    };
-
-    const changeRegistLogin = (e) => {
-        let newRegFieldErrors = regFieldErrors;
-        newRegFieldErrors = { ...newRegFieldErrors, emailErr: false };
-        newRegFieldErrors = { ...newRegFieldErrors, emailErrText: '' };
-        setRegFieldErrors(newRegFieldErrors);
-
-        let newRegistData = registData;
-        newRegistData = { ...newRegistData, email: e.target.value };
-        setRegistData(newRegistData);
-    };
-
-    const changeRegistNickname = (e) => {
-        let newRegFieldErrors = regFieldErrors;
-        newRegFieldErrors = { ...newRegFieldErrors, nicknameErr: false };
-        newRegFieldErrors = { ...newRegFieldErrors, nicknameErrText: '' };
-        setRegFieldErrors(newRegFieldErrors);
-
-        let newRegistData = registData;
-        newRegistData = { ...newRegistData, nickname: e.target.value };
-        setRegistData(newRegistData);
-    };
-
-    const changeRegistPassword = (e) => {
-        let newRegFieldErrors = regFieldErrors;
-        newRegFieldErrors = { ...newRegFieldErrors, passwordErr: false };
-        newRegFieldErrors = { ...newRegFieldErrors, passwordErrText: '' };
-        newRegFieldErrors = { ...newRegFieldErrors, password2Err: false };
-        newRegFieldErrors = { ...newRegFieldErrors, password2ErrText: '' };
-        setRegFieldErrors(newRegFieldErrors);
-
-        let newRegistData = registData;
-        newRegistData = { ...newRegistData, password: e.target.value };
-        setRegistData(newRegistData);
-    };
-
-    const changeRegistPassword2 = (e) => {
-        let newRegFieldErrors = regFieldErrors;
-        newRegFieldErrors = { ...newRegFieldErrors, passwordErr: false };
-        newRegFieldErrors = { ...newRegFieldErrors, passwordErrText: '' };
-        newRegFieldErrors = { ...newRegFieldErrors, password2Err: false };
-        newRegFieldErrors = { ...newRegFieldErrors, password2ErrText: '' };
-        setRegFieldErrors(newRegFieldErrors);
-        let newRegistData = registData;
-        newRegistData = { ...newRegistData, password2: e.target.value };
-        setRegistData(newRegistData);
     };
 
     const singIn = () => {
@@ -165,91 +101,11 @@ function Sign(props) {
                     snackbar: {
                         open: true,
                         variant: 'error',
-                        message: errorMessage,
+                        message: errorMessage
                     },
                 });
                 setIsLoading(false);
             });
-    };
-
-    const singUp = () => {
-        let isErr = false;
-        let newRegFieldErrors = regFieldErrors;
-        if (registData.email.length === 0) {
-            newRegFieldErrors = { ...newRegFieldErrors, emailErr: true };
-            newRegFieldErrors = { ...newRegFieldErrors, emailErrText: lang.currLang.errors.emailLenght };
-            isErr = true;
-        }
-        if (registData.nickname.length === 0) {
-            newRegFieldErrors = { ...newRegFieldErrors, nicknameErr: true };
-            newRegFieldErrors = { ...newRegFieldErrors, nicknameErrText: lang.currLang.errors.nicknameLenght };
-            isErr = true;
-        }
-        if (registData.password.length === 0) {
-            newRegFieldErrors = { ...newRegFieldErrors, passwordErr: true };
-            newRegFieldErrors = { ...newRegFieldErrors, passwordErrText: lang.currLang.errors.passwordLenght };
-            isErr = true;
-        }
-        if (registData.password2.length === 0) {
-            newRegFieldErrors = { ...newRegFieldErrors, password2Err: true };
-            newRegFieldErrors = { ...newRegFieldErrors, password2ErrText: lang.currLang.errors.password2Lenght };
-            isErr = true;
-        }
-        if (registData.password !== registData.password2) {
-            newRegFieldErrors = { ...newRegFieldErrors, passwordErr: true };
-            newRegFieldErrors = { ...newRegFieldErrors, passwordErrText: lang.currLang.errors.passwordsCompare };
-            newRegFieldErrors = { ...newRegFieldErrors, password2Err: true };
-            newRegFieldErrors = { ...newRegFieldErrors, password2ErrText: lang.currLang.errors.passwordsCompare };
-            isErr = true;
-        }
-        if (isErr) {
-            setRegFieldErrors(newRegFieldErrors);
-            setIsLoading(false);
-        }
-        else {
-            instance.post('/actions/users/register', registData)
-                .then(res => {
-                    setSnackbar({
-                        type: SET_SNACKBAR_MODE,
-                        snackbar: {
-                            open: true,
-                            variant: 'success',
-                            message: lang.currLang.texts.sucessRegistration,
-                        },
-                    });
-                    let newRegistData = registData;
-                    newRegistData = { ...newRegistData, email: '' };
-                    newRegistData = { ...newRegistData, nickname: '' };
-                    newRegistData = { ...newRegistData, password: '' };
-                    newRegistData = { ...newRegistData, password2: '' };
-                    setRegistData(newRegistData);
-                    click('closeRegist');
-                    click('openLogin');
-                    setIsLoading(false);
-                })
-                .catch(err => {
-                    let errorMessage = '';
-                    setUserState({
-                        type: GET_ERRORS,
-                        payload: err.response.data
-                    });
-                    if (err.response.data.email === 'EmailIsBusy') {
-                        errorMessage = lang.currLang.errors.EmailIsBusy;
-                    }
-                    if (err.response.data.password === 'PasswordLenght5Symbols') {
-                        errorMessage = lang.currLang.errors.PasswordLenght5Symbols;
-                    }
-                    setSnackbar({
-                        type: SET_SNACKBAR_MODE,
-                        snackbar: {
-                            open: true,
-                            variant: 'error',
-                            message: errorMessage,
-                        },
-                    });
-                    setIsLoading(false);
-                });
-        }
     };
 
     const click = (action) => {
@@ -258,24 +114,13 @@ function Sign(props) {
             case 'openLogin':
                 setOpenLogin(true);
                 break;
-            case 'openRegist':
-                setOpenRegist(true);
-                break;
             case 'closeLogin':
                 setOpenLogin(false);
-                setShowPassword(false);
-                break;
-            case 'closeRegist':
-                setOpenRegist(false);
                 setShowPassword(false);
                 break;
             case 'signIn':
                 setIsLoading(true);
                 singIn();
-                break;
-            case 'signUp':
-                setIsLoading(true);
-                singUp();
                 break;
             case 'openAboutPage':
                 newPages = { ...newPages, aboutPage: true };
@@ -356,100 +201,6 @@ function Sign(props) {
                     }
                 </DialogActions>
             </Dialog>
-            <Dialog open={openRegist}
-                TransitionComponent={Transition}
-                aria-labelledby="alert-dialog-slide-title"
-                aria-describedby="alert-dialog-slide-description"
-            >
-                <DialogTitle id="alert-dialog-slide-title">
-                    {lang.currLang.buttons.signUp}
-                </DialogTitle>
-                <DialogContent>
-                    <Grid className={`${classes.menuDivButton} ${classes.margin}`} align="center">
-                        <TextField id="reg-email-field"
-                            error={regFieldErrors.emailErr}
-                            helperText={regFieldErrors.emailErrText}
-                            className={classes.textField}
-                            autoComplete="off"
-                            type="email"
-                            label="Email"
-                            onBlur={(e) => { changeRegistLogin(e) }} />
-                    </Grid>
-                    <Grid className={`${classes.menuDivButton} ${classes.margin}`} align="center">
-                        <TextField id="reg-nickname-field"
-                            error={regFieldErrors.nicknameErr}
-                            helperText={regFieldErrors.nicknameErrText}
-                            className={classes.textField}
-                            autoComplete="off"
-                            type="text"
-                            label={lang.currLang.texts.nickname}
-                            onBlur={(e) => { changeRegistNickname(e) }} />
-                    </Grid>
-                    <Grid className={`${classes.menuDivButton} ${classes.margin}`} align="center">
-                        <TextField id="reg-password-field"
-                            error={regFieldErrors.passwordErr}
-                            helperText={regFieldErrors.passwordErrText}
-                            autoComplete="off"
-                            className={classes.textField}
-                            type={showPassword ? 'text' : 'password'}
-                            label={lang.currLang.texts.password}
-                            onBlur={(e) => { changeRegistPassword(e) }}
-                            InputProps={{
-                                endAdornment: (
-                                    <InputAdornment position="end">
-                                        <IconButton
-                                            tabIndex="-1"
-                                            edge="end"
-                                            aria-label="toggle password visibility"
-                                            onClick={() => { showPassword ? setShowPassword(false) : setShowPassword(true) }}
-                                            onMouseDown={handleMouseDownPassword} >
-                                            {showPassword ? <VisibilityOff /> : <Visibility />}
-                                        </IconButton>
-                                    </InputAdornment>
-                                ),
-                            }} />
-                    </Grid>
-                    <Grid className={`${classes.menuDivButton} ${classes.margin}`} align="center">
-                        <TextField id="reg-password2-field"
-                            error={regFieldErrors.password2Err}
-                            helperText={regFieldErrors.password2ErrText}
-                            autoComplete="off"
-                            className={classes.textField}
-                            type={showPassword ? 'text' : 'password'}
-                            label={lang.currLang.texts.passwordAgain}
-                            onBlur={(e) => { changeRegistPassword2(e) }}
-                            InputProps={{
-                                endAdornment: (
-                                    <InputAdornment position="end">
-                                        <IconButton
-                                            tabIndex="-1"
-                                            edge="end"
-                                            aria-label="toggle password visibility"
-                                            onClick={() => { showPassword ? setShowPassword(false) : setShowPassword(true) }}
-                                            onMouseDown={handleMouseDownPassword} >
-                                            {showPassword ? <VisibilityOff /> : <Visibility />}
-                                        </IconButton>
-                                    </InputAdornment>
-                                ),
-                            }} />
-                    </Grid>
-                </DialogContent>
-                {!isLoading
-                    ? <DialogActions>
-                        <Button onClick={() => { click('closeRegist') }}
-                            color="secondary"
-                            disabled={isLoading}>
-                            {lang.currLang.buttons.cancel}
-                        </Button>
-                        <Button onClick={() => { click('signUp') }}
-                            color="primary"
-                            disabled={isLoading}>
-                            {lang.currLang.buttons.signUp}
-                        </Button>
-                    </DialogActions>
-                    : <LinearProgress className={`${classes.margin}`} />
-                }
-            </Dialog>
             <div className={classes.root}>
                 <div className={classes.mainPage} style={page.mainPage === true ? { transform: 'translateY(0%)' } : { transform: 'translateY(-100%)' }}>
                     <Grid container
@@ -478,7 +229,7 @@ function Sign(props) {
                                     <Grid item className={`${classes.menuDivButton} ${classes.height2}`}>
                                         <Button variant="contained" color="primary"
                                             className={`${classes.menuButton} ${classes.centerButton}`}
-                                            onClick={() => { click('openRegist') }}>
+                                            onClick={() => { history.push('/signup') }}>
                                             {lang.currLang.buttons.signUp}
                                         </Button>
                                     </Grid>
@@ -549,13 +300,13 @@ Sign.propTypes = {
     setUserState: PropTypes.func.isRequired,
     setSnackbar: PropTypes.func.isRequired,
     themeMode: PropTypes.object.isRequired,
-    lang: PropTypes.object.isRequired,
+    lang: PropTypes.object.isRequired
 }
 
 const mapStateToProps = store => {
     return {
         themeMode: store.themeMode,
-        lang: store.lang,
+        lang: store.lang
     }
 }
 
@@ -563,7 +314,7 @@ const mapDispatchToProps = (dispatch) => {
     return {
         setCurrLang: currLangState => dispatch(setCurrLang(currLangState)),
         setUserState: State => dispatch(setUserState(State)),
-        setSnackbar: snackbar => dispatch(setSnackbar(snackbar)),
+        setSnackbar: snackbar => dispatch(setSnackbar(snackbar))
     }
 }
 
