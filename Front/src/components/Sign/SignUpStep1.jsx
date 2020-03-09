@@ -49,7 +49,8 @@ function SignUpStep1(props) {
                 <Grid className={`${classes.height1} ${classes.relativePosition}`} />
                 <Paper className={`${classes.height1} ${classes.width10} ${classes.SearchPaper} ${classes.relativePosition} ${classes.horizontalCenter}`} component="form" onSubmit={handleSubmit}>
                     <AlternateEmailIcon className={`${classes.margin}`} />
-                    <InputBase placeholder="Email"
+                    <InputBase className={`${classes.height12}`}
+                        placeholder="Email"
                         type={'email'}
                         onChange={changeLogin}
                     />

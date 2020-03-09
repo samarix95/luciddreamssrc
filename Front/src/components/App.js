@@ -11,8 +11,6 @@ import setAuthToken from "../utils/setAuthToken.js";
 import { SET_CURRENT_USER, SET_THEME_MODE } from "../actions/types.js";
 import { setCurrLang } from '../actions/Actions.js';
 
-import Backdrop from '@material-ui/core/Backdrop';
-
 import Routes from "../Routes.js";
 
 import { useStyles, params, randomBetween } from "../styles/Styles.js";
@@ -66,7 +64,6 @@ else {
 
 function App(props) {
     const { user_data, type, userData, userDataError, userDataPending, fetchUserData, setCurrLangAction } = props;
-    const [openBackdrop, setOpenBackdrop] = React.useState(true);
     if (userDataError) {
         console.log("MainPage");
         console.log(userDataError);
@@ -87,7 +84,6 @@ function App(props) {
     }
 
     if (!userDataPending && userDataError == null && isFirstLoading) {
-        setOpenBackdrop(false);
         userData.language === 0 ? setCurrLangAction(EnDict) : setCurrLangAction(RuDict);
         isFirstLoading = false;
     }
@@ -143,7 +139,6 @@ function App(props) {
 
     return (
         <Router history={history}>
-            <Backdrop className={classes.backdrop} open={openBackdrop} />
             <div className={classes.AppDivDark}>
                 <div className={classes.AppDivLight} style={type === "light" ? { opacity: 1, } : { opacity: 0, }} />
                 {type === "light"

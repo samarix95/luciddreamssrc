@@ -10,8 +10,10 @@ module.exports = {
         path: path.join(__dirname, "../../prod"),
         filename: "index-bundle.js",
     },
-
     devServer: {
+        host: '0.0.0.0',
+        port: 8080,
+        disableHostCheck: true,
         historyApiFallback: true,
     },
     module: {
