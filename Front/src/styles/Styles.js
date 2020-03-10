@@ -743,7 +743,6 @@ export const snackStyles = makeStyles(theme => ({
     },
     iconVariant: {
         opacity: 0.9 + '!Important',
-        marginRight: theme.spacing(1) + '!Important',
     },
     message: {
         display: 'flex' + ' !Important',

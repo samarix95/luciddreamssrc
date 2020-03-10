@@ -25,7 +25,7 @@ import { useStyles } from '../styles/Styles.js';
 import { fetchUpdateUserDataAction, resetUpdateUserDataErrorAction, resetUpdateUserDataAction } from '../Config';
 import { getUserData, getUserDataPending } from '../reducers/userDataReducer';
 import { getUpdateUserData, getUpdateUserDataError } from '../reducers/updateUserDataReducer.js';
-import { CheckTimeOut, getToken } from '../utils/CheckLoginTimeOut.js';
+import { CheckTimeOut, getToken, removeToken } from '../utils/CheckLoginTimeOut.js';
 import setAuthToken from "../utils/setAuthToken.js";
 
 import { MuiThemeProvider, createMuiTheme } from '@material-ui/core/styles';
@@ -138,15 +138,10 @@ function MainPage(props) {
     };
 
     const logOut = () => {
-        setAuthToken(false);
-        localStorage.removeItem("jwtToken");
-        setUserState({
-            type: SET_CURRENT_USER,
-            payload: null
-        });
-        history.push("/");
+        removeToken();
+        history.push("/signin");
     };
-    
+
     if (Object.keys(updateUserData).length > 0 && updateUserData.result === 'success') {
         setSnackbar({
             type: SET_SNACKBAR_MODE,
@@ -173,7 +168,7 @@ function MainPage(props) {
             handleCloseLangSnakbar();
         resetUpdateUserDataError();
     }
-    
+
     return (
         <MuiThemeProvider theme={muiTheme}>
             <CssBaseline />

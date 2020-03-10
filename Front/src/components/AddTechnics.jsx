@@ -192,7 +192,7 @@ function AddTechnics(props) {
                     snackbar: {
                         open: true,
                         variant: 'error',
-                        message: lang.currLang.errors.NoChanges,
+                        message: lang.currLang.errors.NO_CHANGES,
                     },
                 });
                 setIsLoading(false);

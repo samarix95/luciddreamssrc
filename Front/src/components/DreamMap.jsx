@@ -231,7 +231,7 @@ function DreamMap(props) {
                                                     }
                                                 })
                                                 : history.push(props.location.defaultData.prevUrl)
-                                            : history.push("/luciddreams")
+                                            : history.push("/")
                                     }}
                                 >
                                     {lang.currLang.buttons.Back}

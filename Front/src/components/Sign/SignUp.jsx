@@ -2,22 +2,20 @@ import React from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import PropTypes from 'prop-types';
-import jwt_decode from "jwt-decode";
 
 import MobileStepper from "@material-ui/core/MobileStepper";
 import CssBaseline from '@material-ui/core/CssBaseline';
 import Button from "@material-ui/core/Button";
 
-import KeyboardArrowRight from "@material-ui/icons/KeyboardArrowRight";
+import ArrowForwardIosIcon from '@material-ui/icons/ArrowForwardIos';
 import DoneIcon from '@material-ui/icons/Done';
 
 import { SET_SNACKBAR_MODE, SET_CURRENT_USER } from "../../actions/types.js";
 import { setSnackbar, setUserState } from "../../actions/Actions.js";
-import setAuthToken from "../../utils/setAuthToken.js";
 import { maxSignUpSteps, fetchCreateUserAction, resetCreateUserErrorAction, fetchUpdateUserDataAction, resetUpdateUserDataErrorAction } from '../../Config.js';
 import { getCreateUser, getCreateUserPending, getCreateUserError } from '../../reducers/createUserReducer.js';
 import { getUpdateUserData, getUpdateUserDataError } from '../../reducers/updateUserDataReducer.js';
-import { getToken } from '../../utils/CheckLoginTimeOut.js';
+import { getToken, setToken } from '../../utils/CheckLoginTimeOut.js';
 
 import step1 from "./SignUpStep1.jsx";
 import step2 from "./SignUpStep2.jsx";
@@ -47,8 +45,8 @@ function SignUp(props) {
                 snackbar: {
                     open: true,
                     variant: 'error',
-                    message: createUserError.email
-                },
+                    message: lang.currLang.errors[createUserError.email]
+                }
             });
         }
         else if (createUserError.password) {
@@ -57,8 +55,8 @@ function SignUp(props) {
                 snackbar: {
                     open: true,
                     variant: 'error',
-                    message: createUserError.password
-                },
+                    message: lang.currLang.errors[createUserError.password]
+                }
             });
         }
         else {
@@ -67,8 +65,8 @@ function SignUp(props) {
                 snackbar: {
                     open: true,
                     variant: 'error',
-                    message: createUserError
-                },
+                    message: lang.currLang.errors[createUserError]
+                }
             });
         }
         resetCreateUserError();
@@ -98,13 +96,7 @@ function SignUp(props) {
         }
         setActiveStep(createdUser.next_signup_step);
         if (localStorage.getItem("jwtToken") === null) {
-            localStorage.setItem("jwtToken", createdUser.token);
-            setAuthToken(createdUser.token);
-            const decoded = jwt_decode(createdUser.token);
-            setUserState({
-                type: SET_CURRENT_USER,
-                payload: decoded
-            });
+            setToken(createdUser.token);
         }
     }
 
@@ -123,7 +115,7 @@ function SignUp(props) {
                 message: lang.currLang.texts.sucessRegistration
             }
         });
-        history.push("/luciddreams");
+        history.push("/");
     }
 
     const steps = [
@@ -141,7 +133,7 @@ function SignUp(props) {
                         snackbar: {
                             open: true,
                             variant: 'error',
-                            message: lang.currLang.errors.emailLenght
+                            message: lang.currLang.errors.EMPTY_EMAIL
                         },
                     });
                     break;
@@ -152,7 +144,7 @@ function SignUp(props) {
                         snackbar: {
                             open: true,
                             variant: 'error',
-                            message: lang.currLang.errors.passwordsCompare
+                            message: lang.currLang.errors.PASSWORDS_NOT_EQUAL
                         },
                     });
                     break;
@@ -163,7 +155,7 @@ function SignUp(props) {
                         snackbar: {
                             open: true,
                             variant: 'error',
-                            message: lang.currLang.errors.passwordLenght
+                            message: lang.currLang.errors.EMPTY_PASSWORD
                         },
                     });
                     break;
@@ -210,6 +202,10 @@ function SignUp(props) {
         fetchUpdateUserData(createdUser.newId, { avatar_id: userAvatar, curr_signup_step: activeStep }, getToken());
     };
 
+    const handleExit = () => {
+        history.push("/signin");
+    };
+
     React.useEffect(() => {
         if (typeof (props.location.defaultData) !== 'undefined') {
             setActiveStep(props.location.defaultData.signup_step);
@@ -230,17 +226,19 @@ function SignUp(props) {
                         <Button className={`${classes.minWidth100px}`} size="small" onClick={activeStep === steps.length - 1 ? handleFinish : handleNext} disabled={stepDisabled} >
                             {stepDisabled
                                 ? <React.Fragment>
-                                    {activeStep === steps.length - 1 ? <DoneIcon /> : <KeyboardArrowRight />}
+                                    {activeStep === steps.length - 1 ? <DoneIcon /> : <ArrowForwardIosIcon />}
                                 </React.Fragment>
                                 : <React.Fragment>
                                     {activeStep === steps.length - 1 ? lang.currLang.buttons.Finish : lang.currLang.buttons.Next}
-                                    {activeStep === steps.length - 1 ? <DoneIcon /> : <KeyboardArrowRight />}
+                                    {activeStep === steps.length - 1 ? <DoneIcon /> : <ArrowForwardIosIcon />}
                                 </React.Fragment>
                             }
                         </Button>
                     }
                     backButton={
-                        <Button className={`${classes.minWidth100px}`} size="small" disabled={true} />
+                        <Button className={`${classes.minWidth100px}`} size="small" onClick={handleExit} >
+                            {lang.currLang.buttons.close}
+                        </Button>
                     }
                 />
                 {steps[activeStep]}

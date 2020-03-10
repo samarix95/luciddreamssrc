@@ -9,7 +9,8 @@ import {
 	FETCH_USER_MAP_PENDING, FETCH_USER_MAP_SUCCESS, FETCH_USER_MAP_ERROR,
 	FETCH_RANDOM_USERS_PENDING, FETCH_RANDOM_USERS_SUCCESS, FETCH_RANDOM_USERS_ERROR,
 	FETCH_UPDATE_USER_DATA_PENDING, FETCH_UPDATE_USER_DATA_SUCCESS, FETCH_UPDATE_USER_DATA_ERROR, RESET_UPDATE_USER_DATA_ERROR, RESET_UPDATE_USER_DATA,
-	FETCH_CREATE_USER_PENDING, FETCH_CREATE_USER_SUCCESS, FETCH_CREATE_USER_ERROR, RESET_CREATE_USER_ERROR
+	FETCH_CREATE_USER_PENDING, FETCH_CREATE_USER_SUCCESS, FETCH_CREATE_USER_ERROR, RESET_CREATE_USER_ERROR,
+	FETCH_LOGIN_USER_PENDING, FETCH_LOGIN_USER_SUCCESS, FETCH_LOGIN_USER_ERROR, RESET_LOGIN_USER_ERROR
 } from '../actions/types.js';
 
 export function setCurrLang(state) {
@@ -237,6 +238,31 @@ export function fetchCreateUserError(error) {
 export function fetchResetCreateUserError() {
 	return {
 		type: RESET_CREATE_USER_ERROR,
+		error: null
+	}
+}
+
+/*Login user*/
+export function fetchLoginUserPending() {
+	return {
+		type: FETCH_LOGIN_USER_PENDING
+	}
+}
+export function fetchLoginUserSuccess(user) {
+	return {
+		type: FETCH_LOGIN_USER_SUCCESS,
+		user: user
+	}
+}
+export function fetchLoginUserError(error) {
+	return {
+		type: FETCH_LOGIN_USER_ERROR,
+		error: error
+	}
+}
+export function fetchResetLoginUserError() {
+	return {
+		type: RESET_LOGIN_USER_ERROR,
 		error: null
 	}
 }

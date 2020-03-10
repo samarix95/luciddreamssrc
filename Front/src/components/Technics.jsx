@@ -84,7 +84,7 @@ function Technics(props) {
                                 <Button variant="contained"
                                     color="secondary"
                                     className={classes.actionButton}
-                                    onClick={() => { history.push("/luciddreams") }}
+                                    onClick={() => { history.push("/") }}
                                 >
                                     {lang.currLang.buttons.Back}
                                 </Button>

@@ -16,6 +16,7 @@ import { randomUsersReducer } from "./randomUsersReducer.js";
 import { updateUserDataReducer } from "./updateUserDataReducer.js";
 
 import { createUserReducer } from "./createUserReducer.js";
+import { loginUserReducer } from "./loginUserReducer.js";
 
 export const rootReducer = combineReducers({
     lang: currLangReducer,
@@ -32,5 +33,6 @@ export const rootReducer = combineReducers({
     fetchUserMap: userMapReducer,
     fetchRandomUsers: randomUsersReducer,
     fetchUpdateUserData: updateUserDataReducer,
-    fetchCreateUser: createUserReducer
+    fetchCreateUser: createUserReducer,
+    fetchLoginUser: loginUserReducer
 });

@@ -12,6 +12,7 @@ import SnackbarContent from '@material-ui/core/SnackbarContent';
 import Typography from '@material-ui/core/Typography';
 import IconButton from '@material-ui/core/IconButton';
 import Snackbar from '@material-ui/core/Snackbar';
+import Grow from '@material-ui/core/Grow';
 
 import AddTechnics from './components/AddTechnics.jsx';
 const Technics = React.lazy(() => import('./components/Technics.jsx'));
@@ -23,8 +24,7 @@ const DreamMap = React.lazy(() => import('./components/DreamMap.jsx'));
 const Profile = React.lazy(() => import('./components/Profile.jsx'));
 const Aeronauts = React.lazy(() => import('./components/Aeronauts.jsx'));
 const MainPage = React.lazy(() => import('./components/MainPage.jsx'));
-const Sign = React.lazy(() => import('./components/Sign.js'));
-
+const SignIn = React.lazy(() => import('./components/Sign/SignIn.jsx'));
 const SignUp = React.lazy(() => import('./components/Sign/SignUp.jsx'));
 
 import CloseIcon from '@material-ui/icons/Close';
@@ -38,19 +38,18 @@ function MySnackbarContentWrapper(props) {
     const { className, message, onClose, variant } = props;
     const Icon = variantIcon[variant];
     return (
-        <SnackbarContent
-            className={clsx(snackClasses[variant], className)}
-            aria-describedby="client-snackbar"
+        <SnackbarContent className={clsx(snackClasses[variant], className)}
+            aria-describedby="client-snackbar-alert"
             message={
-                <span id="client-snackbar" className={snackClasses.message}>
+                <div id="client-snackbar-alert" className={snackClasses.message} >
                     <Icon className={`${clsx(snackClasses.icon, snackClasses.iconVariant)} ${snackClasses.margin}`} />
-                    <Typography align='center' variant='body2'>
+                    <Typography align="center" variant='body'>
                         {message}
                     </Typography>
-                </span>
+                </div>
             }
             action={[
-                <IconButton key="close" aria-label="close" color="inherit" onClick={onClose}>
+                <IconButton color="inherit" onClick={onClose} >
                     <CloseIcon className={snackClasses.icon} />
                 </IconButton>
             ]}
@@ -102,18 +101,19 @@ function Routes(props) {
             <Snackbar open={openSnackbar}
                 onClose={handleCloseSnackbar}
                 autoHideDuration={3000}
+                TransitionComponent={Grow}
             >
-                <MySnackbarContentWrapper
-                    className={classes.margin}
+                <MySnackbarContentWrapper className={classes.margin}
                     onClose={handleCloseSnackbar}
                     variant={openSnackbarVariant}
                     message={snackbarMessage}
                 />
             </Snackbar>
-            <Route exact path="/" component={Sign} />
-            <Route exact path="/signup" component={SignUp} />
+
+            <Route path="/signin" component={SignIn} />
+            <Route path="/signup" component={SignUp} />
             <Switch>
-                <PrivateRoute path="/luciddreams" component={MainPage} />
+                <PrivateRoute exact path="/" component={MainPage} />
                 <PrivateRoute path="/profile" component={Profile} />
                 <PrivateRoute path="/aeronauts" component={Aeronauts} />
                 <PrivateRoute path="/dreammap" component={DreamMap} />

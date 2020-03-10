@@ -84,27 +84,31 @@ const words = {
     },
     errors: {
         AvatarsLoadError: "Ошибка аватарок",
-        emailLenght: 'Введите email',
         nicknameLenght: 'Введите отображаемое имя',
-        passwordLenght: 'Введите пароль',
-        passwordsCompare: 'Пароли не совпадают',
-        UserNotExist: 'Неверный email или пароль',
-        EmailIsNotValid: 'Введен некорректный email',
-        IncorrectPassword: 'Неверный email или пароль',
-        EmailIsBusy: 'Email занят',
-        PasswordLenght5Symbols: 'Длина пароля - больше 5 символов',
-        NotLogin: 'Вы не авторизированы',
         EmptyName: 'Пустое наименование',
         EmptyTitle: 'Пустой заголовок',
         EmptyDescription: 'Пустое описание',
         EmptyDream: 'Пустое поле сна',
-        NoChanges: 'Нет изменений',
         CantDeletePost: 'Ошибка удаления сна',
         CantAddLocation: 'Ошибка добавления локации',
         CantUpdateLocation: 'Ошибка обновления локации',
         IconNotChange: 'Выберите иконку',
         ColorNotChange: 'Выберите цвет',
-    },
+        
+        EMPTY_EMAIL: "Введите email",
+        EMPTY_PASSWORD: "Введите пароль",
+        INCORRECT_PASSWORD: "Неверный email или пароль",
+        USER_NOT_FOUND: "Неверный email или пароль",
+        EMAIL_IS_BUSY: "Email занят",
+        INVALID_EMAIL: "Введен некорректный email",
+        SHORT_PASSWORD: "Пароль - минимум 5 символов",
+        PASSWORDS_NOT_EQUAL: "Пароли не совпадают",
+        NICKNAME_IS_BUSY: "Пустое имя",
+        NO_CHANGES: "Нет изменений",
+        DB_CONNECT_ERROR: "DB_CONNECT_ERROR",
+        SQL_EXECUTE_ERROR: "SQL_EXECUTE_ERROR",
+        INNER_ERROR: "INNER_ERROR"
+    }
 };
 
 export default words;

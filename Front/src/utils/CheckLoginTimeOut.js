@@ -1,25 +1,24 @@
 import jwt_decode from "jwt-decode";
-
 import { store } from "../store";
+
 import setAuthToken from "../utils/setAuthToken";
-import { SET_CURRENT_USER } from "../actions/types"
+import { SET_CURRENT_USER } from "../actions/types";
 
 export function CheckTimeOut() {
     if (localStorage.jwtToken) {
         const token = localStorage.jwtToken;
         setAuthToken(token);
-        const decoded = jwt_decode(token);
         store.dispatch({
             type: SET_CURRENT_USER,
-            payload: decoded
+            payload: jwt_decode(token)
         });
-
-        const currentTime = Date.now() / 1000; // to get in milliseconds
-        if (decoded.exp < currentTime) {
-            return false;
+        const decoded = jwt_decode(token);
+        const currentTime = Date.now() / 1000; // to get in seconds
+        if (currentTime < decoded.exp) {
+            return true;
         }
         else {
-            return true;
+            return false;
         }
     }
 }
@@ -31,4 +30,22 @@ export function getToken() {
     else {
         return false;
     }
+}
+
+export function setToken(token) {
+    localStorage.setItem("jwtToken", token);
+    setAuthToken(token);
+    store.dispatch({
+        type: SET_CURRENT_USER,
+        payload: jwt_decode(token)
+    });
+}
+
+export function removeToken() {
+    localStorage.removeItem("jwtToken");
+    setAuthToken(false);
+    store.dispatch({
+        type: SET_CURRENT_USER,
+        payload: null
+    });
 }

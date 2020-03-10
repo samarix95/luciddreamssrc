@@ -318,7 +318,7 @@ function AddCDream(props) {
                         snackbar: {
                             open: true,
                             variant: 'error',
-                            message: lang.currLang.errors.NoChanges,
+                            message: lang.currLang.errors.NO_CHANGES,
                         },
                     });
                     setIsLoading(false);
@@ -349,7 +349,7 @@ function AddCDream(props) {
                             },
                         });
                         window.localStorage.removeItem("postСDreamData");
-                        history.push("/luciddreams")
+                        history.push("/")
                     })
                     .catch(err => {
                         setIsLoading(false);
@@ -672,7 +672,7 @@ function AddCDream(props) {
                                             window.localStorage.removeItem("postСDreamData");
                                             isEditMode
                                                 ? history.push("/dreams")
-                                                : history.push("/luciddreams");
+                                                : history.push("/");
                                         }}
                                     >
                                         {lang.currLang.buttons.Back}

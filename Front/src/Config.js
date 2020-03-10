@@ -11,6 +11,7 @@ import {
     fetchRandomUsersPending, fetchRandomUsersSuccess, fetchRandomUsersError,
     fetchUpdateUserDataPending, fetchUpdateUserDataSuccess, fetchUpdateUserDataError, fetchResetUpdateUserDataError, fetchResetUpdateUserData,
     fetchCreateUserPending, fetchCreateUserSuccess, fetchCreateUserError, fetchResetCreateUserError,
+    fetchLoginUserPending, fetchLoginUserSuccess, fetchLoginUserError, fetchResetLoginUserError
 } from './actions/Actions.js';
 
 export const maxSignUpSteps = 3;
@@ -190,5 +191,24 @@ export function fetchCreateUserAction(data) {
 export function resetCreateUserErrorAction() {
     return dispatch => {
         dispatch(fetchResetCreateUserError());
+    }
+}
+
+/*Login user */
+export function fetchLoginUserAction(data) {
+    return dispatch => {
+        dispatch(fetchLoginUserPending());
+        instance.post("/actions/users/login", data)
+            .then(res => {
+                dispatch(fetchLoginUserSuccess(res.data))
+            })
+            .catch(err => {
+                dispatch(fetchLoginUserError(err.response.data))
+            });
+    }
+};
+export function resetLoginUserErrorAction() {
+    return dispatch => {
+        dispatch(fetchResetLoginUserError());
     }
 }

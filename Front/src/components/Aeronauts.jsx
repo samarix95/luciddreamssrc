@@ -68,7 +68,7 @@ function Aeronauts(props) {
     React.useEffect(() => {
         const token = getToken();
         fetchUserData(user_id, token);
-        fetchRandomUsers(user_id, 2, token);
+        fetchRandomUsers(user_id, 3, token);
     }, []);
 
     return (
@@ -212,7 +212,7 @@ function Aeronauts(props) {
                                 <Button className={classes.actionButton}
                                     variant="contained"
                                     color="secondary"
-                                    onClick={() => { history.push("/luciddreams") }}
+                                    onClick={() => { history.push("/") }}
                                 >
                                     {lang.currLang.buttons.Back}
                                 </Button>

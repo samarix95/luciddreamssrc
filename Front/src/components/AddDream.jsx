@@ -257,7 +257,7 @@ function AddDream(props) {
                         snackbar: {
                             open: true,
                             variant: 'error',
-                            message: lang.currLang.errors.NoChanges,
+                            message: lang.currLang.errors.NO_CHANGES,
                         },
                     });
                     setIsLoading(false);
@@ -285,7 +285,7 @@ function AddDream(props) {
                             },
                         });
                         window.localStorage.removeItem("postDreamData");
-                        history.push("/luciddreams")
+                        history.push("/")
                     })
                     .catch(err => {
                         setIsLoading(false);
@@ -524,7 +524,7 @@ function AddDream(props) {
                                         onClick={() => {
                                             isEditMode
                                                 ? history.push("/dreams")
-                                                : history.push("/luciddreams");
+                                                : history.push("/");
                                             window.localStorage.removeItem("postDreamData");
                                         }}
                                     >

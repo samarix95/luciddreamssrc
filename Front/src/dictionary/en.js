@@ -84,27 +84,31 @@ const words = {
     },
     errors: {
         AvatarsLoadError: "Avatars load error",
-        emailLenght: 'Enter email',
         nicknameLenght: 'Enter nickname',
-        passwordLenght: 'Enter password',
-        passwordsCompare: 'Passwords not equal',
-        UserNotExist: 'Invalid email or password',
-        EmailIsNotValid: 'Invalid email',
-        IncorrectPassword: 'Invalid email or password',
-        EmailIsBusy: 'Email is busy',
-        PasswordLenght5Symbols: 'Minimum password length: 5 symbols',
-        NotLogin: 'You not loggin in',
         EmptyName: 'Name must not be empty',
         EmptyTitle: 'Title must not be empty',
         EmptyDescription: 'Description must not be empty',
         EmptyDream: 'Dream must not be empty',
-        NoChanges: 'No changes',
         CantDeletePost: 'Error deleting dream',
         CantAddLocation: 'Error add location',
         CantUpdateLocation: 'Error update location',
         IconNotChange: 'Change icon',
         ColorNotChange: 'Change color',
-    },
+        
+        EMPTY_EMAIL: "Enter email",
+        EMPTY_PASSWORD: "Enter password",
+        INCORRECT_PASSWORD: "Invalid email or password",
+        USER_NOT_FOUND: "Invalid email or password",
+        EMAIL_IS_BUSY: "Email is busy",
+        INVALID_EMAIL: "Invalid email",
+        SHORT_PASSWORD: "Minimum password length: 5 symbols",
+        PASSWORDS_NOT_EQUAL: "Passwords not equal",
+        NICKNAME_IS_BUSY: "Empty nickcname",
+        NO_CHANGES: "No changes",
+        DB_CONNECT_ERROR: "DB_CONNECT_ERROR",
+        SQL_EXECUTE_ERROR: "SQL_EXECUTE_ERROR",
+        INNER_ERROR: "INNER_ERROR"
+    }
 };
 
 export default words;
