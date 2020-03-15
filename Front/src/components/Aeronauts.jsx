@@ -3,7 +3,6 @@ import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import PropTypes from 'prop-types';
 
-import CircularProgress from '@material-ui/core/CircularProgress';
 import CssBaseline from '@material-ui/core/CssBaseline';
 import Typography from '@material-ui/core/Typography';
 import ButtonBase from '@material-ui/core/ButtonBase';
@@ -12,6 +11,8 @@ import Avatar from '@material-ui/core/Avatar';
 import Badge from '@material-ui/core/Badge';
 import Paper from '@material-ui/core/Paper';
 import Grid from '@material-ui/core/Grid';
+
+import Skeleton from '@material-ui/lab/Skeleton';
 
 import { MuiThemeProvider, createMuiTheme } from '@material-ui/core/styles';
 
@@ -96,7 +97,10 @@ function Aeronauts(props) {
                                 <div className={`${classes.relativePosition} ${classes.fullWidth} ${classes.equalHeight} ${classes.centerButton}`}>
                                     <ButtonBase onClick={openUserProfile}
                                         className={`${classes.absolutePosition} ${classes.fullWidth} ${classes.fullHeight} ${classes.topLeft} ${classes.borderRadius50}`}>
-                                        <Avatar src={!userDataPending ? userData.avatar_url : ""} className={`${classes.absolutePosition} ${classes.fullWidth} ${classes.fullHeight}`} />
+                                        {userDataPending
+                                            ? <Skeleton variant="circle" className={`${classes.absolutePosition} ${classes.fullWidth} ${classes.fullHeight}`} />
+                                            : <Avatar src={userData.avatar_url} className={`${classes.absolutePosition} ${classes.fullWidth} ${classes.fullHeight}`} />
+                                        }
                                     </ButtonBase>
                                 </div>
                             </Grid>
@@ -106,14 +110,7 @@ function Aeronauts(props) {
                                         ? <Typography variant="h6" align="center">
                                             {userData.nickname}
                                         </Typography>
-                                        : <div className={`${classes.formControl} ${classes.centerTextAlign}`}>
-                                            <div className={`${classes.inlineBlock} ${classes.relativePosition}`}>
-                                                <CircularProgress />
-                                            </div>
-                                            <Typography className={`${classes.relativePosition}`} component="div">
-                                                {lang.currLang.texts.Loading}
-                                            </Typography>
-                                        </div>
+                                        : <Skeleton variant="text" className={`${classes.margin}`} />
                                     }
 
                                 </Paper>
@@ -129,18 +126,10 @@ function Aeronauts(props) {
                             </Button>
                         </Grid>
                         <Grid className={`${classes.height4} ${classes.relativePosition}`} >
-                            {!randomUsersPending
-                                ? <div className={`${classes.height12} ${classes.relativePosition}`}
-                                    style={{
-                                        overflowY: "visible",
-                                    }}
-                                >
-                                    <div className={`${classes.height12} ${classes.relativePosition}`}
-                                        style={{
-                                            overflowX: "scroll",
-                                        }}
-                                    >
-                                        <div className={`${classes.height12} ${classes.relativePosition}`}
+                            <div className={`${classes.height12} ${classes.relativePosition} ${classes.visibleOverflowY}`} >
+                                <div className={`${classes.height12} ${classes.relativePosition} ${classes.scrollOverflowX}`} >
+                                    {!randomUsersPending
+                                        ? <div className={`${classes.height12} ${classes.relativePosition}`}
                                             style={
                                                 window.innerHeight / 100 * ((randomUsers.length + 1) / 2) * percentAspect * 110 < window.innerWidth
                                                     ? {
@@ -196,10 +185,47 @@ function Aeronauts(props) {
                                             ))
                                             }
                                         </div>
-                                    </div>
+                                        : <div className={`${classes.height12} ${classes.relativePosition}`}
+                                            style={
+                                                window.innerHeight / 100 * ((4) / 2) * percentAspect * 110 < window.innerWidth
+                                                    ? {
+                                                        left: "50%",
+                                                        transform: "translate(-50%)",
+                                                        width: ((4) / 2) * percentAspect * 110 + "vh",
+                                                    }
+                                                    : {
+                                                        width: ((4) / 2) * percentAspect * 110 + "vh",
+                                                    }
+                                            }
+                                        >
+                                            <Skeleton variant="circle" style={{
+                                                position: "absolute",
+                                                top: "50%",
+                                                left: 0 * percentAspect * 55 + "vh",
+                                                height: bubbleSize + "vh",
+                                                width: bubbleSize + "vh",
+                                                borderRadius: "50%",
+                                            }} />
+                                            <Skeleton variant="circle" style={{
+                                                position: "absolute",
+                                                top: "8.4%",
+                                                left: 1 * percentAspect * 55 + "vh",
+                                                height: bubbleSize + "vh",
+                                                width: bubbleSize + "vh",
+                                                borderRadius: "50%",
+                                            }} />
+                                            <Skeleton variant="circle" style={{
+                                                position: "absolute",
+                                                top: "50%",
+                                                left: 2 * percentAspect * 55 + "vh",
+                                                height: bubbleSize + "vh",
+                                                width: bubbleSize + "vh",
+                                                borderRadius: "50%",
+                                            }} />
+                                        </div>
+                                    }
                                 </div>
-                                : <React.Fragment />
-                            }
+                            </div>
                         </Grid>
                     </Grid>
                     <Grid item className={`${classes.mainGridBodyItem} ${classes.height1}`}>

@@ -278,42 +278,39 @@ function ViewDreams(props) {
                     justify="center"
                     alignItems="stretch"
                 >
-                    <Grid item className={`${classes.hiddenOverflow} ${classes.height11}`} >
+                    <Grid item className={`${classes.height11} ${classes.width12} ${classes.autoOverflowX} ${classes.relativePosition}`} >
                         {viewMode && !connectPostsPending || !viewMode && !userPostsPending
-                            ? <Container className={classes.mainGridDreamsBodyItemContainer}>
-                                {dreams.length !== 0
-                                    ? <Grid className={`${classes.mainGridDreamsContainer}`}
-                                        container
-                                        direction="column"
-                                        justify="center"
-                                        alignItems="stretch"
-                                    >
-                                        {tags.length !== 0
-                                            ? dreams
-                                                .filter(item => filterData.location ? item.tags.includes(item.tags.find(tag => tag[0] === tags.find(tags => tags.name_eng === filterData.location || tags.name_rus === filterData.location).id.toString())) : item)
-                                                .filter(item => filterData.type === 2 ? item : item.post_type === filterData.type)
-                                                .map((item, key) => (
-                                                    <DreamCard
-                                                        item={item}
-                                                        key={key}
-                                                        history={history}
-                                                        loadPosts={loadPosts}
-                                                    />
-                                                ))
-                                            : ''
-                                        }
-                                    </Grid>
-                                    : <div>
-                                        <div className={classes.divDreamsNotFound} />
-                                        <div className={`${classes.divDreamsNotFound} ${classes.divDreamsNotFoundImg}`} />
-                                        <div className={classes.divDreamsNotFound}>
-                                            <Typography>
-                                                {lang.currLang.texts.NoDreams}
-                                            </Typography>
-                                        </div>
+                            ? dreams.length !== 0
+                                ? <Grid className={`${classes.absolutePosition} ${classes.width12}`}
+                                    container
+                                    direction="column"
+                                    justify="center"
+                                    alignItems="stretch"
+                                >
+                                    {tags.length !== 0
+                                        ? dreams
+                                            .filter(item => filterData.location ? item.tags.includes(item.tags.find(tag => tag[0] === tags.find(tags => tags.name_eng === filterData.location || tags.name_rus === filterData.location).id.toString())) : item)
+                                            .filter(item => filterData.type === 2 ? item : item.post_type === filterData.type)
+                                            .map((item, key) => (
+                                                <DreamCard
+                                                    item={item}
+                                                    key={key}
+                                                    history={history}
+                                                    loadPosts={loadPosts}
+                                                />
+                                            ))
+                                        : ''
+                                    }
+                                </Grid>
+                                : <div>
+                                    <div className={classes.divDreamsNotFound} />
+                                    <div className={`${classes.divDreamsNotFound} ${classes.divDreamsNotFoundImg}`} />
+                                    <div className={classes.divDreamsNotFound}>
+                                        <Typography>
+                                            {lang.currLang.texts.NoDreams}
+                                        </Typography>
                                     </div>
-                                }
-                            </Container>
+                                </div>
                             : <div className={`${classes.formControl} ${classes.centerTextAlign}`} >
                                 <div className={`${classes.inlineBlock} ${classes.relativePosition}`} >
                                     <CircularProgress />

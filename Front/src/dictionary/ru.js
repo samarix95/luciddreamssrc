@@ -71,7 +71,7 @@ const words = {
         DeleteText: "После удаления запись не получится восстановить.",
         Name: "Наименование",
         ChangeIcon: "Иконка",
-        FindIcon: "Поиск иконки (English only)",
+        FindIcon: "Поиск иконки",
         LogOutQuestion: "Вы точно хотите выйти?",
         Loading: "Загрузка",
         Avatar: "Аватар",
@@ -81,6 +81,8 @@ const words = {
         AddConnections: "Добавить контакты",
         AddedConnections: "Контакт добавлен",
         DeletedConnections: "Контакт удален",
+        AddLocationStep1: "Наименование",
+        AddLocationStep2: "Иконка"
     },
     errors: {
         AvatarsLoadError: "Ошибка аватарок",
@@ -94,7 +96,7 @@ const words = {
         CantUpdateLocation: 'Ошибка обновления локации',
         IconNotChange: 'Выберите иконку',
         ColorNotChange: 'Выберите цвет',
-        
+
         EMPTY_EMAIL: "Введите email",
         EMPTY_PASSWORD: "Введите пароль",
         INCORRECT_PASSWORD: "Неверный email или пароль",

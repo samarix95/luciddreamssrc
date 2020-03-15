@@ -19,19 +19,19 @@ import { MuiThemeProvider, createMuiTheme } from '@material-ui/core/styles';
 
 import CssBaseline from '@material-ui/core/CssBaseline';
 
-import { SET_CURRENT_USER, SET_SNACKBAR_MODE } from "../../actions/types.js";
-import { setCurrLang, setUserState, setSnackbar } from "../../actions/Actions.js";
+import { SET_SNACKBAR_MODE } from "../../actions/types.js";
+import { setCurrLang, setSnackbar } from "../../actions/Actions.js";
 import { useStyles } from '../../styles/Styles.js';
-import { fetchLoginUserAction, resetLoginUserErrorAction } from "../../Config.js";
+import { fetchUserDataAction, fetchLoginUserAction, resetLoginUserErrorAction } from "../../Config.js";
 import { getLoginUser, getLoginUserPending, getLoginUserError } from '../../reducers/loginUserReducer.js';
-import { setToken } from '../../utils/CheckLoginTimeOut.js';
+import { getToken, setToken } from '../../utils/CheckLoginTimeOut.js';
 
 import RuDict from "../../dictionary/ru.js";
 import EnDict from "../../dictionary/en.js";
 
 function SignIn(props) {
     const classes = useStyles();
-    const { history, themeMode, lang, setUserState, setSnackbar, setCurrLang,
+    const { history, themeMode, lang, setSnackbar, setCurrLang, fetchUserData,
         fetchLoginUser, resetLoginUserError, loginUser, loginUserPending, loginUserError } = props;
     const muiTheme = createMuiTheme(themeMode);
     const [userLogin, setUserLogin] = React.useState("");
@@ -75,8 +75,8 @@ function SignIn(props) {
     }
 
     if (Object.keys(loginUser).length > 0 && !loginUserPending) {
-        setToken(loginUser.token);
-        
+        const id = setToken(loginUser.token);
+        fetchUserData(id, getToken());
         history.push("/");
     }
 
@@ -232,7 +232,6 @@ function SignIn(props) {
 
 SignIn.propTypes = {
     setCurrLang: PropTypes.func.isRequired,
-    setUserState: PropTypes.func.isRequired,
     setSnackbar: PropTypes.func.isRequired,
     themeMode: PropTypes.object.isRequired,
     fetchLoginUser: PropTypes.func.isRequired,
@@ -254,10 +253,10 @@ const mapStateToProps = store => {
 
 const mapDispatchToProps = (dispatch) => bindActionCreators({
     setCurrLang: currLangState => dispatch(setCurrLang(currLangState)),
-    setUserState: State => dispatch(setUserState(State)),
     setSnackbar: snackbar => dispatch(setSnackbar(snackbar)),
     fetchLoginUser: fetchLoginUserAction,
-    resetLoginUserError: resetLoginUserErrorAction
+    resetLoginUserError: resetLoginUserErrorAction,
+    fetchUserData: fetchUserDataAction
 }, dispatch);
 
 export default connect(

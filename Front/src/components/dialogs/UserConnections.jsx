@@ -3,13 +3,11 @@ import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 
 import ListItemSecondaryAction from "@material-ui/core/ListItemSecondaryAction";
-import CircularProgress from '@material-ui/core/CircularProgress';
 import ListItemAvatar from "@material-ui/core/ListItemAvatar";
 import DialogActions from '@material-ui/core/DialogActions';
 import DialogContent from '@material-ui/core/DialogContent';
 import ListItemText from "@material-ui/core/ListItemText";
 import DialogTitle from '@material-ui/core/DialogTitle';
-import Typography from '@material-ui/core/Typography';
 import IconButton from "@material-ui/core/IconButton";
 import ListItem from "@material-ui/core/ListItem";
 import Avatar from "@material-ui/core/Avatar";
@@ -18,6 +16,8 @@ import Button from '@material-ui/core/Button';
 import Grid from '@material-ui/core/Grid';
 import List from "@material-ui/core/List";
 
+import Skeleton from '@material-ui/lab/Skeleton';
+
 import AddConnection from './AddConnection.jsx';
 
 import { useStyles } from '../../styles/Styles.js';
@@ -25,7 +25,6 @@ import { instance } from '../../Config';
 import { SET_SNACKBAR_MODE } from "../../actions/types.js";
 import { setSnackbar } from '../../actions/Actions.js';
 
-import InboxIcon from "@material-ui/icons/Inbox";
 import ClearIcon from '@material-ui/icons/Clear';
 
 function UserConnections(props) {
@@ -115,17 +114,26 @@ function UserConnections(props) {
                 </DialogTitle>
                 <DialogContent dividers={true}>
                     <Grid container className={`${classes.height12} ${classes.minHeight100px}`} id="connections-dialog-description">
-                        {isConnectsLoad
-                            ? <div className={`${classes.formControl} ${classes.centerTextAlign}`}>
-                                <div className={`${classes.inlineBlock} ${classes.relativePosition}`}>
-                                    <CircularProgress />
-                                </div>
-                                <Typography className={`${classes.relativePosition}`} component="div">
-                                    {lang.currLang.texts.Loading}
-                                </Typography>
-                            </div>
-                            : <List className={`${classes.fullWidth}`} component="nav" aria-label="main">
-                                {connectionsList.map((item, key) => (
+                        <List className={`${classes.fullWidth}`} component="nav" aria-label="main">
+                            {isConnectsLoad
+                                ? <React.Fragment>
+                                    <ListItem >
+                                        <ListItemText>
+                                            <Skeleton variant="text" />
+                                        </ListItemText>
+                                    </ListItem>
+                                    <ListItem >
+                                        <ListItemText>
+                                            <Skeleton variant="text" />
+                                        </ListItemText>
+                                    </ListItem>
+                                    <ListItem >
+                                        <ListItemText>
+                                            <Skeleton variant="text" />
+                                        </ListItemText>
+                                    </ListItem>
+                                </React.Fragment>
+                                : connectionsList.map((item, key) => (
                                     <ListItem button key={key} onClick={() => { openProfile(item.id) }}>
                                         <ListItemAvatar>
                                             <Avatar src={item.avatar_url} />
@@ -137,9 +145,9 @@ function UserConnections(props) {
                                             </IconButton>
                                         </ListItemSecondaryAction>
                                     </ListItem>
-                                ))}
-                            </List>
-                        }
+                                ))
+                            }
+                        </List>
                     </Grid>
                 </DialogContent>
                 <DialogActions>

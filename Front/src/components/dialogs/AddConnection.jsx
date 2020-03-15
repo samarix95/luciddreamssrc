@@ -3,14 +3,12 @@ import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 
 import ListItemSecondaryAction from "@material-ui/core/ListItemSecondaryAction";
-import CircularProgress from '@material-ui/core/CircularProgress';
 import ListItemAvatar from "@material-ui/core/ListItemAvatar";
 import DialogContent from '@material-ui/core/DialogContent';
 import DialogActions from '@material-ui/core/DialogActions';
 import ListItemText from "@material-ui/core/ListItemText";
 import DialogTitle from '@material-ui/core/DialogTitle';
 import IconButton from "@material-ui/core/IconButton";
-import Typography from '@material-ui/core/Typography';
 import InputBase from '@material-ui/core/InputBase';
 import ListItem from "@material-ui/core/ListItem";
 import Avatar from "@material-ui/core/Avatar";
@@ -20,12 +18,13 @@ import Paper from '@material-ui/core/Paper';
 import Grid from '@material-ui/core/Grid';
 import List from '@material-ui/core/List';
 
+import Skeleton from '@material-ui/lab/Skeleton';
+
 import { useStyles } from '../../styles/Styles.js';
 import { instance } from '../../Config';
 import { SET_SNACKBAR_MODE } from "../../actions/types.js";
 import { setSnackbar } from '../../actions/Actions.js';
 
-import InboxIcon from "@material-ui/icons/Inbox";
 import AddIcon from '@material-ui/icons/Add';
 import SearchIcon from '@material-ui/icons/Search';
 
@@ -91,22 +90,31 @@ function AddConnection(props) {
             </DialogTitle>
             <DialogContent dividers={true}>
                 <Grid container className={`${classes.height12} ${classes.minHeight100px}`} id="add-connections-dialog-description">
-                    {isLoad
-                        ? <div className={`${classes.formControl} ${classes.centerTextAlign}`}>
-                            <div className={`${classes.inlineBlock} ${classes.relativePosition}`}>
-                                <CircularProgress />
-                            </div>
-                            <Typography className={`${classes.relativePosition}`} component="div">
-                                {lang.currLang.texts.Loading}
-                            </Typography>
-                        </div>
-                        : <React.Fragment>
-                            <Paper component="form" className={`${classes.SearchPaper}`}>
-                                <SearchIcon />
-                                <InputBase placeholder={lang.currLang.texts.nickname} onChange={handleSetFilter} />
-                            </Paper>
-                            <List className={`${classes.fullWidth}`} component="nav" aria-label="main">
-                                {usersList
+                    <React.Fragment>
+                        <Paper component="form" className={`${classes.SearchPaper}`}>
+                            <SearchIcon />
+                            <InputBase placeholder={lang.currLang.texts.nickname} onChange={handleSetFilter} />
+                        </Paper>
+                        <List className={`${classes.fullWidth}`} component="nav" aria-label="main">
+                            {isLoad
+                                ? <React.Fragment>
+                                    <ListItem >
+                                        <ListItemText>
+                                            <Skeleton variant="text" />
+                                        </ListItemText>
+                                    </ListItem>
+                                    <ListItem >
+                                        <ListItemText>
+                                            <Skeleton variant="text" />
+                                        </ListItemText>
+                                    </ListItem>
+                                    <ListItem >
+                                        <ListItemText>
+                                            <Skeleton variant="text" />
+                                        </ListItemText>
+                                    </ListItem>
+                                </React.Fragment>
+                                : usersList
                                     .filter(item => item.nickname.toLowerCase().includes(filter.toLowerCase()) ? true : false)
                                     .map((item, key) => (
                                         <ListItem key={key}>
@@ -120,10 +128,10 @@ function AddConnection(props) {
                                                 </IconButton>
                                             </ListItemSecondaryAction>
                                         </ListItem>
-                                    ))}
-                            </List>
-                        </React.Fragment>
-                    }
+                                    ))
+                            }
+                        </List>
+                    </React.Fragment>
                 </Grid>
             </DialogContent>
             <DialogActions>

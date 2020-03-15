@@ -18,7 +18,9 @@ import Avatar from '@material-ui/core/Avatar';
 import Slide from "@material-ui/core/Slide";
 import Grid from '@material-ui/core/Grid';
 
-import { SET_THEME_MODE, SET_CURRENT_USER, SET_SNACKBAR_MODE } from "../actions/types";
+import Skeleton from '@material-ui/lab/Skeleton';
+
+import { SET_THEME_MODE, SET_SNACKBAR_MODE } from "../actions/types";
 
 import { setUserState, setCurrLang, setTheme, setSnackbar } from '../actions/Actions';
 import { useStyles } from '../styles/Styles.js';
@@ -26,7 +28,6 @@ import { fetchUpdateUserDataAction, resetUpdateUserDataErrorAction, resetUpdateU
 import { getUserData, getUserDataPending } from '../reducers/userDataReducer';
 import { getUpdateUserData, getUpdateUserDataError } from '../reducers/updateUserDataReducer.js';
 import { CheckTimeOut, getToken, removeToken } from '../utils/CheckLoginTimeOut.js';
-import setAuthToken from "../utils/setAuthToken.js";
 
 import { MuiThemeProvider, createMuiTheme } from '@material-ui/core/styles';
 import CssBaseline from '@material-ui/core/CssBaseline';
@@ -42,10 +43,9 @@ function TransitionDown(props) {
 }
 
 function MainPage(props) {
-    const { lang, themeMode, auth, history, setCurrLangAction, setTheme, setSnackbar,
+    const { lang, themeMode, history, setCurrLangAction, setTheme, setSnackbar,
         userData, userDataPending,
         updateUserData, updateUserDataError, fetchUpdateUserData, resetUpdateUserDataError, resetUpdateUserData } = props;
-
     const classes = useStyles();
     const muiTheme = createMuiTheme(themeMode);
     const [prevLanguage, setPrevLanguage] = React.useState(undefined);
@@ -77,14 +77,11 @@ function MainPage(props) {
     };
 
     const onAstronautClick = () => {
-        if (CheckTimeOut()) history.push("/aeronauts");
-        else history.push("/");
+        CheckTimeOut() ? history.push("/aeronauts") : history.push("/signin");
     };
 
     const onMapClick = () => {
-        let check = CheckTimeOut();
-        if (check) history.push("/dreammap");
-        else history.push("/");
+        CheckTimeOut() ? history.push("/dreammap") : history.push("/signin");
     };
 
     const changeLanguage = (language) => {
@@ -151,10 +148,10 @@ function MainPage(props) {
                 message: lang.currLang.texts.success
             }
         });
-        if (openLangSnakbar)
-            setOpenLangSnakbar(false);
+        if (openLangSnakbar) setOpenLangSnakbar(false);
         resetUpdateUserData();
     }
+
     if (updateUserDataError) {
         setSnackbar({
             type: SET_SNACKBAR_MODE,
@@ -164,8 +161,7 @@ function MainPage(props) {
                 message: updateUserDataError
             }
         });
-        if (openLangSnakbar)
-            handleCloseLangSnakbar();
+        if (openLangSnakbar) handleCloseLangSnakbar();
         resetUpdateUserDataError();
     }
 
@@ -174,12 +170,7 @@ function MainPage(props) {
             <CssBaseline />
             <Snackbar key={"top, center"}
                 open={openLangSnakbar}
-                anchorOrigin={
-                    {
-                        vertical: "top",
-                        horizontal: "center"
-                    }
-                }
+                anchorOrigin={{ vertical: "top", horizontal: "center" }}
                 TransitionComponent={transition}
             >
                 <SnackbarContent aria-describedby="lang-snackbar"
@@ -187,30 +178,29 @@ function MainPage(props) {
                         <Typography id="lang-snackbar"
                             className={`${classes.height12}`}
                             align='center'
-                            variant='body2'>
+                            variant='body2'
+                        >
                             {lang.currLang.texts.changleLanguage + langSnakbarMessage + ' ?'}
                         </Typography>
                     }
-                    action={
-                        [
-                            <div key={"lang-snackbar-buttons"}>
-                                <IconButton key="save"
-                                    aria-label="save"
-                                    color="inherit"
-                                    onClick={handleSaveLangSnakbar}
-                                >
-                                    <SaveIcon />
-                                </IconButton>
-                                <IconButton key="close"
-                                    aria-label="close"
-                                    color="inherit"
-                                    onClick={handleCloseLangSnakbar}
-                                >
-                                    <CloseIcon />
-                                </IconButton>
-                            </div>
-                        ]
-                    }
+                    action={[
+                        <div key={"lang-snackbar-buttons"}>
+                            <IconButton key="save"
+                                aria-label="save"
+                                color="inherit"
+                                onClick={handleSaveLangSnakbar}
+                            >
+                                <SaveIcon />
+                            </IconButton>
+                            <IconButton key="close"
+                                aria-label="close"
+                                color="inherit"
+                                onClick={handleCloseLangSnakbar}
+                            >
+                                <CloseIcon />
+                            </IconButton>
+                        </div>
+                    ]}
                 />
             </Snackbar>
             <Dialog open={openDialog}
@@ -234,7 +224,6 @@ function MainPage(props) {
                     </Button>
                     <Button color="primary"
                         onClick={logOut}
-                        autoFocus
                     >
                         {lang.currLang.buttons.signOut}
                     </Button>
@@ -272,7 +261,11 @@ function MainPage(props) {
                                 </Grid>
                                 <Grid className={`${classes.height4} ${classes.relativePosition} ${classes.horizontalCenter} ${classes.inlineBlock}`} >
                                     <img className={`${classes.fullHeight}`} src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" />
-                                    <Avatar className={`${classes.absolutePosition} ${classes.fullHeight} ${classes.fullWidth} ${classes.absoluteZero}`} src={!userDataPending ? userData.avatar_url : ""} />
+                                    {userDataPending
+                                        ? <Skeleton variant="circle" className={`${classes.absolutePosition} ${classes.fullHeight} ${classes.fullWidth} ${classes.absoluteZero}`} />
+                                        : <Avatar className={`${classes.absolutePosition} ${classes.fullHeight} ${classes.fullWidth} ${classes.absoluteZero}`} src={userData.avatar_url} />
+                                    }
+
                                 </Grid>
                             </Grid>
                             <Grid item xs={4} >
@@ -295,11 +288,7 @@ function MainPage(props) {
                                 <Button variant="contained"
                                     color="primary"
                                     className={`${classes.menuButton} ${classes.centerButton}`}
-                                    onClick={() => {
-                                        let check = CheckTimeOut();
-                                        if (check) history.push("/dreams");
-                                        else history.push("/");
-                                    }}
+                                    onClick={() => { CheckTimeOut() ? history.push("/dreams") : history.push("/signin") }}
                                 >
                                     {lang.currLang.buttons.dreamJoirnal}
                                 </Button>
@@ -308,11 +297,7 @@ function MainPage(props) {
                                 <Button variant="contained"
                                     color="primary"
                                     className={`${classes.menuButton} ${classes.centerButton}`}
-                                    onClick={() => {
-                                        let check = CheckTimeOut();
-                                        if (check) history.push("/addregulardream");
-                                        else history.push("/");
-                                    }}
+                                    onClick={() => { CheckTimeOut() ? history.push("/addregulardream") : history.push("/signin") }}
                                 >
                                     {lang.currLang.buttons.addDream}
                                 </Button>
@@ -321,11 +306,7 @@ function MainPage(props) {
                                 <Button variant="contained"
                                     color="primary"
                                     className={`${classes.menuButton} ${classes.centerButton}`}
-                                    onClick={() => {
-                                        let check = CheckTimeOut();
-                                        if (check) history.push("/addcdream");
-                                        else history.push("/");
-                                    }}
+                                    onClick={() => { CheckTimeOut() ? history.push("/addcdream") : history.push("/signin") }}
                                 >
                                     {lang.currLang.buttons.addCDream}
                                 </Button>
@@ -334,11 +315,7 @@ function MainPage(props) {
                                 <Button variant="contained"
                                     color="primary"
                                     className={`${classes.menuButton} ${classes.centerButton}`}
-                                    onClick={() => {
-                                        let check = CheckTimeOut();
-                                        if (check) history.push("/technics");
-                                        else history.push("/");
-                                    }}
+                                    onClick={() => { CheckTimeOut() ? history.push("/technics") : history.push("/signin") }}
                                 >
                                     {lang.currLang.buttons.techniques}
                                 </Button>
@@ -385,7 +362,7 @@ function MainPage(props) {
                     </Grid>
                 </Grid>
             </div>
-        </MuiThemeProvider>
+        </MuiThemeProvider >
     );
 };
 
@@ -396,14 +373,12 @@ MainPage.propTypes = {
     setUserState: PropTypes.func.isRequired,
     lang: PropTypes.object.isRequired,
     themeMode: PropTypes.object.isRequired,
-    auth: PropTypes.object.isRequired,
 }
 
 const mapStateToProps = store => {
     return {
         lang: store.lang,
         themeMode: store.themeMode,
-        auth: store.auth,
         userDataPending: getUserDataPending(store),
         userData: getUserData(store),
         updateUserData: getUpdateUserData(store),

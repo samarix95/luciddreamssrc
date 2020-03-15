@@ -35,10 +35,12 @@ export function getToken() {
 export function setToken(token) {
     localStorage.setItem("jwtToken", token);
     setAuthToken(token);
+    const decode = jwt_decode(token);
     store.dispatch({
         type: SET_CURRENT_USER,
-        payload: jwt_decode(token)
+        payload: decode
     });
+    return decode.id;
 }
 
 export function removeToken() {

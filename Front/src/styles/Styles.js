@@ -67,7 +67,13 @@ export const useStyles = makeStyles(theme => ({
         marginBottom: 10
     },
     hiddenOverflowX: {
-        overflowX: "hidden",
+        overflowX: "hidden"
+    },
+    autoOverflowX: {
+        overflowX: "auto"
+    },
+    scrollOverflowX: {
+        overflowX: "scroll"
     },
     centerTextAlign: {
         textAlign: "center",
@@ -107,11 +113,11 @@ export const useStyles = makeStyles(theme => ({
         margin: "auto"
     },
     dreamCardDiv: {
+        position: "relative",
+        width: "100%",
+        height: "auto",
         marginTop: '15px',
         marginBottom: '15px',
-        width: '100%',
-        height: 'auto',
-        borderRadius: '4px',
     },
     divDreamsNotFoundImg: {
         background: "url('https://static.thenounproject.com/png/603669-200.png') no-repeat center",
@@ -180,14 +186,16 @@ export const useStyles = makeStyles(theme => ({
         boxSizing: 'border-box',
         maxHeight: '90%',
         overflow: 'auto',
-        borderRadius: '4px',
     },
     mainGridDreamsBodyItemContainerPaper: {
         height: '100%',
         opacity: 0.9,
     },
     hiddenOverflow: {
-        overflow: 'hidden',
+        overflow: 'hidden'
+    },
+    visibleOverflowY: {
+        overflowY: "visible"
     },
     mainGridDreamsContainer: {
         height: '100%',
@@ -478,6 +486,10 @@ export const useStyles = makeStyles(theme => ({
         left: "50%",
         transform: "translate(-50%)"
     },
+    verticalCenter: {
+        top: "50%",
+        transform: "translateY(-50%)"
+    },
     relativePosition: {
         position: 'relative',
     },
@@ -667,7 +679,7 @@ export const useStyles = makeStyles(theme => ({
         height: 100 / 12 * 6 - 0.1 + "%",
     },
     height5: {
-        height: 100 / 12 * 5 - 0.1 + "%",
+        height: 100 / 12 * 5 - 0.1 + "% !Important",
     },
     height4: {
         height: 100 / 12 * 4 - 0.1 + "%",

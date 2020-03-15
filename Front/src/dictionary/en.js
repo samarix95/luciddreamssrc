@@ -71,7 +71,7 @@ const words = {
         DeleteText: "You can't restore data.",
         Name: "Name",
         ChangeIcon: "Icon",
-        FindIcon: "Search icon",
+        FindIcon: "Icon name",
         LogOutQuestion: "Do you want to logout?",
         Loading: "Loading",
         Avatar: "Avatar",
@@ -81,6 +81,8 @@ const words = {
         AddConnections: "Add contacts",
         AddedConnections: "Contact added",
         DeletedConnections: "Contact deleted",
+        AddLocationStep1: "Display name",
+        AddLocationStep2: "Icon"
     },
     errors: {
         AvatarsLoadError: "Avatars load error",
@@ -92,9 +94,9 @@ const words = {
         CantDeletePost: 'Error deleting dream',
         CantAddLocation: 'Error add location',
         CantUpdateLocation: 'Error update location',
-        IconNotChange: 'Change icon',
-        ColorNotChange: 'Change color',
-        
+        IconNotChange: 'Choose icon',
+        ColorNotChange: 'Choose color',
+
         EMPTY_EMAIL: "Enter email",
         EMPTY_PASSWORD: "Enter password",
         INCORRECT_PASSWORD: "Invalid email or password",

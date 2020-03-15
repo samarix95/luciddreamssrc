@@ -104,7 +104,7 @@ const mapStateToProps = store => {
 
 const mapDispatchToProps = (dispatch) => bindActionCreators({
     setCurrLangAction: currLangState => dispatch(setCurrLang(currLangState)),
-    fetchUserData: fetchUserDataAction,
+    fetchUserData: fetchUserDataAction
 }, dispatch);
 
 export default connect(

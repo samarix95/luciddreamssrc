@@ -18,6 +18,8 @@ import Avatar from '@material-ui/core/Avatar';
 import Paper from '@material-ui/core/Paper';
 import Grid from '@material-ui/core/Grid';
 
+import Skeleton from '@material-ui/lab/Skeleton';
+
 import { MuiThemeProvider, createMuiTheme } from '@material-ui/core/styles';
 
 import { useStyles } from '../styles/Styles.js';
@@ -244,9 +246,9 @@ function Profile(props) {
                                 </IconButton>
                             </Grid>
                             <Grid item xs={12} sm={6} className={`${classes.relativePosition}`} >
-                                <div className={`${classes.formControl}`} >
-                                    {!userDataPending
-                                        ? <React.Fragment>
+                                {!userDataPending
+                                    ? <div className={`${classes.formControl}`} >
+                                        <React.Fragment>
                                             <Typography variant="h5" align="center" color="textPrimary">
                                                 {userData.nickname}
                                             </Typography>
@@ -259,16 +261,12 @@ function Profile(props) {
                                                 }
                                             </Typography>
                                         </React.Fragment>
-                                        : <div className={`${classes.formControl} ${classes.centerTextAlign}`}>
-                                            <div className={`${classes.inlineBlock} ${classes.relativePosition}`}>
-                                                <CircularProgress />
-                                            </div>
-                                            <Typography className={`${classes.relativePosition}`} component="div">
-                                                {lang.currLang.texts.Loading}
-                                            </Typography>
-                                        </div>
-                                    }
-                                </div>
+                                    </div>
+                                    : <div className={`${classes.width5} ${classes.height5} ${classes.centerButton}`} >
+                                        <Skeleton variant="text" />
+                                        <Skeleton variant="text" />
+                                    </div>
+                                }
                             </Grid>
                         </Grid>
                         <Grid className={`${classes.height3} ${classes.relativePosition}`}
@@ -423,13 +421,13 @@ function Profile(props) {
                                                 : <React.Fragment />
                                             }
                                         </React.Fragment>
-                                    : <div className={`${classes.formControl} ${classes.centerTextAlign}`}>
-                                        <div className={`${classes.inlineBlock} ${classes.relativePosition}`}>
-                                            <CircularProgress />
-                                        </div>
-                                        <Typography className={`${classes.relativePosition}`} component="div">
-                                            {lang.currLang.texts.Loading}
-                                        </Typography>
+                                    : <div className={`${classes.absolutePosition} ${classes.hiddenOverflowX} ${classes.fullWidth} ${classes.fullHeight} ${classes.topLeft}`}>
+                                        <Skeleton variant="text" />
+                                        <Skeleton variant="text" />
+                                        <Skeleton variant="text" />
+                                        <Skeleton variant="text" />
+                                        <Skeleton variant="text" />
+                                        <Skeleton variant="text" />
                                     </div>
                                 }
                             </Paper>

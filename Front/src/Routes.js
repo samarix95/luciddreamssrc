@@ -15,17 +15,39 @@ import Snackbar from '@material-ui/core/Snackbar';
 import Grow from '@material-ui/core/Grow';
 
 import AddTechnics from './components/AddTechnics.jsx';
-const Technics = React.lazy(() => import('./components/Technics.jsx'));
-const AddLocation = React.lazy(() => import('./components/AddLocation.jsx'));
-const AddCDream = React.lazy(() => import('./components/AddCDream.jsx'));
-const AddDream = React.lazy(() => import('./components/AddDream.jsx'));
-const ViewDreams = React.lazy(() => import('./components/ViewDreams.jsx'));
-const DreamMap = React.lazy(() => import('./components/DreamMap.jsx'));
-const Profile = React.lazy(() => import('./components/Profile.jsx'));
-const Aeronauts = React.lazy(() => import('./components/Aeronauts.jsx'));
-const MainPage = React.lazy(() => import('./components/MainPage.jsx'));
-const SignIn = React.lazy(() => import('./components/Sign/SignIn.jsx'));
-const SignUp = React.lazy(() => import('./components/Sign/SignUp.jsx'));
+
+const TechnicsPromise = import("./components/Technics.jsx");
+const Technics = React.lazy(() => TechnicsPromise);
+
+const addLocationPromise = import("./components/Location/AddLocation.jsx");
+const AddLocation = React.lazy(() => addLocationPromise);
+
+const addCDreamPromise = import("./components/AddCDream.jsx");
+const AddCDream = React.lazy(() => addCDreamPromise);
+
+const addDreamPromise = import("./components/AddDream.jsx");
+const AddDream = React.lazy(() => addDreamPromise);
+
+const viewDreamsPromise = import("./components/ViewDreams.jsx");
+const ViewDreams = React.lazy(() => viewDreamsPromise);
+
+const dreamMapPromise = import("./components/DreamMap.jsx");
+const DreamMap = React.lazy(() => dreamMapPromise);
+
+const profilePromise = import("./components/Profile.jsx");
+const Profile = React.lazy(() => profilePromise);
+
+const aeronautsPromise = import("./components/Aeronauts.jsx");
+const Aeronauts = React.lazy(() => aeronautsPromise);
+
+const mainPagePromise = import("./components/MainPage.jsx");
+const MainPage = React.lazy(() => mainPagePromise);
+
+const signInPromise = import("./components/Sign/SignIn.jsx");
+const SignIn = React.lazy(() => signInPromise);
+
+const signUpPromise = import("./components/Sign/SignUp.jsx");
+const SignUp = React.lazy(() => signUpPromise);
 
 import CloseIcon from '@material-ui/icons/Close';
 
@@ -113,7 +135,7 @@ function Routes(props) {
             <Route path="/signin" component={SignIn} />
             <Route path="/signup" component={SignUp} />
             <Switch>
-                <PrivateRoute exact path="/" component={MainPage} />
+                <PrivateRoute exact path="/" component={AddLocation} />
                 <PrivateRoute path="/profile" component={Profile} />
                 <PrivateRoute path="/aeronauts" component={Aeronauts} />
                 <PrivateRoute path="/dreammap" component={DreamMap} />
