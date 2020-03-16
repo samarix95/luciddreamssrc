@@ -8,15 +8,23 @@ import InfoIcon from '@material-ui/icons/Info';
 import amber from '@material-ui/core/colors/amber';
 import green from '@material-ui/core/colors/green';
 
-import MapImg from '../img/map.png';
-import SunImg from '../img/sun.png';
-import MoonImg from '../img/moon.png';
-import MountainsImg from '../img/mountains.png';
-import TreesImg from '../img/trees.png';
-import AstronautImg from '../img/astronaut.png';
-import CometImg from '../img/comet.png';
-import BirdGif from '../img/bird.gif';
-import CloudSvg from '../img/cloud.svg';
+import MapImg from '../img/map.svg';
+import SunImg from '../img/sun.svg';
+import MoonImg from '../img/moon.svg';
+import AstronautImg from '../img/aeronaut.svg';
+
+export const colors = {
+    dark: {
+        primary: "#ffffff",
+        secondary: "#f50057",
+        error: "#cc0000"
+    },
+    light: {
+        primary: "#000000",
+        secondary: "#f50057",
+        error: "#cc0000"
+    }
+};
 
 export const params = {
     amountStars: 25,
@@ -30,7 +38,7 @@ export const params = {
         min: 5,
         max: 25,
     }
-}
+};
 
 export const variantIcon = {
     success: CheckCircleIcon,
@@ -246,30 +254,6 @@ export const useStyles = makeStyles(theme => ({
         width: '100%',
         height: '100%',
     },
-    MointainBackgroud: {
-        backgroundImage: 'url(' + MountainsImg + ')',
-        backgroundPosition: 'right bottom',
-        backgroundSize: 'auto 100%',
-        position: 'absolute',
-        bottom: 0,
-        right: 0,
-        width: '100%',
-        height: '20%',
-        zIndex: -4,
-        transition: 'all 1s linear',
-    },
-    TreesBackgroud: {
-        position: 'absolute',
-        bottom: '-15%',
-        right: 0,
-        width: '100%',
-        height: '100%',
-        backgroundImage: 'url(' + TreesImg + ') ',
-        backgroundPosition: 'center bottom',
-        backgroundRepeat: 'no-repeat',
-        backgroundSize: 'cover',
-        zIndex: -4,
-    },
     AppDivDark: {
         position: 'fixed',
         background: 'radial-gradient(ellipse at center, rgba(8, 25, 42, 1) 20%, rgba(1, 4, 6, 1) 100%)',
@@ -313,45 +297,6 @@ export const useStyles = makeStyles(theme => ({
         background: 'radial-gradient(ellipse at center, rgba(177, 198, 219, 1) 2%, rgba(5, 63, 118, 1) 100%)',
         filter: 'blur(1px)',
         animation: '$shine infinite linear',
-        zIndex: -1,
-    },
-    AppComet: {
-        position: 'relative',
-        top: '100%',
-        left: '0%',
-        width: '80px',
-        height: '40px',
-        transformOrigin: '50vw 0vh',
-        animation: '$comet infinite linear',
-        animationDuration: '30s',
-    },
-    AppCometDiv: {
-        width: '100%',
-        height: '100%',
-        transform: 'rotate(90deg)',
-        zIndex: -4,
-    },
-    AppCometImg: {
-        transform: 'rotate(-15deg) scaleY(-1)',
-        width: '100%',
-        height: '100%',
-        backgroundImage: 'url(' + CometImg + ')',
-        backgroundSize: 'cover',
-    },
-    FlockOfBirds: {
-        position: 'absolute',
-        width: '20px',
-        height: '20px',
-        backgroundImage: 'url(' + BirdGif + ')',
-        backgroundSize: 'cover',
-        animation: '$movebird infinite linear',
-        zIndex: -2,
-    },
-    AppCloud: {
-        position: 'absolute',
-        backgroundRepeat: 'no-repeat',
-        backgroundImage: 'url(' + CloudSvg + ')',
-        animation: '$moveclouds infinite linear',
         zIndex: -1,
     },
     image: {
@@ -432,12 +377,6 @@ export const useStyles = makeStyles(theme => ({
         borderRadius: '10%',
         transform: "translate(-50%, -50%)",
     },
-    borderRadius50: {
-        borderRadius: "50%",
-    },
-    padding10: {
-        padding: "10px",
-    },
     MapDiv: {
         position: 'absolute',
         top: 0,
@@ -447,7 +386,8 @@ export const useStyles = makeStyles(theme => ({
         overflow: 'hidden',
     },
     MapImg: {
-        backgroundSize: 'cover',
+        backgroundSize: 'contain',
+        backgroundPosition: "center",
         background: 'url(' + MapImg + ')',
         backgroundRepeat: 'no-repeat',
         position: 'absolute',
@@ -456,6 +396,12 @@ export const useStyles = makeStyles(theme => ({
         width: '100%',
         height: '100%',
         transition: 'filter 0.5s linear',
+    },
+    borderRadius50: {
+        borderRadius: "50%",
+    },
+    padding10: {
+        padding: "10px",
     },
     mainGridContainer: {
         height: '100% !Important',
@@ -743,9 +689,6 @@ export const snackStyles = makeStyles(theme => ({
     },
     error: {
         backgroundColor: theme.palette.error.dark + '!Important',
-    },
-    info: {
-        backgroundColor: theme.palette.primary.main + '!Important',
     },
     warning: {
         backgroundColor: amber[700] + '!Important',

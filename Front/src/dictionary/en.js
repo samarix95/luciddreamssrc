@@ -81,8 +81,13 @@ const words = {
         AddConnections: "Add contacts",
         AddedConnections: "Contact added",
         DeletedConnections: "Contact deleted",
+
         AddLocationStep1: "Display name",
-        AddLocationStep2: "Icon"
+        AddLocationStep2: "Icon",
+
+        SignUpStep1: "Start",
+        SignUpStep2: "Nickname",
+        SignUpStep3: "Avatar"
     },
     errors: {
         AvatarsLoadError: "Avatars load error",

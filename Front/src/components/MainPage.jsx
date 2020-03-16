@@ -23,7 +23,7 @@ import Skeleton from '@material-ui/lab/Skeleton';
 import { SET_THEME_MODE, SET_SNACKBAR_MODE } from "../actions/types";
 
 import { setUserState, setCurrLang, setTheme, setSnackbar } from '../actions/Actions';
-import { useStyles } from '../styles/Styles.js';
+import { useStyles, colors } from '../styles/Styles.js';
 import { fetchUpdateUserDataAction, resetUpdateUserDataErrorAction, resetUpdateUserDataAction } from '../Config';
 import { getUserData, getUserDataPending } from '../reducers/userDataReducer';
 import { getUpdateUserData, getUpdateUserDataError } from '../reducers/updateUserDataReducer.js';
@@ -63,15 +63,12 @@ function MainPage(props) {
     };
 
     const switchMode = () => {
-        let newPaletteType = themeMode.palette.type === "light" ? "dark" : "light";
-        let primaryColor = themeMode.palette.type === "light" ? "#f9a825" : "#3f51b5";
-        let secondaryColor = themeMode.palette.type === "light" ? "#f50057" : "#f50057";
         setTheme({
             type: SET_THEME_MODE,
             palette: {
-                type: newPaletteType,
-                primary: { main: primaryColor },
-                secondary: { main: secondaryColor },
+                type: themeMode.palette.type === "light" ? "dark" : "light",
+                primary: { main: themeMode.palette.type === "light" ? colors.dark.primary : colors.light.primary },
+                secondary: { main: themeMode.palette.type === "light" ? colors.dark.secondary : colors.light.secondary }
             }
         });
     };
@@ -255,7 +252,7 @@ function MainPage(props) {
                                     <ButtonBase className={classes.image} onClick={switchMode}>
                                         <div className={classes.SkyDiv}>
                                             <div className={classes.SunSrc} style={themeMode.palette.type === "dark" ? { transform: 'translateY(36vw)' } : { transform: 'translateY(0)' }} />
-                                            <div className={classes.MoonSrc} style={themeMode.palette.type === "dark" ? { transform: 'translateY(0)' } : { transform: 'translateY(-36vw)' }} />
+                                            <div className={classes.MoonSrc} style={themeMode.palette.type === "dark" ? { filter: 'invert(1)', transform: 'translateY(0)' } : { filter: 'invert(0)', transform: 'translateY(-36vw)' }} />
                                         </div>
                                     </ButtonBase>
                                 </Grid>
@@ -285,7 +282,7 @@ function MainPage(props) {
                             alignItems="stretch"
                         >
                             <Grid item className={`${classes.menuDivButton} ${classes.height2}`} align="center">
-                                <Button variant="contained"
+                                <Button variant="outlined"
                                     color="primary"
                                     className={`${classes.menuButton} ${classes.centerButton}`}
                                     onClick={() => { CheckTimeOut() ? history.push("/dreams") : history.push("/signin") }}
@@ -294,7 +291,7 @@ function MainPage(props) {
                                 </Button>
                             </Grid>
                             <Grid item className={`${classes.menuDivButton} ${classes.height2}`} align="center">
-                                <Button variant="contained"
+                                <Button variant="outlined"
                                     color="primary"
                                     className={`${classes.menuButton} ${classes.centerButton}`}
                                     onClick={() => { CheckTimeOut() ? history.push("/addregulardream") : history.push("/signin") }}
@@ -303,7 +300,7 @@ function MainPage(props) {
                                 </Button>
                             </Grid>
                             <Grid item className={`${classes.menuDivButton} ${classes.height2}`} align="center">
-                                <Button variant="contained"
+                                <Button variant="outlined"
                                     color="primary"
                                     className={`${classes.menuButton} ${classes.centerButton}`}
                                     onClick={() => { CheckTimeOut() ? history.push("/addcdream") : history.push("/signin") }}
@@ -312,7 +309,7 @@ function MainPage(props) {
                                 </Button>
                             </Grid>
                             <Grid item className={`${classes.menuDivButton} ${classes.height2}`} align="center">
-                                <Button variant="contained"
+                                <Button variant="outlined"
                                     color="primary"
                                     className={`${classes.menuButton} ${classes.centerButton}`}
                                     onClick={() => { CheckTimeOut() ? history.push("/technics") : history.push("/signin") }}
@@ -321,7 +318,7 @@ function MainPage(props) {
                                 </Button>
                             </Grid>
                             <Grid item className={`${classes.menuDivButton} ${classes.height2}`} align="center">
-                                <Button variant="contained"
+                                <Button variant="outlined"
                                     color="primary"
                                     className={`${classes.menuButton} ${classes.centerButton}`}
                                 >
@@ -329,7 +326,7 @@ function MainPage(props) {
                                 </Button>
                             </Grid>
                             <Grid item className={`${classes.menuDivButton} ${classes.height2}`} align="center">
-                                <Button variant="contained"
+                                <Button variant="outlined"
                                     color="primary"
                                     className={`${classes.menuButton} ${classes.centerButton}`}
                                     onClick={openDialogAction}

@@ -81,8 +81,13 @@ const words = {
         AddConnections: "Добавить контакты",
         AddedConnections: "Контакт добавлен",
         DeletedConnections: "Контакт удален",
+
         AddLocationStep1: "Наименование",
-        AddLocationStep2: "Иконка"
+        AddLocationStep2: "Иконка",
+
+        SignUpStep1: "Начало",
+        SignUpStep2: "Имя",
+        SignUpStep3: "Аватар"
     },
     errors: {
         AvatarsLoadError: "Ошибка аватарок",

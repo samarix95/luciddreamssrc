@@ -218,7 +218,7 @@ function DreamMap(props) {
                         >
                             <Grid item>
                                 <Button className={classes.actionButton}
-                                    variant="contained"
+                                    variant="outlined"
                                     color="secondary"
                                     onClick={() => {
                                         typeof (props.location.defaultData) !== 'undefined'
@@ -241,7 +241,7 @@ function DreamMap(props) {
                                 ? <React.Fragment />
                                 : <Grid item>
                                     <Button className={classes.actionButton}
-                                        variant="contained"
+                                        variant="outlined"
                                         color="primary"
                                         onClick={() => { history.push("/addlocation") }}
                                     >

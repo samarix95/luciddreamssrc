@@ -75,23 +75,24 @@ function Technics(props) {
                         }
                     </Grid>
                     <Grid item className={`${classes.mainGridBodyItem} ${classes.height1}`}>
-                        <Grid container
+                        <Grid className={`${classes.relativePosition} ${classes.verticalCenter}`}
+                            container
                             direction="row"
                             justify="space-evenly"
                             alignItems="center"
                         >
                             <Grid item>
-                                <Button variant="contained"
-                                    color="secondary"
+                                <Button variant="outlined"
+                                    color="primary"
                                     className={classes.actionButton}
                                     onClick={() => { history.push("/") }}
                                 >
-                                    {lang.currLang.buttons.Back}
+                                    {lang.currLang.buttons.close}
                                 </Button>
                             </Grid>
                             {auth.user.roles < 2 //0 - admin; 1 - moderator
                                 ? <Grid item align="center">
-                                    <Button variant="contained"
+                                    <Button variant="outlined"
                                         color="primary"
                                         className={classes.actionButton}
                                         onClick={() => {

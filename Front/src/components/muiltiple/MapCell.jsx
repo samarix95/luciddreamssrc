@@ -244,7 +244,7 @@ function MapCell(props) {
                         >
                             <Grid item>
                                 <Button className={classes.poppupButton}
-                                    variant="contained"
+                                    variant="outlined"
                                     color="secondary"
                                     onClick={handleClose}
                                 >
@@ -256,7 +256,7 @@ function MapCell(props) {
                                 : <Grid item>
                                     <Button className={classes.poppupButton}
                                         disabled={disabledSave}
-                                        variant="contained"
+                                        variant="outlined"
                                         color="primary"
                                         onClick={saveCellLoc}
                                     >

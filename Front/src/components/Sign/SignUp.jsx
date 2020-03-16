@@ -3,19 +3,19 @@ import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import PropTypes from 'prop-types';
 
-import MobileStepper from "@material-ui/core/MobileStepper";
 import CssBaseline from '@material-ui/core/CssBaseline';
+import StepLabel from '@material-ui/core/StepLabel';
+import Stepper from '@material-ui/core/Stepper';
 import Button from "@material-ui/core/Button";
+import Step from '@material-ui/core/Step';
+import Grid from '@material-ui/core/Grid';
 
-import ArrowForwardIosIcon from '@material-ui/icons/ArrowForwardIos';
-import DoneIcon from '@material-ui/icons/Done';
-
-import { SET_SNACKBAR_MODE, SET_CURRENT_USER } from "../../actions/types.js";
+import { SET_SNACKBAR_MODE } from "../../actions/types.js";
 import { setSnackbar, setUserState } from "../../actions/Actions.js";
 import { maxSignUpSteps, fetchCreateUserAction, resetCreateUserErrorAction, fetchUpdateUserDataAction, resetUpdateUserDataErrorAction } from '../../Config.js';
 import { getCreateUser, getCreateUserPending, getCreateUserError } from '../../reducers/createUserReducer.js';
 import { getUpdateUserData, getUpdateUserDataError } from '../../reducers/updateUserDataReducer.js';
-import { getToken, setToken } from '../../utils/CheckLoginTimeOut.js';
+import { getToken, setToken, removeToken } from '../../utils/CheckLoginTimeOut.js';
 
 import step1 from "./SignUpStep1.jsx";
 import step2 from "./SignUpStep2.jsx";
@@ -25,7 +25,7 @@ import { MuiThemeProvider, createMuiTheme } from '@material-ui/core/styles';
 import { useStyles } from '../../styles/Styles.js';
 
 function SignUp(props) {
-    const { lang, themeMode, history, setSnackbar, setUserState,
+    const { lang, themeMode, history, setSnackbar,
         createdUser, createUserError, fetchCreateUser, resetCreateUserError,
         updateUserData, updateUserDataError, fetchUpdateUserData, resetUpdateUserDataError } = props;
     const classes = useStyles();
@@ -37,6 +37,12 @@ function SignUp(props) {
     const [userPassRepeat, setUserPassRepeat] = React.useState("");
     const [userNickName, setUserNickName] = React.useState("");
     const [userAvatar, setUserAvatar] = React.useState(1);
+
+    const stepsLabels = [
+        lang.currLang.texts.SignUpStep1,
+        lang.currLang.texts.SignUpStep2,
+        lang.currLang.texts.SignUpStep3
+    ];
 
     if (createUserError) {
         if (createUserError.email) {
@@ -203,6 +209,7 @@ function SignUp(props) {
     };
 
     const handleExit = () => {
+        removeToken();
         history.push("/signin");
     };
 
@@ -217,31 +224,54 @@ function SignUp(props) {
         <MuiThemeProvider theme={muiTheme}>
             <CssBaseline />
             <div className={classes.root}>
-                <MobileStepper
-                    position="bottom"
-                    variant="dots"
-                    steps={maxSignUpSteps}
-                    activeStep={activeStep}
-                    nextButton={
-                        <Button className={`${classes.minWidth100px}`} size="small" onClick={activeStep === steps.length - 1 ? handleFinish : handleNext} disabled={stepDisabled} >
-                            {stepDisabled
-                                ? <React.Fragment>
-                                    {activeStep === steps.length - 1 ? <DoneIcon /> : <ArrowForwardIosIcon />}
-                                </React.Fragment>
-                                : <React.Fragment>
+                <Grid className={`${classes.height12}`}
+                    container
+                    direction="column"
+                    justify="center"
+                    alignItems="stretch"
+                >
+                    <Grid item className={`${classes.width12} ${classes.height2}`}>
+                        <Stepper activeStep={activeStep} alternativeLabel>
+                            {stepsLabels.map(label => (
+                                <Step key={label}>
+                                    <StepLabel>{label}</StepLabel>
+                                </Step>
+                            ))}
+                        </Stepper>
+                    </Grid>
+                    <Grid item className={`${classes.width12} ${classes.height9}`}>
+                        {steps[activeStep]}
+                    </Grid>
+                    <Grid item className={`${classes.mainGridBodyItem} ${classes.height1}`}>
+                        <Grid className={`${classes.relativePosition} ${classes.verticalCenter}`}
+                            container
+                            direction="row"
+                            justify="space-evenly"
+                            alignItems="center"
+                        >
+                            <Grid item>
+                                <Button
+                                    variant="outlined"
+                                    color="primary"
+                                    className={classes.actionButton}
+                                    onClick={handleExit}
+                                >
+                                    {lang.currLang.buttons.close}
+                                </Button>
+                            </Grid>
+                            <Grid item>
+                                <Button
+                                    variant="outlined"
+                                    color="primary"
+                                    className={classes.actionButton}
+                                    onClick={activeStep === steps.length - 1 ? handleFinish : handleNext} disabled={stepDisabled}
+                                >
                                     {activeStep === steps.length - 1 ? lang.currLang.buttons.Finish : lang.currLang.buttons.Next}
-                                    {activeStep === steps.length - 1 ? <DoneIcon /> : <ArrowForwardIosIcon />}
-                                </React.Fragment>
-                            }
-                        </Button>
-                    }
-                    backButton={
-                        <Button className={`${classes.minWidth100px}`} size="small" onClick={handleExit} >
-                            {lang.currLang.buttons.close}
-                        </Button>
-                    }
-                />
-                {steps[activeStep]}
+                                </Button>
+                            </Grid>
+                        </Grid>
+                    </Grid>
+                </Grid>
             </div>
         </MuiThemeProvider>
     )

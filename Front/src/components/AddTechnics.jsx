@@ -309,14 +309,15 @@ function AddTechnics(props) {
                     <Grid item className={`${classes.mainGridBodyItem} ${classes.height1}`}>
                         {isLoading
                             ? <LinearProgress />
-                            : <Grid container
+                            : <Grid className={`${classes.relativePosition} ${classes.verticalCenter}`}
+                                container
                                 direction="row"
                                 justify="space-evenly"
                                 alignItems="center"
                             >
                                 <Grid item>
                                     <Button
-                                        variant="contained"
+                                        variant="outlined"
                                         color="secondary"
                                         className={classes.actionButton}
                                         onClick={() => { history.push("/technics") }}
@@ -326,7 +327,7 @@ function AddTechnics(props) {
                                 </Grid>
                                 <Grid item>
                                     <Button
-                                        variant="contained"
+                                        variant="outlined"
                                         color="primary"
                                         className={classes.actionButton}
                                         onClick={() => save()}

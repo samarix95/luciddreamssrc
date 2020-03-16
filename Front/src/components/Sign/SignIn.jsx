@@ -116,7 +116,7 @@ function SignIn(props) {
                 <DialogTitle >
                     {lang.currLang.buttons.signIn}
                 </DialogTitle>
-                <DialogContent dividers={true} >
+                <DialogContent dividers={true} className={`${classes.minHeight100px}`}>
                     <Grid item className={`${classes.mainGridBodyItem} ${classes.height12}`} >
                         <div className={`${classes.height1} ${classes.width12} ${classes.SearchPaper} ${classes.relativePosition} ${classes.horizontalCenter}`} >
                             <AlternateEmailIcon className={`${classes.margin}`} />
@@ -174,7 +174,7 @@ function SignIn(props) {
                                 <Grid item className={`${classes.height2}`} />
                                 <Grid item className={`${classes.menuDivButton} ${classes.height2}`}>
                                     <Button className={`${classes.menuButton} ${classes.centerButton}`}
-                                        variant="contained"
+                                        variant="outlined"
                                         color="primary"
                                         onClick={handleOpenLogin}
                                     >
@@ -183,7 +183,7 @@ function SignIn(props) {
                                 </Grid>
                                 <Grid item className={`${classes.menuDivButton} ${classes.height2}`}>
                                     <Button className={`${classes.menuButton} ${classes.centerButton}`}
-                                        variant="contained"
+                                        variant="outlined"
                                         color="primary"
                                         onClick={() => { history.push('/signup') }}
                                     >
@@ -193,7 +193,7 @@ function SignIn(props) {
                                 <Grid item className={`${classes.height2}`} />
                                 <Grid item className={`${classes.menuDivButton} ${classes.height2}`}>
                                     <Button className={`${classes.menuButton} ${classes.centerButton}`}
-                                        variant="contained"
+                                        variant="outlined"
                                         color="primary"
                                         onClick={handleOpenAboutPage}
                                     >

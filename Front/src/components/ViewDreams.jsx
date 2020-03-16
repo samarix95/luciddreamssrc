@@ -322,15 +322,16 @@ function ViewDreams(props) {
                         }
                     </Grid>
                     <Grid item className={`${classes.mainGridBodyItem} ${classes.height1}`}>
-                        <Grid container
+                        <Grid className={`${classes.relativePosition} ${classes.verticalCenter}`}
+                            container
                             direction="row"
                             justify="space-evenly"
                             alignItems="center"
                         >
                             <Grid item>
                                 <Button className={classes.actionButton}
-                                    variant="contained"
-                                    color="secondary"
+                                    variant="outlined"
+                                    color="primary"
                                     onClick={() => {
                                         typeof (props.location.defaultData) !== 'undefined'
                                             ? props.location.defaultData.mode === "fromFriend"
@@ -344,12 +345,12 @@ function ViewDreams(props) {
                                             : history.push("/")
                                     }}
                                 >
-                                    {lang.currLang.buttons.Back}
+                                    {lang.currLang.buttons.close}
                                 </Button>
                             </Grid>
                             <Grid item>
                                 <Button className={classes.actionButton}
-                                    variant="contained"
+                                    variant="outlined"
                                     color="primary"
                                     onClick={openFilter}
                                 >

@@ -3,7 +3,10 @@ import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 
 import CssBaseline from '@material-ui/core/CssBaseline';
+import StepLabel from '@material-ui/core/StepLabel';
+import Stepper from '@material-ui/core/Stepper';
 import Button from '@material-ui/core/Button';
+import Step from '@material-ui/core/Step';
 import Grid from '@material-ui/core/Grid';
 
 import { MuiThemeProvider, createMuiTheme } from '@material-ui/core/styles';
@@ -13,9 +16,6 @@ import { SET_SNACKBAR_MODE } from "../../actions/types.js";
 import { instance } from '../../Config.js';
 import { useStyles } from '../../styles/Styles.js';
 
-import Stepper from '@material-ui/core/Stepper';
-import Step from '@material-ui/core/Step';
-import StepLabel from '@material-ui/core/StepLabel';
 import Step1 from "./Step1.jsx";
 import Step2 from "./Step2.jsx";
 
@@ -34,7 +34,7 @@ function AddLocation(props) {
     const [iconColor, setIconColor] = React.useState('#ffffff');
 
 
-    const [activeStep, setActiveStep] = React.useState(1);
+    const [activeStep, setActiveStep] = React.useState(0);
     const stepsLabels = [
         lang.currLang.texts.AddLocationStep1,
         lang.currLang.texts.AddLocationStep2
@@ -219,13 +219,13 @@ function AddLocation(props) {
         <MuiThemeProvider theme={muiTheme}>
             <CssBaseline />
             <div className={classes.root}>
-                <Grid container
-                    className={`${classes.height12}`}
+                <Grid className={`${classes.height12}`}
+                    container
                     direction="column"
                     justify="center"
                     alignItems="stretch"
                 >
-                    <Grid item className={`${classes.width12} ${classes.height2}`} >
+                    <Grid item className={`${classes.width12} ${classes.height2}`}>
                         <Stepper activeStep={activeStep} alternativeLabel>
                             {stepsLabels.map(label => (
                                 <Step key={label}>
@@ -234,7 +234,7 @@ function AddLocation(props) {
                             ))}
                         </Stepper>
                     </Grid>
-                    <Grid item className={`${classes.width12} ${classes.height9}`} >
+                    <Grid item className={`${classes.width12} ${classes.height9}`}>
                         {steps[activeStep]}
                     </Grid>
                     <Grid item className={`${classes.mainGridBodyItem} ${classes.height1}`}>
@@ -245,8 +245,8 @@ function AddLocation(props) {
                         >
                             <Grid item>
                                 <Button className={classes.actionButton}
-                                    variant="contained"
-                                    color="secondary"
+                                    variant="outlined"
+                                    color="primary"
                                     onClick={() => {
                                         activeStep === 0
                                             ? prevUrl.length === 0
@@ -263,7 +263,7 @@ function AddLocation(props) {
                             </Grid>
                             <Grid item>
                                 <Button
-                                    variant="contained"
+                                    variant="outlined"
                                     color="primary"
                                     className={classes.actionButton}
                                     onClick={() => {

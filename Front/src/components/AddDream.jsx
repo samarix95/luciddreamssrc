@@ -427,6 +427,9 @@ function AddDream(props) {
                                             onChange={changeContent}
                                             label={lang.currLang.texts.content}
                                             inlineToolbar={false}
+                                            draftEditorProps={{
+                                                spellCheck: true
+                                            }}
                                             controls={[
                                                 "bold",
                                                 "italic",
@@ -511,15 +514,16 @@ function AddDream(props) {
                     <Grid item className={`${classes.mainGridBodyItem} ${classes.height1}`}>
                         {isLoading
                             ? <LinearProgress />
-                            : <Grid container
+                            : <Grid className={`${classes.relativePosition} ${classes.verticalCenter}`}
+                                container
                                 direction="row"
                                 justify="space-evenly"
                                 alignItems="center"
                             >
                                 <Grid item>
                                     <Button
-                                        variant="contained"
-                                        color="secondary"
+                                        variant="outlined"
+                                        color="primary"
                                         className={classes.actionButton}
                                         onClick={() => {
                                             isEditMode
@@ -528,12 +532,12 @@ function AddDream(props) {
                                             window.localStorage.removeItem("postDreamData");
                                         }}
                                     >
-                                        {lang.currLang.buttons.Back}
+                                        {lang.currLang.buttons.close}
                                     </Button>
                                 </Grid>
                                 <Grid item>
                                     <Button
-                                        variant="contained"
+                                        variant="outlined"
                                         color="primary"
                                         className={classes.actionButton}
                                         onClick={() => savepost()}

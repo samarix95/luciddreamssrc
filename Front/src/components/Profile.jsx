@@ -361,7 +361,7 @@ function Profile(props) {
                                             <Grid className={`${classes.height6}`} >
                                                 <div className={`${classes.relativePosition} ${classes.fullHeight}`}>
                                                     <Button className={`${classes.formControl} ${classes.width10}`}
-                                                        variant="contained"
+                                                        variant="outlined"
                                                         color="primary"
                                                         onClick={openUserDreamJournal}
                                                     >
@@ -372,7 +372,7 @@ function Profile(props) {
                                             <Grid className={`${classes.height6}`} >
                                                 <div className={`${classes.relativePosition} ${classes.fullHeight}`}>
                                                     <Button className={`${classes.formControl} ${classes.width10}`}
-                                                        variant="contained"
+                                                        variant="outlined"
                                                         color="primary"
                                                         onClick={openUserDreamMap}
                                                     >
@@ -444,15 +444,16 @@ function Profile(props) {
                         </Grid> */}
                     </Grid>
                     <Grid item className={`${classes.mainGridBodyItem} ${classes.height1}`}>
-                        <Grid container
+                        <Grid className={`${classes.relativePosition} ${classes.verticalCenter}`}
+                            container
                             direction="row"
                             justify="space-evenly"
                             alignItems="center"
                         >
                             <Grid item>
                                 <Button className={classes.actionButton}
-                                    variant="contained"
-                                    color="secondary"
+                                    variant="outlined"
+                                    color="primary"
                                     onClick={() => { history.push("/aeronauts") }}
                                 >
                                     {lang.currLang.buttons.Back}

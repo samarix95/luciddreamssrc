@@ -12,9 +12,10 @@ import { setCurrLang } from '../actions/Actions.js';
 
 import Routes from "../Routes.js";
 
-import { fetchUserDataAction, maxSignUpSteps } from '../Config';
-import { CheckTimeOut, getToken, removeToken } from '../utils/CheckLoginTimeOut';
-import { getUserDataError, getUserData, getUserDataPending } from '../reducers/userDataReducer.js';
+import { colors } from "../styles/Styles.js";
+import { fetchUserDataAction, maxSignUpSteps } from "../Config.js";
+import { CheckTimeOut, getToken, removeToken } from "../utils/CheckLoginTimeOut.js";
+import { getUserDataError, getUserData, getUserDataPending } from "../reducers/userDataReducer.js";
 
 import RuDict from '../dictionary/ru.js';
 import EnDict from '../dictionary/en.js';
@@ -34,9 +35,9 @@ if (new Date().getHours() >= 16 || (new Date().getHours() >= 0 && new Date().get
         type: SET_THEME_MODE,
         palette: {
             type: "dark",
-            primary: { main: "#f9a825" },
-            secondary: { main: "#f50057" },
-            error: { main: "#cc0000" },
+            primary: { main: colors.dark.primary },
+            secondary: { main: colors.dark.secondary },
+            error: { main: colors.dark.error }
         }
     });
 }
@@ -45,16 +46,16 @@ else {
         type: SET_THEME_MODE,
         palette: {
             type: "light",
-            primary: { main: "#3f51b5" },
-            secondary: { main: "#f50057" },
-            error: { main: "#cc0000" },
+            primary: { main: colors.light.primary },
+            secondary: { main: colors.light.secondary },
+            error: { main: colors.light.error }
         }
     });
 }
 
 function App(props) {
     const { user_data, userData, userDataError, userDataPending, fetchUserData, setCurrLangAction } = props;
-
+    
     if (typeof userData !== 'undefined') {
         if (userData.signup_step !== maxSignUpSteps && user_data.id === userData.id) {
             history.push({
@@ -89,7 +90,7 @@ App.propTypes = {
     type: PropTypes.string.isRequired,
     userDataError: PropTypes.object.isRequired,
     userData: PropTypes.object.isRequired,
-    userDataPending: PropTypes.object.isRequired,
+    userDataPending: PropTypes.object.isRequired
 };
 
 const mapStateToProps = store => {
@@ -98,7 +99,7 @@ const mapStateToProps = store => {
         type: store.themeMode.palette.type,
         userDataError: getUserDataError(store),
         userData: getUserData(store),
-        userDataPending: getUserDataPending(store),
+        userDataPending: getUserDataPending(store)
     }
 };
 

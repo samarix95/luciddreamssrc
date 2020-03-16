@@ -62,12 +62,12 @@ function AddCDream(props) {
                 root: {
                     border: "1px solid gray",
                     borderRadius: '4px',
-                    height: '100%',
+                    height: '100%'
                     //Весь компонент
                 },
                 container: {
                     height: '100%',
-                    margin: '0 !Important',
+                    margin: '0 !Important'
                     //Без шапки
                 },
                 toolbar: {
@@ -79,16 +79,16 @@ function AddCDream(props) {
                     minHeight: '48px',
                     margin: '0 !Important',
                     borderBottom: "1px solid gray",
-                    borderRadius: '4px',
+                    borderRadius: '4px'
                 },
                 placeHolder: {
-                    height: '72%',
+                    height: '72%'
                 },
                 editor: {
                     height: '72%',
                     width: '100%',
                     position: 'relative',
-                    overflow: 'hidden',
+                    overflow: 'hidden'
                     //Эдитор
                 },
                 editorContainer: {
@@ -98,7 +98,7 @@ function AddCDream(props) {
                     position: 'relative',
                     boxSizing: 'border-box',
                     maxHeight: '100%',
-                    overflow: 'auto',
+                    overflow: 'auto'
                     //Редактор
                 },
             }
@@ -507,6 +507,9 @@ function AddCDream(props) {
                                             onChange={changeContent}
                                             label={lang.currLang.texts.content}
                                             inlineToolbar={false}
+                                            draftEditorProps={{
+                                                spellCheck: true
+                                            }}
                                             controls={[
                                                 "bold",
                                                 "italic",
@@ -657,7 +660,7 @@ function AddCDream(props) {
                     <Grid item xs={1} className={classes.mainGridBodyItem} >
                         {isLoading
                             ? <LinearProgress />
-                            : <Grid
+                            : <Grid className={`${classes.relativePosition} ${classes.verticalCenter}`}
                                 container
                                 direction="row"
                                 justify="space-evenly"
@@ -665,8 +668,8 @@ function AddCDream(props) {
                             >
                                 <Grid item>
                                     <Button
-                                        variant="contained"
-                                        color="secondary"
+                                        variant="outlined"
+                                        color="primary"
                                         className={classes.actionButton}
                                         onClick={() => {
                                             window.localStorage.removeItem("postСDreamData");
@@ -675,12 +678,12 @@ function AddCDream(props) {
                                                 : history.push("/");
                                         }}
                                     >
-                                        {lang.currLang.buttons.Back}
+                                        {lang.currLang.buttons.close}
                                     </Button>
                                 </Grid>
                                 <Grid item>
                                     <Button
-                                        variant="contained"
+                                        variant="outlined"
                                         color="primary"
                                         className={classes.actionButton}
                                         onClick={() => savepost()}

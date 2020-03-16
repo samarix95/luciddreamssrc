@@ -14,6 +14,8 @@ import IconButton from '@material-ui/core/IconButton';
 import Snackbar from '@material-ui/core/Snackbar';
 import Grow from '@material-ui/core/Grow';
 
+import { getUserDataPending } from "./reducers/userDataReducer.js";
+
 import AddTechnics from './components/AddTechnics.jsx';
 
 const TechnicsPromise = import("./components/Technics.jsx");
@@ -81,23 +83,44 @@ function MySnackbarContentWrapper(props) {
 
 function Routes(props) {
     const classes = useStyles();
-    const { lang, open, variant, message } = props;
+    const { lang, open, variant, message, setSnackbar, userDataPending } = props;
     const [openSnackbar, setOpenSnackbar] = React.useState(false);
     const [openSnackbarVariant, setOpenSnackbarVariant] = React.useState('');
     const [snackbarMessage, setSnackbarMessage] = React.useState('');
+
+    if (userDataPending) {
+        setSnackbar({
+            type: SET_SNACKBAR_MODE,
+            snackbar: {
+                open: true,
+                variant: 'warning',
+                message: "Connect to server..."
+            }
+        });
+    }
+    else {
+        setSnackbar({
+            type: SET_SNACKBAR_MODE,
+            snackbar: {
+                open: true,
+                variant: 'success',
+                message: "Connected!"
+            }
+        });
+    }
 
     const handleCloseSnackbar = (event, reason) => {
         if (reason === 'clickaway') {
             return;
         }
         setOpenSnackbar(false);
-        props.setSnackbar({
+        setSnackbar({
             type: SET_SNACKBAR_MODE,
             snackbar: {
                 open: false,
                 variant: openSnackbarVariant,
-                message: snackbarMessage,
-            },
+                message: snackbarMessage
+            }
         });
     };
 
@@ -135,7 +158,7 @@ function Routes(props) {
             <Route path="/signin" component={SignIn} />
             <Route path="/signup" component={SignUp} />
             <Switch>
-                <PrivateRoute exact path="/" component={AddLocation} />
+                <PrivateRoute exact path="/" component={MainPage} />
                 <PrivateRoute path="/profile" component={Profile} />
                 <PrivateRoute path="/aeronauts" component={Aeronauts} />
                 <PrivateRoute path="/dreammap" component={DreamMap} />
@@ -156,6 +179,7 @@ Routes.propTypes = {
     variant: PropTypes.string.isRequired,
     message: PropTypes.string.isRequired,
     setSnackbar: PropTypes.func.isRequired,
+    userDataPending: PropTypes.object.isRequired
 }
 
 const mapStateToProps = store => {
@@ -164,6 +188,7 @@ const mapStateToProps = store => {
         open: store.snackbar.snackbar.open,
         variant: store.snackbar.snackbar.variant,
         message: store.snackbar.snackbar.message,
+        userDataPending: getUserDataPending(store)
     }
 }
 

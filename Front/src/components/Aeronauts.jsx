@@ -118,7 +118,7 @@ function Aeronauts(props) {
                         </Grid>
                         <Grid className={`${classes.height5} ${classes.relativePosition}`} >
                             <Button className={`${classes.formControl} ${classes.width6}`}
-                                variant="contained"
+                                variant="outlined"
                                 color="primary"
                                 onClick={openUserConnections}
                             >
@@ -229,18 +229,19 @@ function Aeronauts(props) {
                         </Grid>
                     </Grid>
                     <Grid item className={`${classes.mainGridBodyItem} ${classes.height1}`}>
-                        <Grid container
+                        <Grid className={`${classes.relativePosition} ${classes.verticalCenter}`}
+                            container
                             direction="row"
                             justify="space-evenly"
                             alignItems="center"
                         >
                             <Grid item>
                                 <Button className={classes.actionButton}
-                                    variant="contained"
-                                    color="secondary"
+                                    variant="outlined"
+                                    color="primary"
                                     onClick={() => { history.push("/") }}
                                 >
-                                    {lang.currLang.buttons.Back}
+                                    {lang.currLang.buttons.close}
                                 </Button>
                             </Grid>
                         </Grid>
