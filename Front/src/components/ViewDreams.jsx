@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import PropTypes from 'prop-types';
 
-import CircularProgress from '@material-ui/core/CircularProgress';
+import DialogContentText from "@material-ui/core/DialogContentText";
 import FormControlLabel from "@material-ui/core/FormControlLabel";
 import DialogContent from "@material-ui/core/DialogContent";
 import DialogActions from "@material-ui/core/DialogActions";
@@ -13,7 +13,6 @@ import FormControl from "@material-ui/core/FormControl";
 import InputLabel from "@material-ui/core/InputLabel";
 import Typography from '@material-ui/core/Typography';
 import RadioGroup from "@material-ui/core/RadioGroup";
-import Container from "@material-ui/core/Container";
 import MenuItem from "@material-ui/core/MenuItem";
 import Checkbox from '@material-ui/core/Checkbox';
 import Dialog from '@material-ui/core/Dialog';
@@ -24,6 +23,8 @@ import Radio from "@material-ui/core/Radio";
 import Input from "@material-ui/core/Input";
 import Grid from '@material-ui/core/Grid';
 import Chip from "@material-ui/core/Chip";
+
+import Skeleton from '@material-ui/lab/Skeleton';
 
 import { MuiThemeProvider, createMuiTheme } from '@material-ui/core/styles';
 
@@ -38,7 +39,11 @@ import { getToken } from '../utils/CheckLoginTimeOut';
 let isDreamsLoading = true;
 
 function ViewDreams(props) {
-    const { lang, themeMode, history, auth, tags, tagsError, tagsPending, fetchTags, userPosts, userPostsError, userPostsPending, fetchUserPosts, connectPosts, connectPostsError, connectPostsPending, fetchConnectPosts } = props;
+    const { lang, themeMode, history, auth,
+        tags, tagsError, tagsPending, fetchTags,
+        userPosts, userPostsError, userPostsPending, fetchUserPosts,
+        connectPosts, connectPostsError, connectPostsPending, fetchConnectPosts } = props;
+
     if (tagsError) {
         console.log("ViewDreams");
         console.log(tagsError);
@@ -60,12 +65,20 @@ function ViewDreams(props) {
     const [viewMode, setViewMode] = React.useState(false);
     const [dreams, setDreams] = React.useState([]);
     const [openDialog, setOpenDialog] = React.useState(false);
+    const [openConfirm, setOpenConfirm] = React.useState(false);
     const [locationChecked, setLocationChecked] = React.useState(false);
     const [selectedLocations, setSelectedLocations] = React.useState(null);
     const [postType, setPostType] = React.useState(2);
     const [filterData, setFilterData] = React.useState({
         location: null,
-        type: 2,
+        type: 2
+    });
+    const [confirmData, setConfirmData] = React.useState({
+        id: null,
+        header: "",
+        body: "",
+        commit: "",
+        action: ""
     });
 
     if (!userPostsPending && userPostsError == null && !isDreamsLoading && !viewMode) {
@@ -151,6 +164,78 @@ function ViewDreams(props) {
             loadPosts();
         }
     }, [loadPosts]);
+
+    const closeAlert = () => {
+        setOpenConfirm(false);
+    };
+
+    const confirmAction = (action) => {
+        switch (action) {
+            case 'deleteOk':
+                instance.post('/actions/users/deletepost', { post_id: confirmData.id })
+                    .then(res => {
+                        setSnackbar({
+                            type: SET_SNACKBAR_MODE,
+                            snackbar: {
+                                open: true,
+                                variant: 'success',
+                                message: lang.currLang.texts.success
+                            }
+                        });
+                        setOpenConfirm(false);
+                        loadPosts();
+                    })
+                    .catch(err => {
+                        setSnackbar({
+                            type: SET_SNACKBAR_MODE,
+                            snackbar: {
+                                open: true,
+                                variant: 'error',
+                                message: lang.currLang.texts.CantDeletePost
+                            }
+                        });
+                        setOpenConfirm(false);
+                    });
+                break;
+            case 'publicOk':
+                setOpenConfirm(false);
+                if (publicChecked) {
+                    instance.post('/actions/users/updatepost', { post_id: confirmData.id, newPublic: 0 })
+                        .then(res => {
+                            setPublicChecked(false);
+                            setSnackbar({
+                                type: SET_SNACKBAR_MODE,
+                                snackbar: {
+                                    open: true,
+                                    variant: 'success',
+                                    message: lang.currLang.texts.success
+                                }
+                            });
+                        })
+                        .catch(err => {
+                            setPublicChecked(true);
+                        });
+                }
+                else {
+                    instance.post('/actions/users/updatepost', { post_id: confirmData.id, newPublic: 1 })
+                        .then(res => {
+                            setPublicChecked(true);
+                            setSnackbar({
+                                type: SET_SNACKBAR_MODE,
+                                snackbar: {
+                                    open: true,
+                                    variant: 'success',
+                                    message: lang.currLang.texts.success
+                                }
+                            });
+                        })
+                        .catch(err => {
+                            setPublicChecked(false);
+                        });
+                }
+                break;
+        }
+    };
 
     return (
         <MuiThemeProvider theme={muiTheme}>
@@ -271,9 +356,31 @@ function ViewDreams(props) {
                     </Button>
                 </DialogActions>
             </Dialog>
+            <Dialog open={openConfirm}
+                onClose={closeAlert}
+                aria-labelledby="confirm-dialog-title"
+                aria-describedby="confirm-dialog-description"
+            >
+                <DialogTitle id="confirm-dialog-title" >
+                    {confirmData.header}
+                </DialogTitle>
+                <DialogContent >
+                    <DialogContentText id="confirm-dialog-description" >
+                        {confirmData.body}
+                    </DialogContentText>
+                </DialogContent>
+                <DialogActions>
+                    <Button color="primary" onClick={closeAlert} >
+                        {lang.currLang.buttons.cancel}
+                    </Button>
+                    <Button color="primary" onClick={() => confirmAction(confirmData.action)} >
+                        {confirmData.commit}
+                    </Button>
+                </DialogActions>
+            </Dialog>
             <div className={classes.root}>
-                <Grid container
-                    className={`${classes.height12}`}
+                <Grid className={`${classes.height12}`}
+                    container
                     direction="column"
                     justify="center"
                     alignItems="stretch"
@@ -288,8 +395,7 @@ function ViewDreams(props) {
                                     alignItems="stretch"
                                 >
                                     {tags.length !== 0
-                                        ? dreams
-                                            .filter(item => filterData.location ? item.tags.includes(item.tags.find(tag => tag[0] === tags.find(tags => tags.name_eng === filterData.location || tags.name_rus === filterData.location).id.toString())) : item)
+                                        ? dreams.filter(item => filterData.location ? item.tags.includes(item.tags.find(tag => tag[0] === tags.find(tags => tags.name_eng === filterData.location || tags.name_rus === filterData.location).id.toString())) : item)
                                             .filter(item => filterData.type === 2 ? item : item.post_type === filterData.type)
                                             .map((item, key) => (
                                                 <DreamCard
@@ -297,6 +403,8 @@ function ViewDreams(props) {
                                                     key={key}
                                                     history={history}
                                                     loadPosts={loadPosts}
+                                                    setOpenConfirm={setOpenConfirm}
+                                                    setConfirmData={setConfirmData}
                                                 />
                                             ))
                                         : ''
@@ -311,14 +419,35 @@ function ViewDreams(props) {
                                         </Typography>
                                     </div>
                                 </div>
-                            : <div className={`${classes.formControl} ${classes.centerTextAlign}`} >
-                                <div className={`${classes.inlineBlock} ${classes.relativePosition}`} >
-                                    <CircularProgress />
-                                </div>
-                                <Typography className={`${classes.relativePosition}`} component="div" >
-                                    {lang.currLang.texts.Loading}
-                                </Typography>
-                            </div>
+                            : <React.Fragment>
+                                <Skeleton variant="rect" className={`${classes.relativePosition} ${classes.width12} ${classes.height3}`}>
+                                    <div className={`${classes.relativePosition} ${classes.height1}`} />
+                                    <Skeleton variant="text" className={`${classes.relativePosition} ${classes.width10}`} />
+                                    <div className={`${classes.relativePosition} ${classes.height4}`} />
+                                    <Skeleton variant="text" className={`${classes.relativePosition} ${classes.width11} ${classes.horizontalCenter}`} />
+                                    <div className={`${classes.relativePosition} ${classes.height1}`} />
+                                    <Skeleton variant="text" className={`${classes.relativePosition} ${classes.width11} ${classes.horizontalCenter}`} />
+                                </Skeleton>
+                                <div className={`${classes.relativePosition} ${classes.width12} ${classes.height1}`} />
+                                <Skeleton variant="rect" className={`${classes.relativePosition} ${classes.width12} ${classes.height3}`}>
+                                    <div className={`${classes.relativePosition} ${classes.height1}`} />
+                                    <Skeleton variant="text" className={`${classes.relativePosition} ${classes.width10}`} />
+                                    <div className={`${classes.relativePosition} ${classes.height4}`} />
+                                    <Skeleton variant="text" className={`${classes.relativePosition} ${classes.width11} ${classes.horizontalCenter}`} />
+                                    <div className={`${classes.relativePosition} ${classes.height1}`} />
+                                    <Skeleton variant="text" className={`${classes.relativePosition} ${classes.width11} ${classes.horizontalCenter}`} />
+                                </Skeleton>
+                                <div className={`${classes.relativePosition} ${classes.width12} ${classes.height1}`} />
+                                <Skeleton variant="rect" className={`${classes.relativePosition} ${classes.width12} ${classes.height3}`}>
+                                    <div className={`${classes.relativePosition} ${classes.height1}`} />
+                                    <Skeleton variant="text" className={`${classes.relativePosition} ${classes.width10}`} />
+                                    <div className={`${classes.relativePosition} ${classes.height4}`} />
+                                    <Skeleton variant="text" className={`${classes.relativePosition} ${classes.width11} ${classes.horizontalCenter}`} />
+                                    <div className={`${classes.relativePosition} ${classes.height1}`} />
+                                    <Skeleton variant="text" className={`${classes.relativePosition} ${classes.width11} ${classes.horizontalCenter}`} />
+                                </Skeleton>
+                                <div className={`${classes.relativePosition} ${classes.width12} ${classes.height1}`} />
+                            </React.Fragment>
                         }
                     </Grid>
                     <Grid item className={`${classes.mainGridBodyItem} ${classes.height1}`}>
@@ -362,7 +491,7 @@ function ViewDreams(props) {
                 </Grid>
             </div>
         </MuiThemeProvider >
-    );
+    )
 }
 
 ViewDreams.propTypes = {
@@ -377,7 +506,7 @@ ViewDreams.propTypes = {
     userPostsPending: PropTypes.object.isRequired,
     connectPostsError: PropTypes.object.isRequired,
     connectPosts: PropTypes.object.isRequired,
-    connectPostsPending: PropTypes.object.isRequired,
+    connectPostsPending: PropTypes.object.isRequired
 };
 
 const mapStateToProps = store => {
@@ -393,14 +522,14 @@ const mapStateToProps = store => {
         userPostsPending: getUserPostsPending(store),
         connectPostsError: getConnectPostsError(store),
         connectPosts: getConnectPosts(store),
-        connectPostsPending: getConnectPostsPending(store),
+        connectPostsPending: getConnectPostsPending(store)
     }
 };
 
 const mapDispatchToProps = (dispatch) => bindActionCreators({
     fetchTags: fetchTagsAction,
     fetchUserPosts: fetchUserPostsAction,
-    fetchConnectPosts: fetchConnectPostsAction,
+    fetchConnectPosts: fetchConnectPostsAction
 }, dispatch)
 
 export default connect(

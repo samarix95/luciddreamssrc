@@ -32,20 +32,22 @@ function AddLocation(props) {
     const [searchName, setSearchName] = React.useState('');
     const [selectedIcon, setSelectedIcon] = React.useState('');
     const [iconColor, setIconColor] = React.useState('#ffffff');
-
-
     const [activeStep, setActiveStep] = React.useState(0);
+
     const stepsLabels = [
         lang.currLang.texts.AddLocationStep1,
         lang.currLang.texts.AddLocationStep2
     ];
+
     const steps = [
         React.createElement(Step1, { nameEn, nameRu, setNameEn, setNameRu }, null),
         React.createElement(Step2, { isIconsLoading, setIsIconsLoading, searchName, setSearchName, locationIcons, setLocationIcons, selectedIcon, setSelectedIcon, iconColor, setIconColor }, null),
     ];
+
     const handleNextStep = () => {
         setActiveStep(activeStep + 1);
     };
+
     const handlePrevStep = () => {
         setActiveStep(activeStep - 1);
     };
@@ -238,7 +240,8 @@ function AddLocation(props) {
                         {steps[activeStep]}
                     </Grid>
                     <Grid item className={`${classes.mainGridBodyItem} ${classes.height1}`}>
-                        <Grid container
+                        <Grid className={`${classes.relativePosition} ${classes.verticalCenter}`}
+                            container
                             direction="row"
                             justify="space-evenly"
                             alignItems="center"
@@ -267,7 +270,7 @@ function AddLocation(props) {
                                     color="primary"
                                     className={classes.actionButton}
                                     onClick={() => {
-                                        activeStep === steps.length
+                                        activeStep === steps.length - 1
                                             ? saveLocation()
                                             : handleNextStep();
                                     }}

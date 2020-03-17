@@ -33,6 +33,9 @@ const AddDream = React.lazy(() => addDreamPromise);
 const viewDreamsPromise = import("./components/ViewDreams.jsx");
 const ViewDreams = React.lazy(() => viewDreamsPromise);
 
+const openDreamPromise = import("./components/OpenDream.jsx");
+const OpenDream = React.lazy(() => openDreamPromise);
+
 const dreamMapPromise = import("./components/DreamMap.jsx");
 const DreamMap = React.lazy(() => dreamMapPromise);
 
@@ -83,22 +86,25 @@ function MySnackbarContentWrapper(props) {
 
 function Routes(props) {
     const classes = useStyles();
-    const { lang, open, variant, message, setSnackbar, userDataPending } = props;
+    const { lang, open, variant, message, setSnackbar, user_data, userDataPending } = props;
     const [openSnackbar, setOpenSnackbar] = React.useState(false);
     const [openSnackbarVariant, setOpenSnackbarVariant] = React.useState('');
     const [snackbarMessage, setSnackbarMessage] = React.useState('');
-
-    if (userDataPending) {
+    const [viewConnecMessage, setViewConnecMessage] = React.useState(true);
+    const [viewConnectedMessage, setViewConnectedMessage] = React.useState(true);
+    
+    if (userDataPending && viewConnecMessage && user_data) {
         setSnackbar({
             type: SET_SNACKBAR_MODE,
             snackbar: {
                 open: true,
                 variant: 'warning',
-                message: "Connect to server..."
+                message: "Connecting to server..."
             }
         });
+        if (viewConnecMessage) setViewConnecMessage(false);
     }
-    else {
+    else if (!userDataPending && viewConnectedMessage && user_data) {
         setSnackbar({
             type: SET_SNACKBAR_MODE,
             snackbar: {
@@ -107,6 +113,7 @@ function Routes(props) {
                 message: "Connected!"
             }
         });
+        if (viewConnectedMessage) setViewConnectedMessage(false);
     }
 
     const handleCloseSnackbar = (event, reason) => {
@@ -158,11 +165,12 @@ function Routes(props) {
             <Route path="/signin" component={SignIn} />
             <Route path="/signup" component={SignUp} />
             <Switch>
-                <PrivateRoute exact path="/" component={MainPage} />
+                <PrivateRoute exact path="/" component={ViewDreams} />
                 <PrivateRoute path="/profile" component={Profile} />
                 <PrivateRoute path="/aeronauts" component={Aeronauts} />
                 <PrivateRoute path="/dreammap" component={DreamMap} />
                 <PrivateRoute path="/dreams" component={ViewDreams} />
+                <PrivateRoute path="/opendream" component={OpenDream} />
                 <PrivateRoute path="/addregulardream" component={AddDream} />
                 <PrivateRoute path="/addcdream" component={AddCDream} />
                 <PrivateRoute path="/addlocation" component={AddLocation} />
@@ -179,6 +187,7 @@ Routes.propTypes = {
     variant: PropTypes.string.isRequired,
     message: PropTypes.string.isRequired,
     setSnackbar: PropTypes.func.isRequired,
+    user_data: PropTypes.number.isRequired,
     userDataPending: PropTypes.object.isRequired
 }
 
@@ -188,6 +197,7 @@ const mapStateToProps = store => {
         open: store.snackbar.snackbar.open,
         variant: store.snackbar.snackbar.variant,
         message: store.snackbar.snackbar.message,
+        user_data: store.auth.user,
         userDataPending: getUserDataPending(store)
     }
 }

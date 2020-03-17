@@ -116,6 +116,9 @@ export const useStyles = makeStyles(theme => ({
     media: {
         height: 140,
     },
+    height96: {
+        height: '96px !Important'
+    },
     iconCenter: {
         display: "block",
         margin: "auto"
@@ -232,6 +235,12 @@ export const useStyles = makeStyles(theme => ({
     margin: {
         margin: theme.spacing(1),
     },
+    padding: {
+        padding: theme.spacing(1),
+    },
+    padding2: {
+        padding: theme.spacing(2),
+    },
     root: {
         flexGrow: 1,
         position: 'relative',
@@ -318,15 +327,16 @@ export const useStyles = makeStyles(theme => ({
         overflow: 'hidden',
     },
     MoonSrc: {
-        backgroundSize: 'cover',
+        backgroundSize: 'contain',
+        backgroundPosition: "center",
         background: 'url(' + MoonImg + ')',
         backgroundRepeat: 'no-repeat',
         position: 'absolute',
         top: 0,
         left: 0,
-        width: '100%',
-        height: '100%',
-        transition: 'all 0.3s linear',
+        width: '95%',
+        height: '95%',
+        transition: 'all 0.3s linear'
     },
     SunSrc: {
         backgroundSize: 'cover',
@@ -335,8 +345,8 @@ export const useStyles = makeStyles(theme => ({
         position: 'absolute',
         top: 0,
         left: 0,
-        width: '100%',
-        height: '100%',
+        width: '95%',
+        height: '95%',
         transition: 'all 0.3s linear',
     },
     AstronautButton: {
@@ -430,7 +440,7 @@ export const useStyles = makeStyles(theme => ({
     },
     horizontalCenter: {
         left: "50%",
-        transform: "translate(-50%)"
+        transform: "translate(-50%) !Important"
     },
     verticalCenter: {
         top: "50%",
@@ -545,6 +555,9 @@ export const useStyles = makeStyles(theme => ({
         marginRight: theme.spacing(2),
         opacity: 0.9,
     },
+    circle: {
+        borderRadius: "50%"
+    },
     "@keyframes shine": {
         "0%": {
             transform: 'scale(1)',
@@ -631,7 +644,7 @@ export const useStyles = makeStyles(theme => ({
         height: 100 / 12 * 4 - 0.1 + "%",
     },
     height3: {
-        height: 100 / 12 * 3 - 0.1 + "%",
+        height: 100 / 12 * 3 - 0.1 + "% !Important",
     },
     height2: {
         height: 100 / 12 * 2 - 0.1 + "%",

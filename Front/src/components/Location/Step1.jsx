@@ -19,7 +19,7 @@ function Step1(props) {
 
     const changeNameEn = (e) => {
         if (e.target.value.search(/[а-яА-ЯёЁ]/g) !== -1) {
-            setNameEn(e.target.value.replace(reg, ''));
+            setNameEn(e.target.value.replace(/[а-яА-ЯёЁ]/g, ''));
         }
         else {
             setNameEn(e.target.value);
@@ -28,7 +28,7 @@ function Step1(props) {
 
     const changeNameRu = (e) => {
         if (e.target.value.search(/[a-zA-Z]/g) !== -1) {
-            setNameRu(e.target.value.replace(reg, ''));
+            setNameRu(e.target.value.replace(/[a-zA-Z]/g, ''));
         }
         else {
             setNameRu(e.target.value);
