@@ -36,8 +36,8 @@ import DeleteIcon from "@material-ui/icons/Delete";
 import { useStyles } from "../../styles/Styles.js";
 
 function DreamCard(props) {
-    const { lang, palette, history, setOpenConfirm, setConfirmData } = props;
-    const { post_id, post_title, post_content, post_type, tags, technics, rating, dream_date, is_public } = props.item;
+    const { friend_id, lang, palette, history, setOpenConfirm, setConfirmData } = props;
+    const { post_id, post_title, post_content, post_type, tags, technics, rating, dream_date, is_public, comm_count } = props.item;
 
     const [expanded, setExpanded] = React.useState(false);
     const [anchorEl, setAnchorEl] = React.useState(null);
@@ -71,14 +71,16 @@ function DreamCard(props) {
                             header: lang.currLang.texts.PublicAlert,
                             body: lang.currLang.texts.PublicText,
                             commit: lang.currLang.texts.Publish,
-                            action: 'publicOk'
+                            action: 'publicOk',
+                            isPublic: publicChecked
                         }
                         : {
                             id: post_id,
                             header: lang.currLang.texts.UnpublicAlert,
                             body: lang.currLang.texts.UnpublicText,
                             commit: lang.currLang.texts.Unpublish,
-                            action: 'publicOk'
+                            action: 'publicOk',
+                            isPublic: publicChecked
                         }
                 );
                 setOpenConfirm(true);
@@ -135,7 +137,16 @@ function DreamCard(props) {
         history.push({
             pathname: "/opendream",
             defaultData: {
-                post_id: post_id
+                post_id: post_id,
+                post_title: post_title,
+                dream_date: dream_date,
+                post_content: post_content,
+                post_type: post_type,
+                rating: rating,
+                tags: tags,
+                technics: technics,
+                prevUrl: '/dreams',
+                friend_id: friend_id === 'undefined' ? null : friend_id
             }
         });
     };
@@ -278,6 +289,9 @@ function DreamCard(props) {
                 <div className={`${classes.margin}`}>
                     <IconButton onClick={openDream}>
                         <ChatBubbleOutlineIcon />
+                        <Typography>
+                            {comm_count}
+                        </Typography>
                     </IconButton>
                 </div>
             </Card>

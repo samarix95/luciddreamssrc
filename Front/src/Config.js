@@ -11,7 +11,10 @@ import {
     fetchRandomUsersPending, fetchRandomUsersSuccess, fetchRandomUsersError,
     fetchUpdateUserDataPending, fetchUpdateUserDataSuccess, fetchUpdateUserDataError, fetchResetUpdateUserDataError, fetchResetUpdateUserData,
     fetchCreateUserPending, fetchCreateUserSuccess, fetchCreateUserError, fetchResetCreateUserError,
-    fetchLoginUserPending, fetchLoginUserSuccess, fetchLoginUserError, fetchResetLoginUserError
+    fetchLoginUserPending, fetchLoginUserSuccess, fetchLoginUserError, fetchResetLoginUserError,
+    fetchPCommentsPending, fetchPCommentsSuccess, fetchPCommentsError, fetchResetPcommentsError,
+    sendPCommentPending, sendPCommentSuccess, sendPCommentError, resetSendPCommentError,
+    fetchUpdatePCommentPending, fetchUpdatePCommentSuccess, fetchUpdatePCommentError, fetchResetUpdatePCommentError
 } from './actions/Actions.js';
 
 export const maxSignUpSteps = 3;
@@ -150,6 +153,25 @@ export function fetchRandomUsersAction(userId, limit, userToken) {
     }
 };
 
+export function fetchPcommentsAction(post_id, userToken) {
+    return dispatch => {
+        dispatch(fetchPCommentsPending());
+        instance.post("/actions/users/getpostscomments", { id: post_id, token: userToken })
+            .then(res => {
+                dispatch(fetchPCommentsSuccess(res.data));
+                return res.data;
+            })
+            .catch(error => {
+                dispatch(fetchPCommentsError(error.response.data));
+            });
+    }
+}
+export function resetPcommentsErrorAction() {
+    return dispatch => {
+        dispatch(fetchResetPcommentsError());
+    }
+}
+
 /*Update data in DB*/
 export function fetchUpdateUserDataAction(userId, data, userToken) {
     return dispatch => {
@@ -210,5 +232,46 @@ export function fetchLoginUserAction(data) {
 export function resetLoginUserErrorAction() {
     return dispatch => {
         dispatch(fetchResetLoginUserError());
+    }
+}
+
+/*Create post comment */
+export function sendPCommentAction(data) {
+    return dispatch => {
+        dispatch(sendPCommentPending());
+        instance.post("/actions/users/addcomment", data)
+            .then(res => {
+                dispatch(sendPCommentSuccess(res.data))
+                dispatch(fetchPcommentsAction(data.post_id, data.token));
+            })
+            .catch(err => {
+                dispatch(sendPCommentError(err.response.data))
+            });
+    }
+};
+export function resetSendPCommentErrorAction() {
+    return dispatch => {
+        dispatch(resetSendPCommentError());
+    }
+}
+
+/*Update post comment */
+export function updatePCommentAction(data) {
+    return dispatch => {
+        dispatch(fetchUpdatePCommentPending());
+        instance.post("/actions/users/updatepostscomments", data)
+            .then(res => {
+                dispatch(fetchUpdatePCommentSuccess(res.data));
+                dispatch(fetchPcommentsAction(data.post_id, data.token));
+                return res.data;
+            })
+            .catch(error => {
+                dispatch(fetchUpdatePCommentError(error.response.data));
+            });
+    }
+}
+export function resetUpdatePCommentError() {
+    return dispatch => {
+        dispatch(fetchResetUpdatePCommentError());
     }
 }

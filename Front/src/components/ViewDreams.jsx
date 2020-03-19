@@ -30,7 +30,7 @@ import { MuiThemeProvider, createMuiTheme } from '@material-ui/core/styles';
 
 import DreamCard from './muiltiple/DreamCard.jsx';
 import { useStyles } from '../styles/Styles.js';
-import { fetchTagsAction, fetchUserPostsAction, fetchConnectPostsAction } from '../Config';
+import { instance, fetchTagsAction, fetchUserPostsAction, fetchConnectPostsAction } from '../Config';
 import { getTagsError, getTags, getTagsPending } from '../reducers/tagsReducer.js';
 import { getUserPostsError, getUserPosts, getUserPostsPending } from '../reducers/userPostsReducer.js';
 import { getConnectPostsError, getConnectPosts, getConnectPostsPending } from '../reducers/connectPostsReducer.js';
@@ -43,7 +43,7 @@ function ViewDreams(props) {
         tags, tagsError, tagsPending, fetchTags,
         userPosts, userPostsError, userPostsPending, fetchUserPosts,
         connectPosts, connectPostsError, connectPostsPending, fetchConnectPosts } = props;
-
+        
     if (tagsError) {
         console.log("ViewDreams");
         console.log(tagsError);
@@ -78,7 +78,8 @@ function ViewDreams(props) {
         header: "",
         body: "",
         commit: "",
-        action: ""
+        action: "",
+        isPublic: null
     });
 
     if (!userPostsPending && userPostsError == null && !isDreamsLoading && !viewMode) {
@@ -145,7 +146,7 @@ function ViewDreams(props) {
             fetchConnectPosts(user_id, token);
         }
     }, [auth.user.id]);
-
+    
     React.useEffect(() => {
         if (typeof (props.location.defaultData) !== 'undefined') {
             if (props.location.defaultData.mode === "fromMap") {
@@ -198,41 +199,29 @@ function ViewDreams(props) {
                     });
                 break;
             case 'publicOk':
+                //TODO Починить
+                console.log('hello')
                 setOpenConfirm(false);
-                if (publicChecked) {
-                    instance.post('/actions/users/updatepost', { post_id: confirmData.id, newPublic: 0 })
-                        .then(res => {
-                            setPublicChecked(false);
-                            setSnackbar({
-                                type: SET_SNACKBAR_MODE,
-                                snackbar: {
-                                    open: true,
-                                    variant: 'success',
-                                    message: lang.currLang.texts.success
-                                }
-                            });
-                        })
-                        .catch(err => {
-                            setPublicChecked(true);
+                console.log(confirmData.isPublic)
+                const newPublic = confirmData.isPublic ? 0 : 1;
+                instance.post('/actions/users/updatepost', { post_id: confirmData.id, newPublic: newPublic })
+                    .then(res => {
+                        //setPublicChecked(false);
+                        setSnackbar({
+                            type: SET_SNACKBAR_MODE,
+                            snackbar: {
+                                open: true,
+                                variant: 'success',
+                                message: lang.currLang.texts.success
+                            }
                         });
-                }
-                else {
-                    instance.post('/actions/users/updatepost', { post_id: confirmData.id, newPublic: 1 })
-                        .then(res => {
-                            setPublicChecked(true);
-                            setSnackbar({
-                                type: SET_SNACKBAR_MODE,
-                                snackbar: {
-                                    open: true,
-                                    variant: 'success',
-                                    message: lang.currLang.texts.success
-                                }
-                            });
-                        })
-                        .catch(err => {
-                            setPublicChecked(false);
-                        });
-                }
+                        loadPosts();
+                        console.log('hello1')
+                    })
+                    .catch(err => {
+                        //setPublicChecked(true);
+                        console.log('hello2')
+                    });
                 break;
         }
     };
@@ -399,6 +388,16 @@ function ViewDreams(props) {
                                             .filter(item => filterData.type === 2 ? item : item.post_type === filterData.type)
                                             .map((item, key) => (
                                                 <DreamCard
+                                                    mode={
+                                                        typeof props.location.defaultData === 'undefined'
+                                                            ? null
+                                                            : props.location.defaultData.mode
+                                                    }
+                                                    friend_id={
+                                                        typeof props.location.defaultData === 'undefined'
+                                                            ? null
+                                                            : props.location.defaultData.friend_id
+                                                    }
                                                     item={item}
                                                     key={key}
                                                     history={history}

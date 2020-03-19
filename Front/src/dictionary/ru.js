@@ -13,6 +13,9 @@ const words = {
         about: 'О сайте',
         cancel: 'Отмена',
         add: 'Добавить',
+        DoComment: 'Комментировать',
+        Comment: 'Комментарий',
+        Answer: 'Ответить',
         Edit: 'Изменить',
         Delete: 'Удалить',
         Save: 'Сохранить',
@@ -87,7 +90,9 @@ const words = {
 
         SignUpStep1: "Начало",
         SignUpStep2: "Имя",
-        SignUpStep3: "Аватар"
+        SignUpStep3: "Аватар",
+        NoComments: "Нет комментариев",
+        Edit: 'Редактировать'
     },
     errors: {
         AvatarsLoadError: "Ошибка аватарок",
@@ -101,6 +106,8 @@ const words = {
         CantUpdateLocation: 'Ошибка обновления локации',
         IconNotChange: 'Выберите иконку',
         ColorNotChange: 'Выберите цвет',
+
+        EMPTY_COMMENT: 'Пустой комментарий',
 
         EMPTY_EMAIL: "Введите email",
         EMPTY_PASSWORD: "Введите пароль",

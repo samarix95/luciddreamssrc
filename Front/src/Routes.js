@@ -165,7 +165,7 @@ function Routes(props) {
             <Route path="/signin" component={SignIn} />
             <Route path="/signup" component={SignUp} />
             <Switch>
-                <PrivateRoute exact path="/" component={ViewDreams} />
+                <PrivateRoute exact path="/" component={MainPage} />
                 <PrivateRoute path="/profile" component={Profile} />
                 <PrivateRoute path="/aeronauts" component={Aeronauts} />
                 <PrivateRoute path="/dreammap" component={DreamMap} />

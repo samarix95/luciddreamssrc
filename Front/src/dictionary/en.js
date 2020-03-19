@@ -13,6 +13,9 @@ const words = {
         about: 'About site',
         cancel: 'Cancel',
         add: 'Add',
+        DoComment: 'Do сomment',
+        Comment: 'Comment',
+        Answer: 'Answer',
         Edit: 'Edit',
         Delete: 'Delete',
         Save: 'Save',
@@ -87,7 +90,9 @@ const words = {
 
         SignUpStep1: "Start",
         SignUpStep2: "Nickname",
-        SignUpStep3: "Avatar"
+        SignUpStep3: "Avatar",
+        NoComments: "No comments",
+        Edit: 'Edit'
     },
     errors: {
         AvatarsLoadError: "Avatars load error",
@@ -101,6 +106,8 @@ const words = {
         CantUpdateLocation: 'Error update location',
         IconNotChange: 'Choose icon',
         ColorNotChange: 'Choose color',
+
+        EMPTY_COMMENT: 'Empty comment',
 
         EMPTY_EMAIL: "Enter email",
         EMPTY_PASSWORD: "Enter password",

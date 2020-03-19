@@ -10,7 +10,10 @@ import {
 	FETCH_RANDOM_USERS_PENDING, FETCH_RANDOM_USERS_SUCCESS, FETCH_RANDOM_USERS_ERROR,
 	FETCH_UPDATE_USER_DATA_PENDING, FETCH_UPDATE_USER_DATA_SUCCESS, FETCH_UPDATE_USER_DATA_ERROR, RESET_UPDATE_USER_DATA_ERROR, RESET_UPDATE_USER_DATA,
 	FETCH_CREATE_USER_PENDING, FETCH_CREATE_USER_SUCCESS, FETCH_CREATE_USER_ERROR, RESET_CREATE_USER_ERROR,
-	FETCH_LOGIN_USER_PENDING, FETCH_LOGIN_USER_SUCCESS, FETCH_LOGIN_USER_ERROR, RESET_LOGIN_USER_ERROR
+	FETCH_LOGIN_USER_PENDING, FETCH_LOGIN_USER_SUCCESS, FETCH_LOGIN_USER_ERROR, RESET_LOGIN_USER_ERROR,
+	FETCH_PCOMMENTS_PENDING, FETCH_PCOMMENTS_SUCCESS, FETCH_PCOMMENTS_ERROR, RESET_PCOMMENTS_ERROR,
+	FETCH_SEND_PCOMMENT_PENDING, FETCH_SEND_PCOMMENT_SUCCESS, FETCH_SEND_PCOMMENT_ERROR, RESET_SEND_PCOMMENT_ERROR,
+	FETCH_UPDATE_PCOMMENT_PENDING, FETCH_UPDATE_PCOMMENT_SUCCESS, FETCH_UPDATE_PCOMMENT_ERROR, RESET_UPDATE_PCOMMENT_ERROR
 } from '../actions/types.js';
 
 export function setCurrLang(state) {
@@ -186,6 +189,30 @@ export function fetchRandomUsersError(error) {
 	}
 }
 
+export function fetchPCommentsPending() {
+	return {
+		type: FETCH_PCOMMENTS_PENDING
+	}
+}
+export function fetchPCommentsSuccess(comments) {
+	return {
+		type: FETCH_PCOMMENTS_SUCCESS,
+		comments: comments
+	}
+}
+export function fetchPCommentsError(error) {
+	return {
+		type: FETCH_PCOMMENTS_ERROR,
+		error: error
+	}
+}
+export function fetchResetPcommentsError() {
+	return {
+		type: RESET_PCOMMENTS_ERROR,
+		error: null
+	}
+}
+
 /*Update data in DB*/
 export function fetchUpdateUserDataPending() {
 	return {
@@ -263,6 +290,56 @@ export function fetchLoginUserError(error) {
 export function fetchResetLoginUserError() {
 	return {
 		type: RESET_LOGIN_USER_ERROR,
+		error: null
+	}
+}
+
+/*Create post comment */
+export function sendPCommentPending() {
+	return {
+		type: FETCH_SEND_PCOMMENT_PENDING
+	}
+}
+export function sendPCommentSuccess(data) {
+	return {
+		type: FETCH_SEND_PCOMMENT_SUCCESS,
+		data: data
+	}
+}
+export function sendPCommentError(error) {
+	return {
+		type: FETCH_SEND_PCOMMENT_ERROR,
+		error: error
+	}
+}
+export function resetSendPCommentError() {
+	return {
+		type: RESET_SEND_PCOMMENT_ERROR,
+		error: null
+	}
+}
+
+/*Update post comment */
+export function fetchUpdatePCommentPending() {
+	return {
+		type: FETCH_UPDATE_PCOMMENT_PENDING
+	}
+}
+export function fetchUpdatePCommentSuccess(data) {
+	return {
+		type: FETCH_UPDATE_PCOMMENT_SUCCESS,
+		data: data
+	}
+}
+export function fetchUpdatePCommentError(error) {
+	return {
+		type: FETCH_UPDATE_PCOMMENT_ERROR,
+		error: error
+	}
+}
+export function fetchResetUpdatePCommentError() {
+	return {
+		type: RESET_UPDATE_PCOMMENT_ERROR,
 		error: null
 	}
 }
