@@ -2,6 +2,6 @@
 	"root": "/app",
 	"clean_urls": true,
 	"routes": {
-		"/prod/**": "index.html"
+		"/prod": "index.html"
 	}
 }
