@@ -26,20 +26,6 @@ export const colors = {
     }
 };
 
-export const params = {
-    amountStars: 25,
-    amountClouds: 5,
-    size: {
-        min: 1,
-        max: 5,
-        giant: 9
-    },
-    duration: {
-        min: 5,
-        max: 25,
-    }
-};
-
 export const variantIcon = {
     success: CheckCircleIcon,
     warning: WarningIcon,
