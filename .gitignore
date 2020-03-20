@@ -1,2 +1,2 @@
-Back/node_modules/
-Front/node_modules/
+node_modules/
+.vscode
