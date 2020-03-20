@@ -7,7 +7,7 @@ module.exports = {
     devtool: 'cheap-module-source-map',
     entry: "./src/index.js",
     output: {
-        path: path.join(__dirname, "../../prod"),
+        path: path.join(__dirname, './prod'),
         filename: "index-bundle.js",
     },
     devServer: {
